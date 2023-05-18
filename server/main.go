@@ -1,6 +1,6 @@
 package main
 
 func main() {
-	apiServer := NewAPIServer("8000")
+	apiServer := NewAPIServer(":3001")
 	apiServer.Run()
 }
