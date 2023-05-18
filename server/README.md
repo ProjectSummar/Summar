@@ -4,28 +4,28 @@
 
 ### Database Operations
 
-- `/create_bookmark`
+- `/create-bookmark`
   - Params
     - url
-- `/create_bookmarks`
+- `/create-bookmarks`
   - Params
     - url[]
-- `/get_bookmark`
+- `/get-bookmark`
   - Params
     - bookmark id
-- `/get_bookmarks`
+- `/get-bookmarks`
   - Params
     - bookmark id[]
-- `/update_bookmark`
+- `/update-bookmark`
   - Params
     - bookmark id
-- `/update_bookmarks`
+- `/update-bookmarks`
   - Params
     - bookmark id[]
-- `/delete_bookmark`
+- `/delete-bookmark`
   - Params
     - bookmark id
-- `/delete_bookmarks`
+- `/delete-bookmarks`
   - Params
     - bookmark id[]
 
@@ -47,7 +47,7 @@
 
 ### Summarising
 
-- `summarise_bookmark`
+- `summarise-bookmark`
   - Params
     - bookmark id
   - Description
