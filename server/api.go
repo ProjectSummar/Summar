@@ -20,8 +20,10 @@ func NewAPIServer(address string) *APIServer {
 
 func (s *APIServer) Run() {
 	router := httprouter.New()
+
 	// TODO: register routes
 	// router.GET("/example", ToRouterHandleFunc(ExampleHandler))
+
 	log.Fatal(http.ListenAndServe(s.Address, router))
 }
 
@@ -49,5 +51,6 @@ func ToRouterHandleFunc(f APIFunc) httprouter.Handle {
 func WriteJSON(w http.ResponseWriter, status int, v any) error {
 	w.WriteHeader(status)
 	w.Header().Add("Content-Type", "application/json")
+
 	return json.NewEncoder(w).Encode(v)
 }
