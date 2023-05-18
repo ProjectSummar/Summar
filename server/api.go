@@ -24,6 +24,7 @@ func (s *APIServer) Run() {
 	// TODO: register routes
 	// router.GET("/example", ToRouterHandleFunc(ExampleHandler))
 
+	log.Println("server running on port", s.Address)
 	log.Fatal(http.ListenAndServe(s.Address, router))
 }
 
