@@ -8,6 +8,11 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 )
 
+type APIResponse struct {
+	IsOk bool   `json:"isOk"`
+	Msg  string `json:"msg"`
+}
+
 type APIServer struct {
 	Address string
 }
