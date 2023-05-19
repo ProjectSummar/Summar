@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/julienschmidt/httprouter"
+	"github.com/go-chi/chi/v5"
 )
 
 type APIServer struct {
@@ -19,29 +19,124 @@ func NewAPIServer(address string) *APIServer {
 }
 
 func (s *APIServer) Run() {
-	router := httprouter.New()
+	router := chi.NewRouter()
 
-	// TODO: register routes
-	// router.GET("/example", ToRouterHandleFunc(ExampleHandler))
+	router.Post("/login", ToHttpHandlerFunc(s.LoginHandler))
+	router.Post("/signup", ToHttpHandlerFunc(s.SignupHandler))
+	router.Get("/me", ToHttpHandlerFunc(s.GetUserHandler))
+
+	router.Mount("/bookmark", s.BookmarkRouter())
 
 	log.Println("server running on port", s.Address)
 	log.Fatal(http.ListenAndServe(s.Address, router))
 }
 
-// TODO: routes here
-// func (s *APIServer) ExampleHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) error {
-// 	return WriteJSON(w, http.StatusOK, res)
-// }
+func (s *APIServer) BookmarkRouter() chi.Router {
+	bookmarkRouter := chi.NewRouter()
 
-type APIFunc func(http.ResponseWriter, *http.Request, httprouter.Params) error
+	bookmarkRouter.Post("/create", ToHttpHandlerFunc(s.CreateBookmarkHandler))
+	bookmarkRouter.Get("/get", ToHttpHandlerFunc(s.GetBookmarkHandler))
+	bookmarkRouter.Post("/update", ToHttpHandlerFunc(s.UpdateBookmarkHandler))
+	bookmarkRouter.Post("/delete", ToHttpHandlerFunc(s.DeleteBookmarkHandler))
+	bookmarkRouter.Post("/summarise", ToHttpHandlerFunc(s.SummariseBookmarkHandler))
+
+	return bookmarkRouter
+}
+
+// TODO: auth middleware to get session token from cookie and validate
+
+func (s *APIServer) LoginHandler(w http.ResponseWriter, r *http.Request) error {
+	// parse input JSON { email, password }
+	// hash password
+	// validate credentials
+	// create a session
+	// return session token to be stored as cookie
+	return nil
+}
+
+func (s *APIServer) SignupHandler(w http.ResponseWriter, r *http.Request) error {
+	// parse input JSON { email, password, confirmPassword }
+	// validate credentials
+	// hash password
+	// create user
+	// create a session
+	// return session token to be stored as cookie
+	return nil
+}
+
+func (s *APIServer) GetUserHandler(w http.ResponseWriter, r *http.Request) error {
+	// get session token in cookie
+	// validate session token
+	// get user by userId associated to the session
+	// get bookmarks by userId
+	// return user and bookmarks
+	return nil
+}
+
+func (s *APIServer) CreateBookmarkHandler(w http.ResponseWriter, r *http.Request) error {
+	// get session token in cookie
+	// validate session token
+	// get user by userId associated to the session
+	// parse input JSON { url }
+	// create bookmark on userId
+	// return status and created bookmark
+	return nil
+}
+
+func (s *APIServer) GetBookmarkHandler(w http.ResponseWriter, r *http.Request) error {
+	// get session token in cookie
+	// validate session token
+	// get user by userId associated to the session
+	// parse input JSON { bookmarkId }
+	// get bookmark by bookmarkId
+	// validate bookmark's userId and session userId
+	// return status and bookmark
+	return nil
+}
+
+func (s *APIServer) UpdateBookmarkHandler(w http.ResponseWriter, r *http.Request) error {
+	// get session token in cookie
+	// validate session token
+	// get user by userId associated to the session
+	// parse input JSON { partialBookmark }
+	// get bookmark by bookmarkId
+	// validate bookmark's userId and session userId
+	// update bookmark with partialBookmark
+	// return status and updated bookmark
+	return nil
+}
+
+func (s *APIServer) DeleteBookmarkHandler(w http.ResponseWriter, r *http.Request) error {
+	// get session token in cookie
+	// validate session token
+	// get user by userId associated to the session
+	// parse input JSON { bookmarkId }
+	// get bookmark by bookmarkId
+	// validate bookmark's userId and session userId
+	// delete bookmark by bookmarkId
+	// return status and deleted bookmark
+	return nil
+}
+
+func (s *APIServer) SummariseBookmarkHandler(w http.ResponseWriter, r *http.Request) error {
+	// parse input JSON { bookmarkId }
+	// get bookmark by bookmarkId
+	// scrape bookmark for main text
+	// send main text to OpenAI API for summarisation
+	// update bookmark with summary
+	// return status and summarised bookmark
+	return nil
+}
+
+type APIFunc func(http.ResponseWriter, *http.Request) error
 
 type APIError struct {
 	Error string `json:"error"`
 }
 
-func ToRouterHandleFunc(f APIFunc) httprouter.Handle {
-	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-		if err := f(w, r, p); err != nil {
+func ToHttpHandlerFunc(f APIFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if err := f(w, r); err != nil {
 			WriteJSON(w, http.StatusBadRequest, APIError{
 				Error: err.Error(),
 			})
