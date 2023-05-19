@@ -28,7 +28,7 @@ func (s *APIServer) Run() {
 	router.Mount("/bookmark", s.BookmarkRouter())
 
 	log.Println("server running on port", s.Address)
-	log.Fatal(http.ListenAndServe(s.Address, router))
+	log.Fatal(http.ListenAndServe(":"+s.Address, router))
 }
 
 func (s *APIServer) BookmarkRouter() chi.Router {
