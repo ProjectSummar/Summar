@@ -2,35 +2,6 @@
 
 ## Endpoints
 
-### Database Operations
-
-- `/create-bookmark`
-  - Params
-    - url
-- `/create-bookmarks`
-  - Params
-    - url[]
-- `/get-bookmark`
-  - Params
-    - bookmark id
-- `/get-bookmarks`
-  - Params
-    - bookmark id[]
-- `/update-bookmark`
-  - Params
-    - bookmark id
-- `/update-bookmarks`
-  - Params
-    - bookmark id[]
-- `/delete-bookmark`
-  - Params
-    - bookmark id
-- `/delete-bookmarks`
-  - Params
-    - bookmark id[]
-
-### Authentication
-
 > - Use DB sessions
 > - Use passwordless login? (magic email link)
 > - Use OAuth? (google, github, ...)
