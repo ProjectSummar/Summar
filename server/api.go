@@ -53,17 +53,36 @@ func (s *APIServer) BookmarkRouter() chi.Router {
 
 // TODO: auth middleware to get session token from cookie and validate
 
+type LoginRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type LoginResponse struct {
+	APIResponse
+}
+
 func (s *APIServer) LoginHandler(w http.ResponseWriter, r *http.Request) error {
 	// parse input JSON { email, password }
-	// hash password
+	var loginRequest LoginRequest
+	ReadJSON(r, &loginRequest)
+
 	// validate credentials
 	// create a session
 	// return session token to be stored as cookie
+
+	WriteJSON(w, http.StatusOK, LoginResponse{
+		APIResponse: APIResponse{
+			IsOk: true,
+			Msg:  "logged in successfully",
+		},
+	})
+
 	return nil
 }
 
 func (s *APIServer) SignupHandler(w http.ResponseWriter, r *http.Request) error {
-	// parse input JSON { email, password, confirmPassword }
+	// parse input JSON { email, password }
 	// validate credentials
 	// hash password
 	// create user
