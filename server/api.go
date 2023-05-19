@@ -139,14 +139,17 @@ func (s *APIServer) SummariseBookmarkHandler(w http.ResponseWriter, r *http.Requ
 type APIFunc func(http.ResponseWriter, *http.Request) error
 
 type APIError struct {
-	Error string `json:"error"`
+	APIResponse
 }
 
 func ToHttpHandlerFunc(f APIFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if err := f(w, r); err != nil {
 			WriteJSON(w, http.StatusBadRequest, APIError{
-				Error: err.Error(),
+				APIResponse: APIResponse{
+					IsOk: false,
+					Msg:  err.Error(),
+				},
 			})
 		}
 	}
