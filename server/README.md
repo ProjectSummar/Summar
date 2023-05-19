@@ -40,7 +40,7 @@
       - bookmark id
     - Cookie
       - session token
-  - `summarise`
+  - `/summarise`
     - Params
       - bookmark id
     - Description
