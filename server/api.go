@@ -66,19 +66,9 @@ type LoginResponse struct {
 
 func (s *APIServer) LoginHandler(w http.ResponseWriter, r *http.Request) error {
 	// parse input JSON { email, password }
-	var loginRequest LoginRequest
-	ReadJSON(r, &loginRequest)
-
 	// validate credentials
 	// create a session
 	// return session token to be stored as cookie
-
-	WriteJSON(w, http.StatusOK, LoginResponse{
-		APIResponse: APIResponse{
-			IsOk: true,
-			Msg:  "logged in successfully",
-		},
-	})
 
 	return nil
 }
