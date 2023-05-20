@@ -4,7 +4,10 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"io"
+	"net/http"
 )
+
+const SESSION_TOKEN_COOKIE string = "session-token"
 
 func CreateSessionToken() (string, error) {
 	bytes := make([]byte, 32)
