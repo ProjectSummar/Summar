@@ -36,13 +36,14 @@ func NewPostgresDB() (*PostgresDB, error) {
 }
 
 func (db *PostgresDB) CreateUser(user *User) error {
-	query := `insert into user
-	(email, password_hash, created_at)
-	values ($1, $2, $3)
+	query := `insert into users
+	(id, email, password_hash, created_at)
+	values ($1, $2, $3, $4)
 	`
 
 	res, err := db.Db.Query(
 		query,
+		user.ID,
 		user.Email,
 		user.PasswordHash,
 		user.CreatedAt,
