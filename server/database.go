@@ -14,6 +14,7 @@ type DB interface {
 	// UpdateUser(*User) error
 	GetUserByEmail(string) (*User, error)
 	// GetUserById(string) (*User, error)
+	CreateSession(*Session) error
 }
 
 type PostgresDB struct {
