@@ -71,12 +71,13 @@ func (db *PostgresDB) Init() error {
 	return nil
 }
 
-func (db *PostgresDB) CreateUserTable() error {
-	query := `create table if not exists users (
-	id varchar(36) primary key,
-	email varchar(50),
-	password_hash varchar(60),
-	created_at timestamp
+func (db *PostgresDB) CreateUsersTable() error {
+	query := `CREATE TABLE IF NOT EXISTS users (
+		id VARCHAR(36),
+		email VARCHAR(50),
+		password_hash VARCHAR(60),
+		created_at TIMESTAMP,
+		PRIMARY KEY(id)
 	)`
 
 	_, err := db.Db.Exec(query)
