@@ -15,11 +15,13 @@ type APIResponse struct {
 
 type APIServer struct {
 	Address string
+	Db      DB
 }
 
-func NewAPIServer(address string) *APIServer {
+func NewAPIServer(address string, db DB) *APIServer {
 	return &APIServer{
 		Address: address,
+		Db:      db,
 	}
 }
 

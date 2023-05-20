@@ -1,6 +1,17 @@
 package main
 
+import "log"
+
 func main() {
-	apiServer := NewAPIServer("3001")
+	db, err := NewPostgresDB()
+	if err != nil {
+		log.Fatal("Cannot connect to postgres DB")
+	}
+
+	if err := db.Init(); err != nil {
+		log.Fatal("Cannot initialise postgres DB")
+	}
+
+	apiServer := NewAPIServer("3001", db)
 	apiServer.Run()
 }
