@@ -83,13 +83,42 @@ func (s *APIServer) LoginHandler(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
+type SignupRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type SignupResponse struct {
+	APIResponse
+}
+
 func (s *APIServer) SignupHandler(w http.ResponseWriter, r *http.Request) error {
 	// parse input JSON { email, password }
-	// validate credentials
+	var signupRequest SignupRequest
+	ReadJSON(r, &signupRequest)
+
 	// hash password
+	hash, err := HashPassword(signupRequest.Password)
+	if err != nil {
+		return err
+	}
+
 	// create user
+	user := NewUser(signupRequest.Email, hash)
+	if err := s.Db.CreateUser(&user); err != nil {
+		return err
+	}
+
 	// create a session
 	// return session token to be stored as cookie
+
+	WriteJSON(w, http.StatusOK, SignupResponse{
+		APIResponse: APIResponse{
+			IsOk: true,
+			Msg:  "logged in successfully",
+		},
+	})
+
 	return nil
 }
 
