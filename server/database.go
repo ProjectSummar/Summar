@@ -79,7 +79,27 @@ func (db *PostgresDB) CreateSession(session *Session) error {
 }
 
 func (db *PostgresDB) GetUserByEmail(email string) (*User, error) {
-	return nil, nil
+	query := "SELECT * FROM users WHERE email = $1"
+
+	rows, err := db.Db.Query(query, email)
+	if err != nil {
+		return nil, err
+	}
+
+	var user User
+	for rows.Next() {
+		if err = rows.Scan(
+			&user.ID,
+			&user.Email,
+			&user.PasswordHash,
+			&user.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+	}
+
+	fmt.Printf("%+v\n", user)
+	return &user, nil
 }
 
 // Initialisation
