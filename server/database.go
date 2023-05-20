@@ -58,6 +58,26 @@ func (db *PostgresDB) CreateUser(user *User) error {
 	return nil
 }
 
+func (db *PostgresDB) CreateSession(session *Session) error {
+	query := `insert into sessions
+	(token, user_id, expires_at)
+	values ($1, $2, $3)
+	`
+
+	res, err := db.Db.Query(
+		query,
+		session.Token,
+		session.UserID,
+		session.ExpiresAt,
+	)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("%+v\n", res)
+	return nil
+}
+
 func (db *PostgresDB) GetUserByEmail(email string) (*User, error) {
 	return nil, nil
 }
