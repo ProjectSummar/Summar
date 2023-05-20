@@ -28,6 +28,14 @@ type Session struct {
 	ExpiresAt time.Time `json:"expiresAt"`
 }
 
+func NewSession(token string, userId uuid.UUID) Session {
+	return Session{
+		Token:     token,
+		UserID:    userId,
+		ExpiresAt: time.Now().Add(time.Second * time.Duration(SESSION_EXPIRATION_SECONDS)),
+	}
+}
+
 type Bookmark struct {
 	ID      string    `json:"id"`
 	UserID  uuid.UUID `json:"userId"`
