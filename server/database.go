@@ -83,6 +83,23 @@ func (db *PostgresDB) CreateUsersTable() error {
 	_, err := db.Db.Exec(query)
 	return err
 }
+
+func (db *PostgresDB) CreateSessionsTable() error {
+	query := `CREATE TABLE IF NOT EXISTS sessions (
+	token VARCHAR(44),
+	user_id VARCHAR(36),
+	expires_at TIMESTAMP,
+	PRIMARY KEY(token),
+	CONSTRAINT fk_user
+		FOREIGN KEY(user_id)
+			REFERENCES users(id)
+			ON DELETE CASCADE
+	)`
+
+	_, err := db.Db.Exec(query)
+	return err
+}
+
 func (db *PostgresDB) Clear() error {
 	db.Db.Exec(`DROP TABLE IF EXISTS sessions`)
 	db.Db.Exec(`DROP TABLE IF EXISTS users`)
