@@ -102,7 +102,8 @@ func (db *PostgresDB) CreateUsersTable() error {
 		email VARCHAR(50),
 		password_hash VARCHAR(60),
 		created_at TIMESTAMP,
-		PRIMARY KEY(id)
+		PRIMARY KEY(id),
+		UNIQUE(email)
 	)`
 
 	_, err := db.Db.Exec(query)
@@ -126,8 +127,8 @@ func (db *PostgresDB) CreateSessionsTable() error {
 }
 
 func (db *PostgresDB) Clear() error {
-	db.Db.Exec(`DROP TABLE IF EXISTS sessions`)
-	db.Db.Exec(`DROP TABLE IF EXISTS users`)
+	db.Db.Exec("DROP TABLE IF EXISTS sessions")
+	db.Db.Exec("DROP TABLE IF EXISTS users")
 
 	return nil
 }
