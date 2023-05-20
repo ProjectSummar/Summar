@@ -62,14 +62,18 @@ func (db *PostgresDB) GetUserByEmail(email string) (*User, error) {
 // Initialisation
 
 func (db *PostgresDB) Init() error {
+	if err := db.CreateUserTable(); err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (db *PostgresDB) CreateUserTable() error {
-	query := `create table if not exists user (
-	id string primary key,
-	email string,
-	password_hash string,
+	query := `create table if not exists users (
+	id varchar(36) primary key,
+	email varchar(50),
+	password_hash varchar(60),
 	created_at timestamp
 	)`
 
