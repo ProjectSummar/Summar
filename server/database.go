@@ -8,6 +8,7 @@ import (
 )
 
 type DB interface {
+	Clear() error
 	CreateUser(*User) error
 	// DeleteUser(string) error
 	// UpdateUser(*User) error
@@ -80,4 +81,10 @@ func (db *PostgresDB) CreateUserTable() error {
 
 	_, err := db.Db.Exec(query)
 	return err
+}
+func (db *PostgresDB) Clear() error {
+	db.Db.Exec(`DROP TABLE IF EXISTS sessions`)
+	db.Db.Exec(`DROP TABLE IF EXISTS users`)
+
+	return nil
 }

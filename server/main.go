@@ -8,6 +8,11 @@ func main() {
 		log.Fatal(err)
 	}
 
+	if ENV == "DEV" {
+		db.Clear()
+		log.Println("Cleared db")
+	}
+
 	if err := db.Init(); err != nil {
 		log.Fatal(err)
 	}
