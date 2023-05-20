@@ -35,13 +35,6 @@ func (s *APIServer) Run() {
 	router.Post("/signup", ToHttpHandlerFunc(s.SignupHandler))
 	router.Get("/me", ToHttpHandlerFunc(s.GetUserHandler))
 
-	router.Mount("/bookmark", s.BookmarkRouter())
-
-	log.Println("Server running on port", s.Address)
-	log.Fatal(http.ListenAndServe(":"+s.Address, router))
-}
-
-func (s *APIServer) BookmarkRouter() chi.Router {
 	bookmarkRouter := chi.NewRouter()
 
 	bookmarkRouter.Post("/create", ToHttpHandlerFunc(s.CreateBookmarkHandler))
@@ -50,7 +43,10 @@ func (s *APIServer) BookmarkRouter() chi.Router {
 	bookmarkRouter.Post("/delete", ToHttpHandlerFunc(s.DeleteBookmarkHandler))
 	bookmarkRouter.Post("/summarise", ToHttpHandlerFunc(s.SummariseBookmarkHandler))
 
-	return bookmarkRouter
+	router.Mount("/bookmark", bookmarkRouter)
+
+	log.Println("Server running on port", s.Address)
+	log.Fatal(http.ListenAndServe(":"+s.Address, router))
 }
 
 // TODO: auth middleware to get session token from cookie and validate
