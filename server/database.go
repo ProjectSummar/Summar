@@ -64,7 +64,11 @@ func (db *PostgresDB) GetUserByEmail(email string) (*User, error) {
 // Initialisation
 
 func (db *PostgresDB) Init() error {
-	if err := db.CreateUserTable(); err != nil {
+	if err := db.CreateUsersTable(); err != nil {
+		return err
+	}
+
+	if err := db.CreateSessionsTable(); err != nil {
 		return err
 	}
 
