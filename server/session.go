@@ -17,3 +17,11 @@ func CreateSessionToken() (string, error) {
 
 	return sessionToken, nil
 }
+
+func SetSessionTokenCookie(w http.ResponseWriter, token string) {
+	SetCookie(w, SESSION_TOKEN_COOKIE, token)
+}
+
+func GetSessionTokenCookie(r *http.Request, token string) {
+	GetCookie(r, SESSION_TOKEN_COOKIE)
+}
