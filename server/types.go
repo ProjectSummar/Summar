@@ -13,6 +13,15 @@ type User struct {
 	CreatedAt    time.Time `json:"createdAt"`
 }
 
+func NewUser(email string, passwordHash string) User {
+	return User{
+		ID:           uuid.New(),
+		Email:        email,
+		PasswordHash: passwordHash,
+		CreatedAt:    time.Now(),
+	}
+}
+
 type Session struct {
 	Token     string    `json:"token"`
 	UserID    uuid.UUID `json:"userId"`
