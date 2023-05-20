@@ -5,11 +5,11 @@ import "log"
 func main() {
 	db, err := NewPostgresDB()
 	if err != nil {
-		log.Fatal("Cannot connect to postgres DB")
+		log.Fatal(err)
 	}
 
 	if err := db.Init(); err != nil {
-		log.Fatal("Cannot initialise postgres DB")
+		log.Fatal(err)
 	}
 
 	apiServer := NewAPIServer("3001", db)
