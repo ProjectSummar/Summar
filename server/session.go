@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"io"
 	"net/http"
+	"time"
 )
 
 const SESSION_TOKEN_COOKIE string = "session-token"
@@ -27,4 +28,19 @@ func SetSessionTokenCookie(w http.ResponseWriter, token string) {
 
 func GetSessionTokenCookie(r *http.Request) (*http.Cookie, error) {
 	return GetCookie(r, SESSION_TOKEN_COOKIE)
+}
+
+type InvalidSessionError struct{}
+
+func (e *InvalidSessionError) Error() string {
+	return "Invalid session token found (expired)"
+}
+
+func ValidateSessionExpiry(session *Session) error {
+	invalid := session.ExpiresAt.Compare(time.Now()) < 0
+	if invalid {
+		return &InvalidSessionError{}
+	} else {
+		return nil
+	}
 }
