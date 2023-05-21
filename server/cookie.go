@@ -10,7 +10,7 @@ func SetCookie(w http.ResponseWriter, name string, value string) {
 		Value:    value,
 		MaxAge:   SESSION_EXPIRATION_SECONDS,
 		Secure:   false,
-		HttpOnly: false,
+		HttpOnly: true,
 		SameSite: http.SameSiteLaxMode,
 	}
 	http.SetCookie(w, &cookie)
