@@ -125,6 +125,29 @@ func (db *PostgresDB) GetUserByEmail(email string) (*User, error) {
 	return &user, nil
 }
 
+func (db *PostgresDB) GetUserById(id uuid.UUID) (*User, error) {
+	query := "SELECT * FROM users WHERE id = $1"
+
+	rows, err := db.Db.Query(query, id)
+	if err != nil {
+		return nil, err
+	}
+
+	var user User
+	for rows.Next() {
+		if err = rows.Scan(
+			&user.ID,
+			&user.Email,
+			&user.PasswordHash,
+			&user.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+	}
+
+	fmt.Printf("%+v\n", user)
+	return &user, nil
+}
 // Initialisation
 
 func (db *PostgresDB) Init() error {
