@@ -4,11 +4,18 @@ import (
 	"database/sql"
 	"fmt"
 
+	"github.com/google/uuid"
 	_ "github.com/lib/pq"
 )
 
 type DB interface {
 	Clear() error
+
+	// session
+	CreateSession(*Session) error
+	GetSessionByToken(string) (*Session, error)
+
+	// user
 	CreateUser(*User) error
 	// DeleteUser(string) error
 	// UpdateUser(*User) error
