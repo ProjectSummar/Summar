@@ -3,13 +3,22 @@
 ## Usage
 
 Run postgres container
-`sudo docker run --name summar-db -e POSTGRES_PASSWORD=123 -p 5432:5432 -d postgres`
+
+```bash
+sudo docker run --name summar-db -e POSTGRES_PASSWORD=123 -p 5432:5432 -d postgres
+```
 
 Interact with Postgres container
-`sudo docker exec -it summar-db psql -U postgres`
+
+```bash
+sudo docker exec -it summar-db psql -U postgres
+```
 
 Build and run the server
-`make run`
+
+```bash
+make run
+```
 
 ## Endpoints
 
