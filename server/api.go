@@ -151,12 +151,50 @@ func (s *APIServer) SignupHandler(w http.ResponseWriter, r *http.Request) error 
 	return nil
 }
 
+type GetUserResponse struct {
+	APIResponse
+	User      *User      `json:"user"`
+	Bookmarks []Bookmark `json:"bookmarks"`
+}
+
 func (s *APIServer) GetUserHandler(w http.ResponseWriter, r *http.Request) error {
 	// get session token in cookie
-	// validate session token
-	// get user by userId associated to the session
+	cookie, err := GetSessionTokenCookie(r)
+	if err != nil {
+		return err
+	}
+
+	sessionToken := cookie.Value
+
+	// validate session expiry
+	session, err := s.Db.GetSessionByToken(sessionToken)
+	if err != nil {
+		return err
+	}
+
+	if err := ValidateSessionExpiry(session); err != nil {
+		return err
+	}
+
+	// get associated user
+	user, err := s.Db.GetUserById(session.UserID)
+	if err != nil {
+		return err
+	}
+
 	// get bookmarks by userId
+	// bookmarks, err := s.Db.GetBookmarksByUserId(user.ID)
+
 	// return user and bookmarks
+	WriteJSON(w, http.StatusOK, GetUserResponse{
+		APIResponse: APIResponse{
+			IsOk: true,
+			Msg:  "Got user successfully",
+		},
+		User: user,
+		// Bookmarks: bookmarks,
+	})
+
 	return nil
 }
 
