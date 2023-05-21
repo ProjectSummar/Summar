@@ -8,10 +8,9 @@ func SetCookie(w http.ResponseWriter, name string, value string) {
 	cookie := http.Cookie{
 		Name:     name,
 		Value:    value,
-		Path:     "/",
 		MaxAge:   SESSION_EXPIRATION_SECONDS,
-		Secure:   true,
-		HttpOnly: true,
+		Secure:   false,
+		HttpOnly: false,
 		SameSite: http.SameSiteLaxMode,
 	}
 	http.SetCookie(w, &cookie)
