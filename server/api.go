@@ -76,7 +76,20 @@ func (s *APIServer) LoginHandler(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	// create a session
+	sessionToken, err := CreateSessionToken()
+	if err != nil {
+		return err
+	}
+
+	session := NewSession(sessionToken, user.ID)
+
+	if err := s.Db.CreateSession(&session); err != nil {
+		return err
+	}
+
 	// return session token to be stored as cookie
+	SetSessionTokenCookie(w, sessionToken)
+
 	WriteJSON(w, http.StatusOK, LoginResponse{
 		APIResponse: APIResponse{
 			IsOk: true,
