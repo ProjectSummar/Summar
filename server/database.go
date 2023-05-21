@@ -37,6 +37,49 @@ func NewPostgresDB() (*PostgresDB, error) {
 	}, nil
 }
 
+func (db *PostgresDB) CreateSession(session *Session) error {
+	query := `insert into sessions
+	(token, user_id, expires_at)
+	values ($1, $2, $3)
+	`
+
+	res, err := db.Db.Query(
+		query,
+		session.Token,
+		session.UserID,
+		session.ExpiresAt,
+	)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("%+v\n", res)
+	return nil
+}
+
+func (db *PostgresDB) GetSessionByToken(token string) (*Session, error) {
+	query := "SELECT * FROM sessions WHERE token = $1"
+
+	rows, err := db.Db.Query(query, token)
+	if err != nil {
+		return nil, err
+	}
+
+	var session Session
+	for rows.Next() {
+		if err = rows.Scan(
+			&session.Token,
+			&session.UserID,
+			&session.ExpiresAt,
+		); err != nil {
+			return nil, err
+		}
+	}
+
+	fmt.Printf("%+v\n", session)
+	return &session, nil
+}
+
 func (db *PostgresDB) CreateUser(user *User) error {
 	query := `insert into users
 	(id, email, password_hash, created_at)
@@ -49,26 +92,6 @@ func (db *PostgresDB) CreateUser(user *User) error {
 		user.Email,
 		user.PasswordHash,
 		user.CreatedAt,
-	)
-	if err != nil {
-		return err
-	}
-
-	fmt.Printf("%+v\n", res)
-	return nil
-}
-
-func (db *PostgresDB) CreateSession(session *Session) error {
-	query := `insert into sessions
-	(token, user_id, expires_at)
-	values ($1, $2, $3)
-	`
-
-	res, err := db.Db.Query(
-		query,
-		session.Token,
-		session.UserID,
-		session.ExpiresAt,
 	)
 	if err != nil {
 		return err
