@@ -2,7 +2,7 @@
 
 ## Usage
 
-Run postgres container
+Run Postgres container
 
 ```bash
 sudo docker run --name summar-db -e POSTGRES_PASSWORD=123 -p 5432:5432 -d postgres
