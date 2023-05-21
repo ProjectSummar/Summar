@@ -182,7 +182,7 @@ func (s *APIServer) GetUserHandler(w http.ResponseWriter, r *http.Request) error
 		return err
 	}
 
-	// get bookmarks by userId
+	// TODO: get bookmarks by userId
 	// bookmarks, err := s.Db.GetBookmarksByUserId(user.ID)
 
 	// return user and bookmarks
