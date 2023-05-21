@@ -20,8 +20,10 @@ type DB interface {
 	// DeleteUser(string) error
 	// UpdateUser(*User) error
 	GetUserByEmail(string) (*User, error)
-	// GetUserById(string) (*User, error)
-	CreateSession(*Session) error
+	GetUserById(uuid.UUID) (*User, error)
+
+	// bookmark
+	GetBookmarksByUserId(uuid.UUID) ([]Bookmark, error)
 }
 
 type PostgresDB struct {
@@ -155,6 +157,12 @@ func (db *PostgresDB) GetUserById(id uuid.UUID) (*User, error) {
 	fmt.Printf("%+v\n", user)
 	return &user, nil
 }
+
+func (db *PostgresDB) GetBookmarksByUserId(userId uuid.UUID) ([]Bookmark, error) {
+	// TODO
+	return nil, nil
+}
+
 // Initialisation
 
 func (db *PostgresDB) Init() error {
