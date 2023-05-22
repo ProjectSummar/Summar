@@ -36,7 +36,7 @@ func (e *InvalidSessionError) Error() string {
 	return "Invalid session token found (expired)"
 }
 
-func ValidateSessionExpiry(session *Session) error {
+func VerifySessionExpiry(session *Session) error {
 	invalid := session.ExpiresAt.Compare(time.Now()) < 0
 	if invalid {
 		return &InvalidSessionError{}

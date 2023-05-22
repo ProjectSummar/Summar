@@ -182,7 +182,7 @@ func (s *APIServer) GetUserHandler(w http.ResponseWriter, r *http.Request) error
 		return err
 	}
 
-	if err := ValidateSessionExpiry(session); err != nil {
+	if err := VerifySessionExpiry(session); err != nil {
 		return err
 	}
 
