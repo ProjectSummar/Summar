@@ -39,11 +39,13 @@ func (s *APIServer) Run() {
 	router.Group(func(router chi.Router) {
 		router.Use(AuthMiddleware)
 		router.Get("/me", ToHttpHandlerFunc(s.GetUserHandler))
-		router.Post("/bookmark/create", ToHttpHandlerFunc(s.CreateBookmarkHandler))
-		router.Get("/bookmark/get", ToHttpHandlerFunc(s.GetBookmarkHandler))
-		router.Post("/bookmark/update", ToHttpHandlerFunc(s.UpdateBookmarkHandler))
-		router.Post("/bookmark/delete", ToHttpHandlerFunc(s.DeleteBookmarkHandler))
-		router.Post("/bookmark/summarise", ToHttpHandlerFunc(s.SummariseBookmarkHandler))
+		router.Route("/bookmark", func(router chi.Router) {
+			router.Post("/create", ToHttpHandlerFunc(s.CreateBookmarkHandler))
+			router.Get("/get", ToHttpHandlerFunc(s.GetBookmarkHandler))
+			router.Post("/update", ToHttpHandlerFunc(s.UpdateBookmarkHandler))
+			router.Post("/delete", ToHttpHandlerFunc(s.DeleteBookmarkHandler))
+			router.Post("/summarise", ToHttpHandlerFunc(s.SummariseBookmarkHandler))
+		})
 	})
 
 	log.Println("Server running on port", s.Address)
