@@ -3,20 +3,20 @@ package main
 import "log"
 
 func main() {
-	db, err := NewPostgresDB()
+	store, err := NewPostgresStore()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	if ENV == "DEV" {
-		db.Clear()
+		store.Clear()
 		log.Println("Cleared db")
 	}
 
-	if err := db.Init(); err != nil {
+	if err := store.Init(); err != nil {
 		log.Fatal(err)
 	}
 
-	apiServer := NewAPIServer("3001", db)
+	apiServer := NewAPIServer("3001", store)
 	apiServer.Run()
 }

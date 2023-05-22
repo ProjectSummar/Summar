@@ -15,13 +15,13 @@ type APIResponse struct {
 
 type APIServer struct {
 	Address string
-	Db      DB
+	Store   Store
 }
 
-func NewAPIServer(address string, db DB) *APIServer {
+func NewAPIServer(address string, store Store) *APIServer {
 	return &APIServer{
 		Address: address,
-		Db:      db,
+		Store:   store,
 	}
 }
 
@@ -66,7 +66,7 @@ func (s *APIServer) LoginHandler(w http.ResponseWriter, r *http.Request) error {
 	ReadJSON(r, &loginRequest)
 
 	// validate credentials
-	user, err := s.Db.GetUserByEmail(loginRequest.Email)
+	user, err := s.Store.GetUserByEmail(loginRequest.Email)
 	if err != nil {
 		return err
 	}
@@ -83,7 +83,7 @@ func (s *APIServer) LoginHandler(w http.ResponseWriter, r *http.Request) error {
 
 	session := NewSession(sessionToken, user.ID)
 
-	if err := s.Db.CreateSession(&session); err != nil {
+	if err := s.Store.CreateSession(&session); err != nil {
 		return err
 	}
 
@@ -122,7 +122,7 @@ func (s *APIServer) SignupHandler(w http.ResponseWriter, r *http.Request) error 
 
 	// create user
 	user := NewUser(signupRequest.Email, hash)
-	if err := s.Db.CreateUser(&user); err != nil {
+	if err := s.Store.CreateUser(&user); err != nil {
 		return err
 	}
 
@@ -134,7 +134,7 @@ func (s *APIServer) SignupHandler(w http.ResponseWriter, r *http.Request) error 
 
 	session := NewSession(sessionToken, user.ID)
 
-	if err := s.Db.CreateSession(&session); err != nil {
+	if err := s.Store.CreateSession(&session); err != nil {
 		return err
 	}
 
@@ -167,7 +167,7 @@ func (s *APIServer) GetUserHandler(w http.ResponseWriter, r *http.Request) error
 	sessionToken := cookie.Value
 
 	// validate session expiry
-	session, err := s.Db.GetSessionByToken(sessionToken)
+	session, err := s.Store.GetSessionByToken(sessionToken)
 	if err != nil {
 		return err
 	}
@@ -177,7 +177,7 @@ func (s *APIServer) GetUserHandler(w http.ResponseWriter, r *http.Request) error
 	}
 
 	// get associated user
-	user, err := s.Db.GetUserById(session.UserID)
+	user, err := s.Store.GetUserById(session.UserID)
 	if err != nil {
 		return err
 	}
