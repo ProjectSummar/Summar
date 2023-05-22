@@ -7,7 +7,7 @@ import (
 )
 
 type User struct {
-	ID           uuid.UUID `json:"id"`
+	Id           uuid.UUID `json:"id"`
 	Email        string    `json:"email"`
 	PasswordHash string    `json:"-"`
 	CreatedAt    time.Time `json:"createdAt"`
@@ -15,7 +15,7 @@ type User struct {
 
 func NewUser(email string, passwordHash string) User {
 	return User{
-		ID:           uuid.New(),
+		Id:           uuid.New(),
 		Email:        email,
 		PasswordHash: passwordHash,
 		CreatedAt:    time.Now(),
@@ -24,21 +24,21 @@ func NewUser(email string, passwordHash string) User {
 
 type Session struct {
 	Token     string    `json:"token"`
-	UserID    uuid.UUID `json:"userId"`
+	UserId    uuid.UUID `json:"userId"`
 	ExpiresAt time.Time `json:"expiresAt"`
 }
 
 func NewSession(token string, userId uuid.UUID) Session {
 	return Session{
 		Token:     token,
-		UserID:    userId,
+		UserId:    userId,
 		ExpiresAt: time.Now().Add(time.Second * time.Duration(SESSION_EXPIRATION_SECONDS)),
 	}
 }
 
 type Bookmark struct {
-	ID      string    `json:"id"`
-	UserID  uuid.UUID `json:"userId"`
+	Id      string    `json:"id"`
+	UserId  uuid.UUID `json:"userId"`
 	Url     string    `json:"url"`
 	Summary string    `json:"summary"`
 }

@@ -91,7 +91,7 @@ func (s *APIServer) LoginHandler(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	session := NewSession(sessionToken, user.ID)
+	session := NewSession(sessionToken, user.Id)
 
 	if err := s.Store.CreateSession(&session); err != nil {
 		return err
@@ -142,7 +142,7 @@ func (s *APIServer) SignupHandler(w http.ResponseWriter, r *http.Request) error 
 		return err
 	}
 
-	session := NewSession(sessionToken, user.ID)
+	session := NewSession(sessionToken, user.Id)
 
 	if err := s.Store.CreateSession(&session); err != nil {
 		return err
@@ -187,7 +187,7 @@ func (s *APIServer) GetUserHandler(w http.ResponseWriter, r *http.Request) error
 	}
 
 	// get associated user
-	user, err := s.Store.GetUserById(session.UserID)
+	user, err := s.Store.GetUserById(session.UserId)
 	if err != nil {
 		return err
 	}

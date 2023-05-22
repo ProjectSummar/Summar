@@ -53,7 +53,7 @@ func (s *PostgresStore) CreateSession(session *Session) error {
 	res, err := s.Db.Query(
 		query,
 		session.Token,
-		session.UserID,
+		session.UserId,
 		session.ExpiresAt,
 	)
 	if err != nil {
@@ -76,7 +76,7 @@ func (s *PostgresStore) GetSessionByToken(token string) (*Session, error) {
 	for rows.Next() {
 		if err = rows.Scan(
 			&session.Token,
-			&session.UserID,
+			&session.UserId,
 			&session.ExpiresAt,
 		); err != nil {
 			return nil, err
@@ -95,7 +95,7 @@ func (s *PostgresStore) CreateUser(user *User) error {
 
 	res, err := s.Db.Query(
 		query,
-		user.ID,
+		user.Id,
 		user.Email,
 		user.PasswordHash,
 		user.CreatedAt,
@@ -119,7 +119,7 @@ func (s *PostgresStore) GetUserByEmail(email string) (*User, error) {
 	var user User
 	for rows.Next() {
 		if err = rows.Scan(
-			&user.ID,
+			&user.Id,
 			&user.Email,
 			&user.PasswordHash,
 			&user.CreatedAt,
@@ -143,7 +143,7 @@ func (s *PostgresStore) GetUserById(id uuid.UUID) (*User, error) {
 	var user User
 	for rows.Next() {
 		if err = rows.Scan(
-			&user.ID,
+			&user.Id,
 			&user.Email,
 			&user.PasswordHash,
 			&user.CreatedAt,
