@@ -1,14 +1,15 @@
-package main
+package cookie
 
 import (
 	"net/http"
+	"summar/server/constants"
 )
 
 func SetCookie(w http.ResponseWriter, name string, value string) {
 	cookie := http.Cookie{
 		Name:     name,
 		Value:    value,
-		MaxAge:   SESSION_EXPIRATION_SECONDS,
+		MaxAge:   constants.SESSION_EXPIRATION_SECONDS,
 		Secure:   false,
 		HttpOnly: true,
 		SameSite: http.SameSiteLaxMode,

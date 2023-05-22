@@ -1,6 +1,10 @@
-package main
+package types
 
 import (
+	"crypto/rand"
+	"encoding/base64"
+	"io"
+	"summar/server/constants"
 	"time"
 
 	"github.com/google/uuid"
@@ -28,11 +32,30 @@ type Session struct {
 	ExpiresAt time.Time `json:"expiresAt"`
 }
 
-func NewSession(token string, userId uuid.UUID) Session {
+func NewSession(userId uuid.UUID) Session {
+	bytes := make([]byte, 32)
+	io.ReadFull(rand.Reader, bytes)
+	token := base64.URLEncoding.EncodeToString(bytes)
+
 	return Session{
 		Token:     token,
 		UserId:    userId,
-		ExpiresAt: time.Now().Add(time.Second * time.Duration(SESSION_EXPIRATION_SECONDS)),
+		ExpiresAt: time.Now().Add(time.Second * time.Duration(constants.SESSION_EXPIRATION_SECONDS)),
+	}
+}
+
+type InvalidSessionError struct{}
+
+func (e *InvalidSessionError) Error() string {
+	return "Invalid session token found (expired)"
+}
+
+func VerifySessionExpiry(session *Session) error {
+	invalid := session.ExpiresAt.Compare(time.Now()) < 0
+	if invalid {
+		return &InvalidSessionError{}
+	} else {
+		return nil
 	}
 }
 

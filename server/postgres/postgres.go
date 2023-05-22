@@ -1,28 +1,13 @@
-package main
+package postgres
 
 import (
 	"database/sql"
 	"fmt"
+	"summar/server/types"
 
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
 )
-
-type Store interface {
-	// session
-	CreateSession(*Session) error
-	GetSessionByToken(string) (*Session, error)
-
-	// user
-	CreateUser(*User) error
-	// DeleteUser(string) error
-	// UpdateUser(*User) error
-	GetUserByEmail(string) (*User, error)
-	GetUserById(uuid.UUID) (*User, error)
-
-	// bookmark
-	GetBookmarksByUserId(uuid.UUID) ([]Bookmark, error)
-}
 
 type PostgresStore struct {
 	Db *sql.DB
@@ -30,6 +15,7 @@ type PostgresStore struct {
 
 func NewPostgresStore() (*PostgresStore, error) {
 	connStr := "user=postgres dbname=postgres password=123 sslmode=disable"
+
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		return nil, err
@@ -44,7 +30,9 @@ func NewPostgresStore() (*PostgresStore, error) {
 	}, nil
 }
 
-func (s *PostgresStore) CreateSession(session *Session) error {
+// Operations
+
+func (s *PostgresStore) CreateSession(session *types.Session) error {
 	query := `insert into sessions
 	(token, user_id, expires_at)
 	values ($1, $2, $3)
@@ -64,7 +52,7 @@ func (s *PostgresStore) CreateSession(session *Session) error {
 	return nil
 }
 
-func (s *PostgresStore) GetSessionByToken(token string) (*Session, error) {
+func (s *PostgresStore) GetSession(token string) (*types.Session, error) {
 	query := "SELECT * FROM sessions WHERE token = $1"
 
 	rows, err := s.Db.Query(query, token)
@@ -72,7 +60,7 @@ func (s *PostgresStore) GetSessionByToken(token string) (*Session, error) {
 		return nil, err
 	}
 
-	var session Session
+	var session types.Session
 	for rows.Next() {
 		if err = rows.Scan(
 			&session.Token,
@@ -87,7 +75,7 @@ func (s *PostgresStore) GetSessionByToken(token string) (*Session, error) {
 	return &session, nil
 }
 
-func (s *PostgresStore) CreateUser(user *User) error {
+func (s *PostgresStore) CreateUser(user *types.User) error {
 	query := `insert into users
 	(id, email, password_hash, created_at)
 	values ($1, $2, $3, $4)
@@ -108,31 +96,7 @@ func (s *PostgresStore) CreateUser(user *User) error {
 	return nil
 }
 
-func (s *PostgresStore) GetUserByEmail(email string) (*User, error) {
-	query := "SELECT * FROM users WHERE email = $1"
-
-	rows, err := s.Db.Query(query, email)
-	if err != nil {
-		return nil, err
-	}
-
-	var user User
-	for rows.Next() {
-		if err = rows.Scan(
-			&user.Id,
-			&user.Email,
-			&user.PasswordHash,
-			&user.CreatedAt,
-		); err != nil {
-			return nil, err
-		}
-	}
-
-	fmt.Printf("%+v\n", user)
-	return &user, nil
-}
-
-func (s *PostgresStore) GetUserById(id uuid.UUID) (*User, error) {
+func (s *PostgresStore) GetUser(id uuid.UUID) (*types.User, error) {
 	query := "SELECT * FROM users WHERE id = $1"
 
 	rows, err := s.Db.Query(query, id)
@@ -140,7 +104,7 @@ func (s *PostgresStore) GetUserById(id uuid.UUID) (*User, error) {
 		return nil, err
 	}
 
-	var user User
+	var user types.User
 	for rows.Next() {
 		if err = rows.Scan(
 			&user.Id,
@@ -156,9 +120,36 @@ func (s *PostgresStore) GetUserById(id uuid.UUID) (*User, error) {
 	return &user, nil
 }
 
-func (s *PostgresStore) GetBookmarksByUserId(userId uuid.UUID) ([]Bookmark, error) {
-	// TODO
-	return nil, nil
+func (s *PostgresStore) GetUserByEmail(email string) (*types.User, error) {
+	query := "SELECT * FROM users WHERE email = $1"
+
+	rows, err := s.Db.Query(query, email)
+	if err != nil {
+		return nil, err
+	}
+
+	var user types.User
+	for rows.Next() {
+		if err = rows.Scan(
+			&user.Id,
+			&user.Email,
+			&user.PasswordHash,
+			&user.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+	}
+
+	fmt.Printf("%+v\n", user)
+	return &user, nil
+}
+
+func (s *PostgresStore) UpdateUser(user *types.User) error {
+	return nil
+}
+
+func (s *PostgresStore) DeleteUser(userId uuid.UUID) error {
+	return nil
 }
 
 // Initialisation
