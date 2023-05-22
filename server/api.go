@@ -31,19 +31,20 @@ func (s *APIServer) Run() {
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
 
+	// public routes
 	router.Post("/login", ToHttpHandlerFunc(s.LoginHandler))
 	router.Post("/signup", ToHttpHandlerFunc(s.SignupHandler))
-	router.Get("/me", ToHttpHandlerFunc(s.GetUserHandler))
 
-	bookmarkRouter := chi.NewRouter()
-
-	bookmarkRouter.Post("/create", ToHttpHandlerFunc(s.CreateBookmarkHandler))
-	bookmarkRouter.Get("/get", ToHttpHandlerFunc(s.GetBookmarkHandler))
-	bookmarkRouter.Post("/update", ToHttpHandlerFunc(s.UpdateBookmarkHandler))
-	bookmarkRouter.Post("/delete", ToHttpHandlerFunc(s.DeleteBookmarkHandler))
-	bookmarkRouter.Post("/summarise", ToHttpHandlerFunc(s.SummariseBookmarkHandler))
-
-	router.Mount("/bookmark", bookmarkRouter)
+	// private routes
+	router.Group(func(router chi.Router) {
+		router.Use(AuthMiddleware)
+		router.Get("/me", ToHttpHandlerFunc(s.GetUserHandler))
+		router.Post("/bookmark/create", ToHttpHandlerFunc(s.CreateBookmarkHandler))
+		router.Get("/bookmark/get", ToHttpHandlerFunc(s.GetBookmarkHandler))
+		router.Post("/bookmark/update", ToHttpHandlerFunc(s.UpdateBookmarkHandler))
+		router.Post("/bookmark/delete", ToHttpHandlerFunc(s.DeleteBookmarkHandler))
+		router.Post("/bookmark/summarise", ToHttpHandlerFunc(s.SummariseBookmarkHandler))
+	})
 
 	log.Println("Server running on port", s.Address)
 	log.Fatal(http.ListenAndServe(":"+s.Address, router))
