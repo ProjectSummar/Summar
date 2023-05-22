@@ -50,6 +50,13 @@ func (s *APIServer) Run() {
 }
 
 // TODO: auth middleware to get session token from cookie and validate
+func AuthMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// ctx := context.WithValue(r.Context(), "user", "123")
+		// next.ServeHTTP(w, r.WithContext(ctx))
+		next.ServeHTTP(w, r)
+	})
+}
 
 type LoginRequest struct {
 	Email    string `json:"email"`
