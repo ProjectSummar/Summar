@@ -56,6 +56,8 @@ make run
 - GET request
 - Validate session using cookie and responds with associated user credentials
 
+### Todo
+
 - `/bookmark`
   - `/create`
     - Params
