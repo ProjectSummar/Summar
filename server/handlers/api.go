@@ -1,39 +1,29 @@
 package handlers
 
 import (
-	"encoding/json"
 	"net/http"
 	"summar/server/cookie"
 	"summar/server/password"
-	"summar/server/stores"
 	"summar/server/types"
+
+	"github.com/google/uuid"
 )
-
-type Handlers struct {
-	Store stores.Store
-}
-
-func NewHandlers(store stores.Store) *Handlers {
-	return &Handlers{
-		Store: store,
-	}
-}
-
-// Handlers
 
 type HandlerResponse struct {
 	IsOk bool   `json:"isOk"`
 	Msg  string `json:"msg"`
 }
 
-type LoginRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
+type (
+	LoginRequest struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
 
-type LoginResponse struct {
-	HandlerResponse
-}
+	LoginResponse struct {
+		HandlerResponse
+	}
+)
 
 func (h *Handlers) LoginHandler(w http.ResponseWriter, r *http.Request) error {
 	// parse input JSON { email, password }
@@ -68,14 +58,16 @@ func (h *Handlers) LoginHandler(w http.ResponseWriter, r *http.Request) error {
 	})
 }
 
-type SignupRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
+type (
+	SignupRequest struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
 
-type SignupResponse struct {
-	HandlerResponse
-}
+	SignupResponse struct {
+		HandlerResponse
+	}
+)
 
 func (h *Handlers) SignupHandler(w http.ResponseWriter, r *http.Request) error {
 	// parse input JSON { email, password }
@@ -103,33 +95,20 @@ func (h *Handlers) SignupHandler(w http.ResponseWriter, r *http.Request) error {
 	})
 }
 
-type GetUserResponse struct {
-	HandlerResponse
-	User      *types.User       `json:"user"`
-	Bookmarks []*types.Bookmark `json:"bookmarks"`
-}
+type (
+	GetUserResponse struct {
+		HandlerResponse
+		User      *types.User       `json:"user"`
+		Bookmarks []*types.Bookmark `json:"bookmarks"`
+	}
+)
 
 func (h *Handlers) GetUserHandler(w http.ResponseWriter, r *http.Request) error {
-	// get session token in cookie
-	cookie, err := cookie.GetSessionTokenCookie(r)
-	if err != nil {
-		return err
-	}
-
-	sessionToken := cookie.Value
-
-	// validate session expiry
-	session, err := h.Store.GetSession(sessionToken)
-	if err != nil {
-		return err
-	}
-
-	if err := types.VerifySessionExpiry(session); err != nil {
-		return err
-	}
+	// get userId from auth middleware context
+	userId := r.Context().Value("userId").(uuid.UUID)
 
 	// get associated user
-	user, err := h.Store.GetUser(session.UserId)
+	user, err := h.Store.GetUser(userId)
 	if err != nil {
 		return err
 	}
@@ -201,30 +180,4 @@ func (h *Handlers) SummariseBookmarkHandler(w http.ResponseWriter, r *http.Reque
 	// update bookmark with summary
 	// return status and summarised bookmark
 	return nil
-}
-
-// Helpers
-
-type HandlerFunc func(w http.ResponseWriter, r *http.Request) error
-
-func ToHttpHandler(f HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		if err := f(w, r); err != nil {
-			WriteJSON(w, http.StatusBadRequest, HandlerResponse{
-				IsOk: false,
-				Msg:  err.Error(),
-			})
-		}
-	}
-}
-
-func WriteJSON(w http.ResponseWriter, status int, v any) error {
-	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(status)
-
-	return json.NewEncoder(w).Encode(v)
-}
-
-func ReadJSON(r *http.Request, v any) error {
-	return json.NewDecoder(r.Body).Decode(v)
 }

@@ -29,13 +29,13 @@ func (r *Router) Run() {
 	router.Use(middleware.Recoverer)
 
 	// public routes
-	router.Post("/login", handlers.ToHttpHandler(r.Handlers.LoginHandler))
-	router.Post("/signup", handlers.ToHttpHandler(r.Handlers.SignupHandler))
+	router.Post("/login", handlers.ToHttpHandlerFunc(r.Handlers.LoginHandler))
+	router.Post("/signup", handlers.ToHttpHandlerFunc(r.Handlers.SignupHandler))
 
 	// private routes
 	router.Group(func(router chi.Router) {
-		// router.Use(AuthMiddleware)
-		router.Get("/me", handlers.ToHttpHandler(r.Handlers.GetUserHandler))
+		router.Use(handlers.ToMiddleware(r.Handlers.AuthMiddlewareFunc))
+		router.Get("/me", handlers.ToHttpHandlerFunc(r.Handlers.GetUserHandler))
 		// router.Route("/bookmark", func(router chi.Router) {
 		// 	router.Post("/create", ToHttpHandlerFunc(s.CreateBookmarkHandler))
 		// 	router.Get("/get", ToHttpHandlerFunc(s.GetBookmarkHandler))

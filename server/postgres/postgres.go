@@ -53,9 +53,7 @@ func (s *PostgresStore) CreateSession(session *types.Session) error {
 }
 
 func (s *PostgresStore) GetSession(token string) (*types.Session, error) {
-	query := "SELECT * FROM sessions WHERE token = $1"
-
-	rows, err := s.Db.Query(query, token)
+	rows, err := s.Db.Query("SELECT * FROM sessions WHERE token = $1", token)
 	if err != nil {
 		return nil, err
 	}
@@ -89,9 +87,7 @@ func (s *PostgresStore) CreateUser(user *types.User) error {
 }
 
 func (s *PostgresStore) GetUser(id uuid.UUID) (*types.User, error) {
-	query := "SELECT * FROM users WHERE id = $1"
-
-	rows, err := s.Db.Query(query, id)
+	rows, err := s.Db.Query("SELECT * FROM users WHERE id = $1", id)
 	if err != nil {
 		return nil, err
 	}
@@ -104,9 +100,7 @@ func (s *PostgresStore) GetUser(id uuid.UUID) (*types.User, error) {
 }
 
 func (s *PostgresStore) GetUserByEmail(email string) (*types.User, error) {
-	query := "SELECT * FROM users WHERE email = $1"
-
-	rows, err := s.Db.Query(query, email)
+	rows, err := s.Db.Query("SELECT * FROM users WHERE email = $1", email)
 	if err != nil {
 		return nil, err
 	}
