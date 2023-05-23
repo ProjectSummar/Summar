@@ -22,22 +22,40 @@ make run
 
 ## Endpoints
 
-> - Use DB sessions
-> - Use passwordless login? (magic email link)
-> - Use OAuth? (google, github, ...)
+### `/login`
 
-- `/login`
-  - Params
-    - email
-    - password?
-- `/signup`
-  - Params
-    - email
-    - password?
-    - confirm password?
-- `/me`
-  - Cookie
-    - session token
+- POST request
+- Validates user credentials and creates a session on the server
+- Sets the session token as a cookie on the client
+
+#### Body
+
+```json
+{
+  "email": "...",
+  "password": "..."
+}
+```
+
+### `/signup`
+
+- POST request
+- Uses the given credentials to create a user on the server
+
+#### Body
+
+```json
+{
+  "email": "...",
+  "password": "..."
+}
+```
+
+### `/me`
+
+- GET request
+- Validate session using cookie and responds with associated user credentials
+
 - `/bookmark`
   - `/create`
     - Params
