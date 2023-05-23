@@ -3,6 +3,7 @@ package types
 import (
 	"crypto/rand"
 	"encoding/base64"
+	"fmt"
 	"io"
 	"summar/server/constants"
 	"time"
@@ -44,23 +45,18 @@ func NewSession(userId uuid.UUID) Session {
 	}
 }
 
-type InvalidSessionError struct{}
-
-func (e *InvalidSessionError) Error() string {
-	return "Invalid session token found (expired)"
-}
-
 func VerifySessionExpiry(session *Session) error {
 	invalid := session.ExpiresAt.Compare(time.Now()) < 0
+
 	if invalid {
-		return &InvalidSessionError{}
+		return fmt.Errorf("Session has expired")
 	} else {
 		return nil
 	}
 }
 
 type Bookmark struct {
-	Id      string    `json:"id"`
+	Id      uuid.UUID `json:"id"`
 	UserId  uuid.UUID `json:"userId"`
 	Url     string    `json:"url"`
 	Summary string    `json:"summary"`

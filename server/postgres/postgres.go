@@ -38,7 +38,7 @@ func (s *PostgresStore) CreateSession(session *types.Session) error {
 	values ($1, $2, $3)
 	`
 
-	res, err := s.Db.Query(
+	_, err := s.Db.Query(
 		query,
 		session.Token,
 		session.UserId,
@@ -48,7 +48,7 @@ func (s *PostgresStore) CreateSession(session *types.Session) error {
 		return err
 	}
 
-	fmt.Printf("%+v\n", res)
+	fmt.Printf("Session created: %v", session)
 	return nil
 }
 
@@ -60,19 +60,11 @@ func (s *PostgresStore) GetSession(token string) (*types.Session, error) {
 		return nil, err
 	}
 
-	var session types.Session
 	for rows.Next() {
-		if err = rows.Scan(
-			&session.Token,
-			&session.UserId,
-			&session.ExpiresAt,
-		); err != nil {
-			return nil, err
-		}
+		return ScanSessionRow(rows)
 	}
 
-	fmt.Printf("%+v\n", session)
-	return &session, nil
+	return nil, fmt.Errorf("Session not found")
 }
 
 func (s *PostgresStore) CreateUser(user *types.User) error {
@@ -81,7 +73,7 @@ func (s *PostgresStore) CreateUser(user *types.User) error {
 	values ($1, $2, $3, $4)
 	`
 
-	res, err := s.Db.Query(
+	_, err := s.Db.Query(
 		query,
 		user.Id,
 		user.Email,
@@ -92,7 +84,7 @@ func (s *PostgresStore) CreateUser(user *types.User) error {
 		return err
 	}
 
-	fmt.Printf("%+v\n", res)
+	fmt.Printf("User created: %v", user)
 	return nil
 }
 
@@ -104,20 +96,11 @@ func (s *PostgresStore) GetUser(id uuid.UUID) (*types.User, error) {
 		return nil, err
 	}
 
-	var user types.User
 	for rows.Next() {
-		if err = rows.Scan(
-			&user.Id,
-			&user.Email,
-			&user.PasswordHash,
-			&user.CreatedAt,
-		); err != nil {
-			return nil, err
-		}
+		return ScanUserRow(rows)
 	}
 
-	fmt.Printf("%+v\n", user)
-	return &user, nil
+	return nil, fmt.Errorf("User not found")
 }
 
 func (s *PostgresStore) GetUserByEmail(email string) (*types.User, error) {
@@ -128,20 +111,11 @@ func (s *PostgresStore) GetUserByEmail(email string) (*types.User, error) {
 		return nil, err
 	}
 
-	var user types.User
 	for rows.Next() {
-		if err = rows.Scan(
-			&user.Id,
-			&user.Email,
-			&user.PasswordHash,
-			&user.CreatedAt,
-		); err != nil {
-			return nil, err
-		}
+		return ScanUserRow(rows)
 	}
 
-	fmt.Printf("%+v\n", user)
-	return &user, nil
+	return nil, fmt.Errorf("User not found")
 }
 
 func (s *PostgresStore) UpdateUser(user *types.User) error {
@@ -196,9 +170,32 @@ func (s *PostgresStore) CreateSessionsTable() error {
 	return err
 }
 
-func (s *PostgresStore) Clear() error {
+func (s *PostgresStore) Clear() {
 	s.Db.Exec("DROP TABLE IF EXISTS sessions")
 	s.Db.Exec("DROP TABLE IF EXISTS users")
+}
 
-	return nil
+// Helpers
+
+func ScanSessionRow(rows *sql.Rows) (*types.Session, error) {
+	var session types.Session
+	err := rows.Scan(
+		&session.Token,
+		&session.UserId,
+		&session.ExpiresAt,
+	)
+
+	return &session, err
+}
+
+func ScanUserRow(rows *sql.Rows) (*types.User, error) {
+	var user types.User
+	err := rows.Scan(
+		&user.Id,
+		&user.Email,
+		&user.PasswordHash,
+		&user.CreatedAt,
+	)
+
+	return &user, err
 }

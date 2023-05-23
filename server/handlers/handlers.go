@@ -19,6 +19,8 @@ func NewHandlers(store stores.Store) *Handlers {
 	}
 }
 
+// Handlers
+
 type HandlerResponse struct {
 	IsOk bool   `json:"isOk"`
 	Msg  string `json:"msg"`
@@ -58,14 +60,12 @@ func (h *Handlers) LoginHandler(w http.ResponseWriter, r *http.Request) error {
 	// return session token to be stored as cookie
 	cookie.SetSessionTokenCookie(w, session.Token)
 
-	WriteJSON(w, http.StatusOK, LoginResponse{
+	return WriteJSON(w, http.StatusOK, LoginResponse{
 		HandlerResponse: HandlerResponse{
 			IsOk: true,
 			Msg:  "Logged in successfully",
 		},
 	})
-
-	return nil
 }
 
 type SignupRequest struct {
@@ -90,18 +90,17 @@ func (h *Handlers) SignupHandler(w http.ResponseWriter, r *http.Request) error {
 
 	// create user
 	user := types.NewUser(signupRequest.Email, hash)
+
 	if err := h.Store.CreateUser(&user); err != nil {
 		return err
 	}
 
-	WriteJSON(w, http.StatusOK, SignupResponse{
+	return WriteJSON(w, http.StatusOK, SignupResponse{
 		HandlerResponse: HandlerResponse{
 			IsOk: true,
 			Msg:  "Signed up successfully",
 		},
 	})
-
-	return nil
 }
 
 type GetUserResponse struct {
@@ -139,7 +138,7 @@ func (h *Handlers) GetUserHandler(w http.ResponseWriter, r *http.Request) error 
 	// bookmarks, err := s.Db.GetBookmarksByUserId(user.ID)
 
 	// return user and bookmarks
-	WriteJSON(w, http.StatusOK, GetUserResponse{
+	return WriteJSON(w, http.StatusOK, GetUserResponse{
 		HandlerResponse: HandlerResponse{
 			IsOk: true,
 			Msg:  "Got user successfully",
@@ -147,8 +146,6 @@ func (h *Handlers) GetUserHandler(w http.ResponseWriter, r *http.Request) error 
 		User: user,
 		// Bookmarks: bookmarks,
 	})
-
-	return nil
 }
 
 func (h *Handlers) CreateBookmarkHandler(w http.ResponseWriter, r *http.Request) error {
@@ -205,6 +202,8 @@ func (h *Handlers) SummariseBookmarkHandler(w http.ResponseWriter, r *http.Reque
 	// return status and summarised bookmark
 	return nil
 }
+
+// Helpers
 
 type HandlerFunc func(w http.ResponseWriter, r *http.Request) error
 
