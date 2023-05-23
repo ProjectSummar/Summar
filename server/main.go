@@ -4,12 +4,12 @@ import (
 	"log"
 	"summar/server/constants"
 	"summar/server/handlers"
-	"summar/server/postgres"
 	"summar/server/routes"
+	"summar/server/stores"
 )
 
 func main() {
-	store, err := postgres.NewPostgresStore()
+	store, err := stores.NewPostgresStore()
 	if err != nil {
 		log.Fatal(err)
 	}
