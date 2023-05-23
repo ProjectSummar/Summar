@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"summar/server/types"
+	"summar/server/utils"
 
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
@@ -48,7 +49,7 @@ func (s *PostgresStore) CreateSession(session *types.Session) error {
 		return err
 	}
 
-	fmt.Printf("Session created: %v", session)
+	fmt.Printf("Session created\n%+v\n", utils.JSONMarshal(session))
 	return nil
 }
 
@@ -82,7 +83,7 @@ func (s *PostgresStore) CreateUser(user *types.User) error {
 		return err
 	}
 
-	fmt.Printf("User created: %v", user)
+	fmt.Printf("User created\n%+v\n", utils.JSONMarshal(user))
 	return nil
 }
 
