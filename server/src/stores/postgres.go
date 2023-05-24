@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"summar/server/types"
 	"summar/server/utils"
+	"time"
 
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
@@ -17,9 +18,22 @@ type PostgresStore struct {
 func NewPostgresStore() (*PostgresStore, error) {
 	connStr := "user=postgres dbname=postgres password=123 sslmode=disable"
 
-	db, err := sql.Open("postgres", connStr)
-	if err != nil {
-		return nil, err
+	var db *sql.DB
+	var retryErr error
+
+	for retries := 10; retries > 0; retries-- {
+		db, retryErr = sql.Open("postgres", connStr)
+		if retryErr != nil {
+			fmt.Println(retryErr)
+			fmt.Println("Retries left:", retries)
+			time.Sleep(5 * time.Second)
+		} else {
+			break
+		}
+	}
+
+	if retryErr != nil {
+		return nil, retryErr
 	}
 
 	if err := db.Ping(); err != nil {

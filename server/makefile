@@ -1,2 +1,4 @@
-run:
-	@go run main.go
+build:
+	@go build -C ./src -o ../bin/server
+run: build
+	@./bin/server
