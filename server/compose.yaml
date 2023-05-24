@@ -1,0 +1,15 @@
+services:
+  database:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: 123
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  server:
+    build: .
+    depends_on:
+      - database
+    ports:
+      - "3001:3001"

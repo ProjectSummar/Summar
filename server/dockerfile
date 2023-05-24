@@ -1,0 +1,6 @@
+FROM golang
+WORKDIR /app
+COPY ./src .
+RUN go mod tidy
+EXPOSE 3001
+CMD ["make", "run"]
