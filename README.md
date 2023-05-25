@@ -6,5 +6,5 @@
 
 - ![Architecture](docs/architecture.md)
 - ![Application](docs/application.md)
-- ![Server](docs/server.md)
+- ![Server](server/README.md)
 - ![Database](docs/database.md)
