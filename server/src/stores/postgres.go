@@ -206,6 +206,7 @@ func (s *PostgresStore) Clear() {
 
 func ScanSessionRow(rows *sql.Rows) (*types.Session, error) {
 	var session types.Session
+
 	err := rows.Scan(
 		&session.Token,
 		&session.UserId,
@@ -217,6 +218,7 @@ func ScanSessionRow(rows *sql.Rows) (*types.Session, error) {
 
 func ScanUserRow(rows *sql.Rows) (*types.User, error) {
 	var user types.User
+
 	err := rows.Scan(
 		&user.Id,
 		&user.Email,
@@ -225,4 +227,17 @@ func ScanUserRow(rows *sql.Rows) (*types.User, error) {
 	)
 
 	return &user, err
+}
+
+func ScanBookmarkRow(rows *sql.Rows) (*types.Bookmark, error) {
+	var bookmark types.Bookmark
+
+	err := rows.Scan(
+		&bookmark.Id,
+		&bookmark.UserId,
+		&bookmark.Url,
+		&bookmark.Summary,
+	)
+
+	return &bookmark, err
 }
