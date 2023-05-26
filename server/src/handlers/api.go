@@ -14,12 +14,10 @@ type HandlerResponse struct {
 	Msg string `json:"msg"`
 }
 
-type (
-	LoginRequest struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}
-)
+type LoginRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
 
 func (h *Handlers) LoginHandler(w http.ResponseWriter, r *http.Request) error {
 	// parse input JSON { email, password }
@@ -52,12 +50,10 @@ func (h *Handlers) LoginHandler(w http.ResponseWriter, r *http.Request) error {
 	})
 }
 
-type (
-	SignupRequest struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}
-)
+type SignupRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
 
 func (h *Handlers) SignupHandler(w http.ResponseWriter, r *http.Request) error {
 	// parse input JSON { email, password }
@@ -83,13 +79,11 @@ func (h *Handlers) SignupHandler(w http.ResponseWriter, r *http.Request) error {
 	})
 }
 
-type (
-	GetUserResponse struct {
-		HandlerResponse
-		User      *types.User       `json:"user"`
-		Bookmarks []*types.Bookmark `json:"bookmarks"`
-	}
-)
+type GetUserResponse struct {
+	HandlerResponse
+	User      *types.User       `json:"user"`
+	Bookmarks []*types.Bookmark `json:"bookmarks"`
+}
 
 func (h *Handlers) GetUserHandler(w http.ResponseWriter, r *http.Request) error {
 	// get userId from auth middleware context
@@ -118,11 +112,9 @@ func (h *Handlers) GetUserHandler(w http.ResponseWriter, r *http.Request) error 
 	})
 }
 
-type (
-	CreateBookmarkRequest struct {
-		Url string
-	}
-)
+type CreateBookmarkRequest struct {
+	Url string `json:"url"`
+}
 
 func (h *Handlers) CreateBookmarkHandler(w http.ResponseWriter, r *http.Request) error {
 	// get userId from auth middleware context
