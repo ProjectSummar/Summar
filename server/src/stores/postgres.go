@@ -57,7 +57,8 @@ func NewPostgresStore() (*PostgresStore, error) {
 // Session operations
 
 func (s *PostgresStore) CreateSession(session *types.Session) error {
-	query := `insert into sessions
+	query := `
+	insert into sessions
 	(token, user_id, expires_at)
 	values ($1, $2, $3)
 	`
@@ -92,7 +93,8 @@ func (s *PostgresStore) GetSession(token string) (*types.Session, error) {
 // User operations
 
 func (s *PostgresStore) CreateUser(user *types.User) error {
-	query := `insert into users
+	query := `
+	insert into users
 	(id, email, password_hash, created_at)
 	values ($1, $2, $3, $4)
 	`
@@ -149,7 +151,8 @@ func (s *PostgresStore) DeleteUser(userId uuid.UUID) error {
 // Bookmark operations
 
 func (s *PostgresStore) CreateBookmark(bookmark *types.Bookmark) error {
-	query := `insert into bookmarks
+	query := `
+	insert into bookmarks
 	(id, user_id, url, summary)
 	values ($1, $2, $3, $4)
 	`
