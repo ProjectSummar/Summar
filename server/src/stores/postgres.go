@@ -56,7 +56,7 @@ func (s *PostgresStore) CreateSession(session *types.Session) error {
 	values ($1, $2, $3)
 	`
 
-	_, err := s.Db.Query(
+	_, err := s.Db.Exec(
 		query,
 		session.Token,
 		session.UserId,
@@ -66,7 +66,7 @@ func (s *PostgresStore) CreateSession(session *types.Session) error {
 		return err
 	}
 
-	fmt.Printf("Session created\n%+v\n", utils.JSONMarshal(session))
+	log.Printf("Session created\n%+v\n", utils.JSONMarshal(session))
 	return nil
 }
 
@@ -91,7 +91,7 @@ func (s *PostgresStore) CreateUser(user *types.User) error {
 	values ($1, $2, $3, $4)
 	`
 
-	_, err := s.Db.Query(
+	_, err := s.Db.Exec(
 		query,
 		user.Id,
 		user.Email,
@@ -148,7 +148,7 @@ func (s *PostgresStore) CreateBookmark(bookmark *types.Bookmark) error {
 	values ($1, $2, $3, $4)
 	`
 
-	_, err := s.Db.Query(
+	_, err := s.Db.Exec(
 		query,
 		bookmark.Id,
 		bookmark.UserId,
