@@ -147,6 +147,10 @@ func (s *PostgresStore) Init() error {
 		return err
 	}
 
+	if err := s.CreateBookmarksTable(); err != nil {
+		return err
+	}
+
 	return nil
 }
 
