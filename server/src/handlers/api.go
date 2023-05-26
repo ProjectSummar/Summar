@@ -23,16 +23,16 @@ type (
 
 func (h *Handlers) LoginHandler(w http.ResponseWriter, r *http.Request) error {
 	// parse input JSON { email, password }
-	var loginRequest LoginRequest
-	ReadJSON(r, &loginRequest)
+	var req LoginRequest
+	ReadJSON(r, &req)
 
 	// validate credentials
-	user, err := h.Store.GetUserByEmail(loginRequest.Email)
+	user, err := h.Store.GetUserByEmail(req.Email)
 	if err != nil {
 		return err
 	}
 
-	if err := password.CompareHashToPassword(user.PasswordHash, loginRequest.Password); err != nil {
+	if err := password.CompareHashToPassword(user.PasswordHash, req.Password); err != nil {
 		return err
 	}
 
@@ -61,17 +61,17 @@ type (
 
 func (h *Handlers) SignupHandler(w http.ResponseWriter, r *http.Request) error {
 	// parse input JSON { email, password }
-	var signupRequest SignupRequest
-	ReadJSON(r, &signupRequest)
+	var req SignupRequest
+	ReadJSON(r, &req)
 
 	// hash password
-	hash, err := password.HashPassword(signupRequest.Password)
+	hash, err := password.HashPassword(req.Password)
 	if err != nil {
 		return err
 	}
 
 	// create user
-	user := types.NewUser(signupRequest.Email, hash)
+	user := types.NewUser(req.Email, hash)
 
 	if err := h.Store.CreateUser(user); err != nil {
 		return err
