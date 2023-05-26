@@ -152,12 +152,12 @@ func (s *PostgresStore) Init() error {
 
 func (s *PostgresStore) CreateUsersTable() error {
 	query := `CREATE TABLE IF NOT EXISTS users (
-		id VARCHAR(36),
-		email VARCHAR(50),
-		password_hash VARCHAR(60),
-		created_at TIMESTAMP,
-		PRIMARY KEY(id),
-		UNIQUE(email)
+	id VARCHAR(36),
+	email VARCHAR(50),
+	password_hash VARCHAR(60),
+	created_at TIMESTAMP,
+	PRIMARY KEY(id),
+	UNIQUE(email)
 	)`
 
 	_, err := s.Db.Exec(query)
