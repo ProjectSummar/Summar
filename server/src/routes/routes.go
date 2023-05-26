@@ -36,13 +36,13 @@ func (r *Router) Run() {
 	router.Group(func(router chi.Router) {
 		router.Use(handlers.ToMiddleware(r.Handlers.AuthMiddlewareFunc))
 		router.Get("/me", handlers.ToHttpHandlerFunc(r.Handlers.GetUserHandler))
-		// router.Route("/bookmark", func(router chi.Router) {
-		// 	router.Post("/create", ToHttpHandlerFunc(s.CreateBookmarkHandler))
-		// 	router.Get("/get", ToHttpHandlerFunc(s.GetBookmarkHandler))
-		// 	router.Post("/update", ToHttpHandlerFunc(s.UpdateBookmarkHandler))
-		// 	router.Post("/delete", ToHttpHandlerFunc(s.DeleteBookmarkHandler))
-		// 	router.Post("/summarise", ToHttpHandlerFunc(s.SummariseBookmarkHandler))
-		// })
+		router.Route("/bookmark", func(router chi.Router) {
+			router.Post("/create", handlers.ToHttpHandlerFunc(r.Handlers.CreateBookmarkHandler))
+			// router.Get("/get", handlers.ToHttpHandlerFunc(r.Handlers.GetBookmarkHandler))
+			// router.Post("/update", ToHttpHandlerFunc(s.UpdateBookmarkHandler))
+			// router.Post("/delete", ToHttpHandlerFunc(s.DeleteBookmarkHandler))
+			// router.Post("/summarise", ToHttpHandlerFunc(s.SummariseBookmarkHandler))
+		})
 	})
 
 	chi.Walk(router, func(method string, route string, handler http.Handler, middlewares ...func(http.Handler) http.Handler) error {
