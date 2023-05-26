@@ -4,8 +4,17 @@
 
 1. Install ![docker](https://www.docker.com/)
 2. Ensure current working directory is `./summar/server`
-3. Build docker images and setup containers by running `docker compose up --build`
-4. To shut down containers, run `docker compose down --remove-orphans --volumes`
+3. Build docker images and setup containers by running
+
+   ```bash
+   docker compose up --build
+   ```
+
+4. To shut down containers, run
+
+   ```bash
+   docker compose down --remove-orphans --volumes
+   ```
 
 ## Endpoints
 
