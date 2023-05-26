@@ -2,7 +2,7 @@
 
 ## Usage
 
-1. Install ![docker](https://www.docker.com/)
+1. Install [docker](https://www.docker.com/)
 2. Ensure current working directory is `./summar/server`
 3. Build docker images and setup containers by running
 
