@@ -170,6 +170,25 @@ func (s *PostgresStore) GetBookmark(id uuid.UUID) (*types.Bookmark, error) {
 	return nil, fmt.Errorf("Bookmark not found")
 }
 
+func (s *PostgresStore) GetBookmarksByUserId(userId uuid.UUID) ([]*types.Bookmark, error) {
+	rows, err := s.Db.Query("SELECT * FROM bookmarks WHERE user_id = $1", userId)
+	if err != nil {
+		return nil, err
+	}
+
+	bookmarks := []*types.Bookmark{}
+	for rows.Next() {
+		bookmark, err := ScanBookmarkRow(rows)
+		if err != nil {
+			return nil, err
+		}
+
+		bookmarks = append(bookmarks, bookmark)
+	}
+
+	return bookmarks, nil
+}
+
 // Initialisation
 
 func (s *PostgresStore) Init() error {
