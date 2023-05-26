@@ -18,8 +18,8 @@ type User struct {
 	CreatedAt    time.Time `json:"createdAt"`
 }
 
-func NewUser(email string, passwordHash string) User {
-	return User{
+func NewUser(email string, passwordHash string) *User {
+	return &User{
 		Id:           uuid.New(),
 		Email:        email,
 		PasswordHash: passwordHash,
@@ -33,12 +33,12 @@ type Session struct {
 	ExpiresAt time.Time `json:"expiresAt"`
 }
 
-func NewSession(userId uuid.UUID) Session {
+func NewSession(userId uuid.UUID) *Session {
 	bytes := make([]byte, 32)
 	io.ReadFull(rand.Reader, bytes)
 	token := base64.URLEncoding.EncodeToString(bytes)
 
-	return Session{
+	return &Session{
 		Token:     token,
 		UserId:    userId,
 		ExpiresAt: time.Now().Add(time.Second * time.Duration(constants.SESSION_EXPIRATION_SECONDS)),

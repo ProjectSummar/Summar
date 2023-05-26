@@ -39,7 +39,7 @@ func (h *Handlers) LoginHandler(w http.ResponseWriter, r *http.Request) error {
 	// create a session
 	session := types.NewSession(user.Id)
 
-	if err := h.Store.CreateSession(&session); err != nil {
+	if err := h.Store.CreateSession(session); err != nil {
 		return err
 	}
 
@@ -73,7 +73,7 @@ func (h *Handlers) SignupHandler(w http.ResponseWriter, r *http.Request) error {
 	// create user
 	user := types.NewUser(signupRequest.Email, hash)
 
-	if err := h.Store.CreateUser(&user); err != nil {
+	if err := h.Store.CreateUser(user); err != nil {
 		return err
 	}
 
