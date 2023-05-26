@@ -2,23 +2,10 @@
 
 ## Usage
 
-Run Postgres container
-
-```bash
-sudo docker run --name summar-db -e POSTGRES_PASSWORD=123 -p 5432:5432 -d postgres
-```
-
-Interact with Postgres container
-
-```bash
-sudo docker exec -it summar-db psql -U postgres
-```
-
-Build and run the server
-
-```bash
-make run
-```
+1. Install ![docker](https://www.docker.com/)
+2. Ensure current working directory is `./summar/server`
+3. Build docker images and setup containers by running `docker compose up --build`
+4. To shut down containers, run `docker compose down --remove-orphans --volumes`
 
 ## Endpoints
 
