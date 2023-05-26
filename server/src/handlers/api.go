@@ -10,8 +10,8 @@ import (
 )
 
 type HandlerResponse struct {
-	IsOk bool   `json:"isOk"`
-	Msg  string `json:"msg"`
+	Ok  bool   `json:"ok"`
+	Msg string `json:"msg"`
 }
 
 type (
@@ -47,8 +47,8 @@ func (h *Handlers) LoginHandler(w http.ResponseWriter, r *http.Request) error {
 	cookie.SetSessionTokenCookie(w, session.Token)
 
 	return WriteJSON(w, http.StatusOK, &HandlerResponse{
-		IsOk: true,
-		Msg:  "Logged in successfully",
+		Ok:  true,
+		Msg: "Logged in successfully",
 	})
 }
 
@@ -78,8 +78,8 @@ func (h *Handlers) SignupHandler(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	return WriteJSON(w, http.StatusOK, &HandlerResponse{
-		IsOk: true,
-		Msg:  "Signed up successfully",
+		Ok:  true,
+		Msg: "Signed up successfully",
 	})
 }
 
@@ -110,8 +110,8 @@ func (h *Handlers) GetUserHandler(w http.ResponseWriter, r *http.Request) error 
 	// return user and bookmarks
 	return WriteJSON(w, http.StatusOK, &GetUserResponse{
 		HandlerResponse: HandlerResponse{
-			IsOk: true,
-			Msg:  "Got user successfully",
+			Ok:  true,
+			Msg: "Got user successfully",
 		},
 		User:      user,
 		Bookmarks: bookmarks,
@@ -143,8 +143,8 @@ func (h *Handlers) CreateBookmarkHandler(w http.ResponseWriter, r *http.Request)
 
 	// return status and created bookmark
 	return WriteJSON(w, http.StatusOK, &HandlerResponse{
-		IsOk: true,
-		Msg:  "Bookmark created successfully",
+		Ok:  true,
+		Msg: "Bookmark created successfully",
 	})
 }
 
