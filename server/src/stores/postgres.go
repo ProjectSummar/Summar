@@ -46,7 +46,7 @@ func NewPostgresStore() (*PostgresStore, error) {
 	return nil, fmt.Errorf("Cannot connect to Postgres")
 }
 
-// Operations
+// Session operations
 
 func (s *PostgresStore) CreateSession(session *types.Session) error {
 	query := `insert into sessions
@@ -80,6 +80,8 @@ func (s *PostgresStore) GetSession(token string) (*types.Session, error) {
 
 	return nil, fmt.Errorf("Session not found")
 }
+
+// User operations
 
 func (s *PostgresStore) CreateUser(user *types.User) error {
 	query := `insert into users
@@ -135,6 +137,8 @@ func (s *PostgresStore) UpdateUser(user *types.User) error {
 func (s *PostgresStore) DeleteUser(userId uuid.UUID) error {
 	return nil
 }
+
+// Bookmark operations
 
 func (s *PostgresStore) CreateBookmark(bookmark *types.Bookmark) error {
 	query := `insert into bookmarks
