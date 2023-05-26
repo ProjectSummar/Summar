@@ -101,8 +101,11 @@ func (h *Handlers) GetUserHandler(w http.ResponseWriter, r *http.Request) error 
 		return err
 	}
 
-	// TODO: get bookmarks by userId
-	// bookmarks, err := s.Db.GetBookmarksByUserId(user.ID)
+	// get bookmarks by userId
+	bookmarks, err := h.Store.GetBookmarksByUserId(user.Id)
+	if err != nil {
+		return err
+	}
 
 	// return user and bookmarks
 	return WriteJSON(w, http.StatusOK, &GetUserResponse{
@@ -110,8 +113,8 @@ func (h *Handlers) GetUserHandler(w http.ResponseWriter, r *http.Request) error 
 			IsOk: true,
 			Msg:  "Got user successfully",
 		},
-		User: user,
-		// Bookmarks: bookmarks,
+		User:      user,
+		Bookmarks: bookmarks,
 	})
 }
 
