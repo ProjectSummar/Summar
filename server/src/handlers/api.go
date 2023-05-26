@@ -118,14 +118,34 @@ func (h *Handlers) GetUserHandler(w http.ResponseWriter, r *http.Request) error 
 	})
 }
 
+type (
+	CreateBookmarkRequest struct {
+		Url string
+	}
+)
+
 func (h *Handlers) CreateBookmarkHandler(w http.ResponseWriter, r *http.Request) error {
-	// get session token in cookie
-	// validate session token
-	// get user by userId associated to the session
+	// get userId from auth middleware context
+	userId := r.Context().Value("userId").(uuid.UUID)
+
 	// parse input JSON { url }
+	var req CreateBookmarkRequest
+	if err := ReadJSON(r, &req); err != nil {
+		return err
+	}
+
 	// create bookmark on userId
+	bookmark := types.NewBookmark(userId, req.Url)
+
+	if err := h.Store.CreateBookmark(bookmark); err != nil {
+		return err
+	}
+
 	// return status and created bookmark
-	return nil
+	return WriteJSON(w, http.StatusOK, &HandlerResponse{
+		IsOk: true,
+		Msg:  "Bookmark created successfully",
+	})
 }
 
 func (h *Handlers) GetBookmarkHandler(w http.ResponseWriter, r *http.Request) error {
