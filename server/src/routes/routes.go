@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"summar/server/handlers"
@@ -46,7 +45,7 @@ func (r *Router) Run() {
 	})
 
 	chi.Walk(router, func(method string, route string, handler http.Handler, middlewares ...func(http.Handler) http.Handler) error {
-		fmt.Printf("[%s]: '%s' has %d middlewares\n", method, route, len(middlewares))
+		log.Printf("[%s]: '%s' has %d middlewares\n", method, route, len(middlewares))
 		return nil
 	})
 	log.Println("Server running on port", r.Address)

@@ -3,6 +3,8 @@ package stores
 import (
 	"database/sql"
 	"fmt"
+	"log"
+	"os"
 	"summar/server/types"
 	"summar/server/utils"
 	"time"
@@ -23,16 +25,16 @@ func NewPostgresStore() (*PostgresStore, error) {
 
 		db, err := sql.Open("postgres", connStr)
 		if err != nil {
-			fmt.Println(err)
-			fmt.Println("Retries left:", retries)
+			log.Println(err)
+			log.Println("Retries left:", retries)
 			sleep *= 2
 			time.Sleep(sleep)
 			continue
 		}
 
 		if err := db.Ping(); err != nil {
-			fmt.Println(err)
-			fmt.Println("Retries left:", retries)
+			log.Println(err)
+			log.Println("Retries left:", retries)
 			sleep *= 2
 			time.Sleep(sleep)
 			continue
@@ -100,7 +102,7 @@ func (s *PostgresStore) CreateUser(user *types.User) error {
 		return err
 	}
 
-	fmt.Printf("User created\n%+v\n", utils.JSONMarshal(user))
+	log.Printf("User created\n%+v\n", utils.JSONMarshal(user))
 	return nil
 }
 
@@ -157,7 +159,7 @@ func (s *PostgresStore) CreateBookmark(bookmark *types.Bookmark) error {
 		return err
 	}
 
-	fmt.Printf("Bookmark created\n%+v\n", utils.JSONMarshal(bookmark))
+	log.Printf("Bookmark created\n%+v\n", utils.JSONMarshal(bookmark))
 	return nil
 }
 
