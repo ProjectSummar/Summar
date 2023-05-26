@@ -136,6 +136,27 @@ func (s *PostgresStore) DeleteUser(userId uuid.UUID) error {
 	return nil
 }
 
+func (s *PostgresStore) CreateBookmark(bookmark *types.Bookmark) error {
+	query := `insert into bookmarks
+	(id, user_id, url, summary)
+	values ($1, $2, $3, $4)
+	`
+
+	_, err := s.Db.Query(
+		query,
+		bookmark.Id,
+		bookmark.UserId,
+		bookmark.Url,
+		bookmark.Summary,
+	)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Bookmark created\n%+v\n", utils.JSONMarshal(bookmark))
+	return nil
+}
+
 // Initialisation
 
 func (s *PostgresStore) Init() error {
