@@ -1,6 +1,14 @@
-FROM golang
+FROM golang:alpine as builder
+RUN apk update && apk add --no-cache git
 WORKDIR /app
 COPY ./src .
-RUN go mod tidy
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o server .
+
+FROM alpine:latest
+RUN apk --no-cache add ca-certificates
+WORKDIR /root
+COPY --from=builder /app/server .
 EXPOSE 3001
-CMD ["make", "run"]
+CMD ["./server"]
