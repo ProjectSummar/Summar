@@ -16,33 +16,34 @@ type PostgresStore struct {
 }
 
 func NewPostgresStore() (*PostgresStore, error) {
-	connStr := "user=postgres dbname=postgres password=123 sslmode=disable"
-
-	var db *sql.DB
-	var retryErr error
+	sleep := time.Second
 
 	for retries := 10; retries > 0; retries-- {
-		db, retryErr = sql.Open("postgres", connStr)
-		if retryErr != nil {
-			fmt.Println(retryErr)
+		connStr := "host=pg_database user=postgres dbname=postgres password=123 sslmode=disable"
+
+		db, err := sql.Open("postgres", connStr)
+		if err != nil {
+			fmt.Println(err)
 			fmt.Println("Retries left:", retries)
-			time.Sleep(5 * time.Second)
-		} else {
-			break
+			sleep *= 2
+			time.Sleep(sleep)
+			continue
 		}
+
+		if err := db.Ping(); err != nil {
+			fmt.Println(err)
+			fmt.Println("Retries left:", retries)
+			sleep *= 2
+			time.Sleep(sleep)
+			continue
+		}
+
+		return &PostgresStore{
+			Db: db,
+		}, nil
 	}
 
-	if retryErr != nil {
-		return nil, retryErr
-	}
-
-	if err := db.Ping(); err != nil {
-		return nil, err
-	}
-
-	return &PostgresStore{
-		Db: db,
-	}, nil
+	return nil, fmt.Errorf("Cannot connect to Postgres")
 }
 
 // Operations
