@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"summar/server/cookie"
 	"summar/server/password"
@@ -140,15 +141,46 @@ func (h *Handlers) CreateBookmarkHandler(w http.ResponseWriter, r *http.Request)
 	})
 }
 
+type (
+	GetBookmarkRequest struct {
+		Id uuid.UUID `json:"id"`
+	}
+
+	GetBookmarkResponse struct {
+		HandlerResponse
+		Bookmark *types.Bookmark `json:"bookmark"`
+	}
+)
+
 func (h *Handlers) GetBookmarkHandler(w http.ResponseWriter, r *http.Request) error {
-	// get session token in cookie
-	// validate session token
-	// get user by userId associated to the session
-	// parse input JSON { bookmarkId }
+	// get userId from auth middleware context
+	userId := r.Context().Value("userId").(uuid.UUID)
+
+	// parse input JSON { id }
+	var req GetBookmarkRequest
+	if err := ReadJSON(r, &req); err != nil {
+		return err
+	}
+
 	// get bookmark by bookmarkId
+	bookmark, err := h.Store.GetBookmark(req.Id)
+	if err != nil {
+		return err
+	}
+
 	// validate bookmark's userId and session userId
+	if userId != bookmark.UserId {
+		return fmt.Errorf("Unauthorised to view this bookmark")
+	}
+
 	// return status and bookmark
-	return nil
+	return WriteJSON(w, http.StatusOK, &GetBookmarkResponse{
+		HandlerResponse: HandlerResponse{
+			Ok:  true,
+			Msg: "Got bookmark successfully",
+		},
+		Bookmark: bookmark,
+	})
 }
 
 func (h *Handlers) UpdateBookmarkHandler(w http.ResponseWriter, r *http.Request) error {

@@ -37,7 +37,7 @@ func (r *Router) Run() {
 		router.Get("/me", handlers.ToHttpHandlerFunc(r.Handlers.GetUserHandler))
 		router.Route("/bookmark", func(router chi.Router) {
 			router.Post("/create", handlers.ToHttpHandlerFunc(r.Handlers.CreateBookmarkHandler))
-			// router.Get("/get", handlers.ToHttpHandlerFunc(r.Handlers.GetBookmarkHandler))
+			router.Get("/get", handlers.ToHttpHandlerFunc(r.Handlers.GetBookmarkHandler))
 			// router.Post("/update", ToHttpHandlerFunc(s.UpdateBookmarkHandler))
 			// router.Post("/delete", ToHttpHandlerFunc(s.DeleteBookmarkHandler))
 			// router.Post("/summarise", ToHttpHandlerFunc(s.SummariseBookmarkHandler))
