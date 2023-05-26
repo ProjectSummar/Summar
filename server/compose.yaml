@@ -2,8 +2,10 @@ services:
   pg_database:
     container_name: pg_database
     environment:
-      POSTGRES_PASSWORD: 123
-      DATABASE_HOST: pg_database
+      - DATABASE_HOST=${DB_HOST}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     image: postgres:alpine
     ports:
       - 5432:5432
@@ -15,6 +17,8 @@ services:
     container_name: server
     depends_on:
       - pg_database
+    env_file:
+      - .env
     ports:
       - 3001:3001
     restart: on-failure
