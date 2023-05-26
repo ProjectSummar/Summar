@@ -260,8 +260,8 @@ func (s *PostgresStore) CreateBookmarksTable() error {
 
 func (s *PostgresStore) Clear() {
 	s.Db.Exec("DROP TABLE IF EXISTS sessions")
-	s.Db.Exec("DROP TABLE IF EXISTS users")
 	s.Db.Exec("DROP TABLE IF EXISTS bookmarks")
+	s.Db.Exec("DROP TABLE IF EXISTS users")
 }
 
 // Helpers
