@@ -61,3 +61,12 @@ type Bookmark struct {
 	Url     string    `json:"url"`
 	Summary string    `json:"summary"`
 }
+
+func NewBookmark(userId uuid.UUID, url string) *Bookmark {
+	return &Bookmark{
+		Id:      uuid.New(),
+		UserId:  userId,
+		Url:     url,
+		Summary: "",
+	}
+}
