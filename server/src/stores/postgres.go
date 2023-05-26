@@ -180,6 +180,23 @@ func (s *PostgresStore) CreateSessionsTable() error {
 	return err
 }
 
+func (s *PostgresStore) CreateBookmarksTable() error {
+	query := `CREATE TABLE IF NOT EXISTS bookmarks (
+	id VARCHAR(36),
+	user_id VARCHAR(36),
+	url TEXT,
+	summary TEXT,
+	PRIMARY KEY(id),
+	CONSTRAINT fk_user
+		FOREIGN KEY(user_id)
+			REFERENCES users(id)
+			ON DELETE CASCADE
+	)`
+
+	_, err := s.Db.Exec(query)
+	return err
+}
+
 func (s *PostgresStore) Clear() {
 	s.Db.Exec("DROP TABLE IF EXISTS sessions")
 	s.Db.Exec("DROP TABLE IF EXISTS users")
