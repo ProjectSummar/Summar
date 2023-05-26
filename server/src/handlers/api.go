@@ -51,10 +51,17 @@ func (h *Handlers) LoginHandler(w http.ResponseWriter, r *http.Request) error {
 	})
 }
 
-type SignupRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
+type (
+	SignupRequest struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+
+	SignupResponse struct {
+		HandlerResponse
+		User *types.User `json:"user"`
+	}
+)
 
 func (h *Handlers) SignupHandler(w http.ResponseWriter, r *http.Request) error {
 	// parse input JSON { email, password }
@@ -74,9 +81,12 @@ func (h *Handlers) SignupHandler(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	return WriteJSON(w, http.StatusOK, &HandlerResponse{
-		Ok:  true,
-		Msg: "Signed up successfully",
+	return WriteJSON(w, http.StatusOK, &SignupResponse{
+		HandlerResponse: HandlerResponse{
+			Ok:  true,
+			Msg: "Signed up successfully",
+		},
+		User: user,
 	})
 }
 
@@ -113,9 +123,16 @@ func (h *Handlers) GetUserHandler(w http.ResponseWriter, r *http.Request) error 
 	})
 }
 
-type CreateBookmarkRequest struct {
-	Url string `json:"url"`
-}
+type (
+	CreateBookmarkRequest struct {
+		Url string `json:"url"`
+	}
+
+	CreateBookmarkResponse struct {
+		HandlerResponse
+		Bookmark *types.Bookmark `json:"bookmark"`
+	}
+)
 
 func (h *Handlers) CreateBookmarkHandler(w http.ResponseWriter, r *http.Request) error {
 	// get userId from auth middleware context
@@ -135,9 +152,12 @@ func (h *Handlers) CreateBookmarkHandler(w http.ResponseWriter, r *http.Request)
 	}
 
 	// return status and created bookmark
-	return WriteJSON(w, http.StatusOK, &HandlerResponse{
-		Ok:  true,
-		Msg: "Bookmark created successfully",
+	return WriteJSON(w, http.StatusOK, &CreateBookmarkResponse{
+		HandlerResponse: HandlerResponse{
+			Ok:  true,
+			Msg: "Bookmark created successfully",
+		},
+		Bookmark: bookmark,
 	})
 }
 
