@@ -19,10 +19,6 @@ type (
 		Email    string `json:"email"`
 		Password string `json:"password"`
 	}
-
-	LoginResponse struct {
-		HandlerResponse
-	}
 )
 
 func (h *Handlers) LoginHandler(w http.ResponseWriter, r *http.Request) error {
@@ -50,11 +46,9 @@ func (h *Handlers) LoginHandler(w http.ResponseWriter, r *http.Request) error {
 	// return session token to be stored as cookie
 	cookie.SetSessionTokenCookie(w, session.Token)
 
-	return WriteJSON(w, http.StatusOK, LoginResponse{
-		HandlerResponse: HandlerResponse{
-			IsOk: true,
-			Msg:  "Logged in successfully",
-		},
+	return WriteJSON(w, http.StatusOK, &HandlerResponse{
+		IsOk: true,
+		Msg:  "Logged in successfully",
 	})
 }
 
@@ -62,10 +56,6 @@ type (
 	SignupRequest struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
-	}
-
-	SignupResponse struct {
-		HandlerResponse
 	}
 )
 
@@ -87,11 +77,9 @@ func (h *Handlers) SignupHandler(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	return WriteJSON(w, http.StatusOK, SignupResponse{
-		HandlerResponse: HandlerResponse{
-			IsOk: true,
-			Msg:  "Signed up successfully",
-		},
+	return WriteJSON(w, http.StatusOK, &HandlerResponse{
+		IsOk: true,
+		Msg:  "Signed up successfully",
 	})
 }
 
@@ -117,7 +105,7 @@ func (h *Handlers) GetUserHandler(w http.ResponseWriter, r *http.Request) error 
 	// bookmarks, err := s.Db.GetBookmarksByUserId(user.ID)
 
 	// return user and bookmarks
-	return WriteJSON(w, http.StatusOK, GetUserResponse{
+	return WriteJSON(w, http.StatusOK, &GetUserResponse{
 		HandlerResponse: HandlerResponse{
 			IsOk: true,
 			Msg:  "Got user successfully",
