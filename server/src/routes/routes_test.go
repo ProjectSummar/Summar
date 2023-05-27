@@ -132,6 +132,53 @@ func TestRoutes(t *testing.T) {
 		resBody := CheckResponseBody[handlers.GetBookmarkResponse](t, res.Body.Bytes())
 		t.Logf("get bookmark response:\n%+v\n", resBody)
 	})
+
+	t.Run("Test update bookmark route", func(t *testing.T) {
+		// format request
+		reqBody := utils.JSONMarshal(&handlers.UpdateBookmarkRequest{
+			Url:     utils.StringPtr("updatedurl.com"),
+			Summary: utils.StringPtr("updated summary"),
+		})
+
+		url := fmt.Sprintf("/bookmark/%s", bookmarkId.String())
+
+		req, err := http.NewRequest("PATCH", url, strings.NewReader(reqBody))
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		req.AddCookie(sessionCookie)
+
+		// execute request
+		res := ExecuteRequest(req, s)
+
+		// check response
+		CheckResponseCode(t, http.StatusOK, res.Code)
+
+		resBody := CheckResponseBody[handlers.UpdateBookmarkResponse](t, res.Body.Bytes())
+		t.Logf("get bookmark response:\n%+v\n", resBody)
+	})
+
+	t.Run("Test delete bookmark route", func(t *testing.T) {
+		// format request
+		url := fmt.Sprintf("/bookmark/%s", bookmarkId.String())
+
+		req, err := http.NewRequest("DELETE", url, nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		req.AddCookie(sessionCookie)
+
+		// execute request
+		res := ExecuteRequest(req, s)
+
+		// check response
+		CheckResponseCode(t, http.StatusOK, res.Code)
+
+		resBody := CheckResponseBody[handlers.GetBookmarkResponse](t, res.Body.Bytes())
+		t.Logf("get bookmark response:\n%+v\n", resBody)
+	})
 }
 
 func ExecuteRequest(req *http.Request, s *Server) *httptest.ResponseRecorder {

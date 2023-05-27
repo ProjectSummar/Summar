@@ -11,3 +11,7 @@ func JSONMarshal(v interface{}) string {
 	s, _ := json.Marshal(v)
 	return string(s)
 }
+
+func StringPtr(s string) *string {
+	return &s
+}
