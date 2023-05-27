@@ -23,7 +23,7 @@ func (h *Handlers) AuthMiddlewareFunc(w http.ResponseWriter, r *http.Request) (c
 	}
 
 	// validate session expiry
-	if err := types.VerifySessionExpiry(session); err != nil {
+	if err := types.ValidateSession(session); err != nil {
 		return nil, err
 	}
 

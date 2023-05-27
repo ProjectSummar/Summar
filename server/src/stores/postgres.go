@@ -3,6 +3,8 @@ package stores
 import (
 	"database/sql"
 	"fmt"
+	"log"
+	"os"
 	"summar/server/types"
 	"summar/server/utils"
 	"time"
@@ -19,20 +21,26 @@ func NewPostgresStore() (*PostgresStore, error) {
 	sleep := time.Second
 
 	for retries := 10; retries > 0; retries-- {
-		connStr := "host=pg_database user=postgres dbname=postgres password=123 sslmode=disable"
+		connStr := fmt.Sprintf(
+			"host=%s user=%s password=%s dbname=%s sslmode=disable",
+			os.Getenv("DB_HOST"),
+			os.Getenv("DB_USER"),
+			os.Getenv("DB_PASSWORD"),
+			os.Getenv("DB_NAME"),
+		)
 
 		db, err := sql.Open("postgres", connStr)
 		if err != nil {
-			fmt.Println(err)
-			fmt.Println("Retries left:", retries)
+			log.Println(err)
+			log.Println("Retries left:", retries)
 			sleep *= 2
 			time.Sleep(sleep)
 			continue
 		}
 
 		if err := db.Ping(); err != nil {
-			fmt.Println(err)
-			fmt.Println("Retries left:", retries)
+			log.Println(err)
+			log.Println("Retries left:", retries)
 			sleep *= 2
 			time.Sleep(sleep)
 			continue
@@ -46,15 +54,16 @@ func NewPostgresStore() (*PostgresStore, error) {
 	return nil, fmt.Errorf("Cannot connect to Postgres")
 }
 
-// Operations
+// Session operations
 
 func (s *PostgresStore) CreateSession(session *types.Session) error {
-	query := `insert into sessions
+	query := `
+	insert into sessions
 	(token, user_id, expires_at)
 	values ($1, $2, $3)
 	`
 
-	_, err := s.Db.Query(
+	_, err := s.Db.Exec(
 		query,
 		session.Token,
 		session.UserId,
@@ -64,7 +73,7 @@ func (s *PostgresStore) CreateSession(session *types.Session) error {
 		return err
 	}
 
-	fmt.Printf("Session created\n%+v\n", utils.JSONMarshal(session))
+	log.Printf("Session created\n%+v\n", utils.JSONMarshal(session))
 	return nil
 }
 
@@ -81,13 +90,16 @@ func (s *PostgresStore) GetSession(token string) (*types.Session, error) {
 	return nil, fmt.Errorf("Session not found")
 }
 
+// User operations
+
 func (s *PostgresStore) CreateUser(user *types.User) error {
-	query := `insert into users
+	query := `
+	insert into users
 	(id, email, password_hash, created_at)
 	values ($1, $2, $3, $4)
 	`
 
-	_, err := s.Db.Query(
+	_, err := s.Db.Exec(
 		query,
 		user.Id,
 		user.Email,
@@ -98,7 +110,7 @@ func (s *PostgresStore) CreateUser(user *types.User) error {
 		return err
 	}
 
-	fmt.Printf("User created\n%+v\n", utils.JSONMarshal(user))
+	log.Printf("User created\n%+v\n", utils.JSONMarshal(user))
 	return nil
 }
 
@@ -136,6 +148,94 @@ func (s *PostgresStore) DeleteUser(userId uuid.UUID) error {
 	return nil
 }
 
+// Bookmark operations
+
+func (s *PostgresStore) CreateBookmark(bookmark *types.Bookmark) error {
+	query := `
+	insert into bookmarks
+	(id, user_id, url, summary)
+	values ($1, $2, $3, $4)
+	`
+
+	_, err := s.Db.Exec(
+		query,
+		bookmark.Id,
+		bookmark.UserId,
+		bookmark.Url,
+		bookmark.Summary,
+	)
+	if err != nil {
+		return err
+	}
+
+	log.Printf("Bookmark created\n%+v\n", utils.JSONMarshal(bookmark))
+	return nil
+}
+
+func (s *PostgresStore) GetBookmark(id uuid.UUID) (*types.Bookmark, error) {
+	rows, err := s.Db.Query("SELECT * FROM bookmarks WHERE id = $1", id)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		return ScanBookmarkRow(rows)
+	}
+
+	return nil, fmt.Errorf("Bookmark not found")
+}
+
+func (s *PostgresStore) GetBookmarksByUserId(userId uuid.UUID) ([]*types.Bookmark, error) {
+	rows, err := s.Db.Query("SELECT * FROM bookmarks WHERE user_id = $1", userId)
+	if err != nil {
+		return nil, err
+	}
+
+	bookmarks := []*types.Bookmark{}
+	for rows.Next() {
+		bookmark, err := ScanBookmarkRow(rows)
+		if err != nil {
+			return nil, err
+		}
+
+		bookmarks = append(bookmarks, bookmark)
+	}
+
+	return bookmarks, nil
+}
+
+func (s *PostgresStore) UpdateBookmark(bookmark *types.Bookmark) error {
+	query := `
+	UPDATE bookmarks SET
+	url = $2,
+	summary = $3
+	WHERE id = $1
+	`
+
+	_, err := s.Db.Exec(
+		query,
+		bookmark.Id,
+		bookmark.Url,
+		bookmark.Summary,
+	)
+	if err != nil {
+		return err
+	}
+
+	log.Printf("Bookmark updated\n%+v\n", utils.JSONMarshal(bookmark))
+	return nil
+}
+
+func (s *PostgresStore) DeleteBookmark(id uuid.UUID) error {
+	_, err := s.Db.Exec("DELETE FROM bookmarks WHERE id = $1", id)
+	if err != nil {
+		return err
+	}
+
+	log.Println("Bookmark deleted", id)
+	return nil
+}
+
 // Initialisation
 
 func (s *PostgresStore) Init() error {
@@ -147,17 +247,21 @@ func (s *PostgresStore) Init() error {
 		return err
 	}
 
+	if err := s.CreateBookmarksTable(); err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (s *PostgresStore) CreateUsersTable() error {
 	query := `CREATE TABLE IF NOT EXISTS users (
-		id VARCHAR(36),
-		email VARCHAR(50),
-		password_hash VARCHAR(60),
-		created_at TIMESTAMP,
-		PRIMARY KEY(id),
-		UNIQUE(email)
+	id VARCHAR(36),
+	email VARCHAR(50),
+	password_hash VARCHAR(60),
+	created_at TIMESTAMP,
+	PRIMARY KEY(id),
+	UNIQUE(email)
 	)`
 
 	_, err := s.Db.Exec(query)
@@ -180,8 +284,26 @@ func (s *PostgresStore) CreateSessionsTable() error {
 	return err
 }
 
+func (s *PostgresStore) CreateBookmarksTable() error {
+	query := `CREATE TABLE IF NOT EXISTS bookmarks (
+	id VARCHAR(36),
+	user_id VARCHAR(36),
+	url TEXT,
+	summary TEXT,
+	PRIMARY KEY(id),
+	CONSTRAINT fk_user
+		FOREIGN KEY(user_id)
+			REFERENCES users(id)
+			ON DELETE CASCADE
+	)`
+
+	_, err := s.Db.Exec(query)
+	return err
+}
+
 func (s *PostgresStore) Clear() {
 	s.Db.Exec("DROP TABLE IF EXISTS sessions")
+	s.Db.Exec("DROP TABLE IF EXISTS bookmarks")
 	s.Db.Exec("DROP TABLE IF EXISTS users")
 }
 
@@ -189,6 +311,7 @@ func (s *PostgresStore) Clear() {
 
 func ScanSessionRow(rows *sql.Rows) (*types.Session, error) {
 	var session types.Session
+
 	err := rows.Scan(
 		&session.Token,
 		&session.UserId,
@@ -200,6 +323,7 @@ func ScanSessionRow(rows *sql.Rows) (*types.Session, error) {
 
 func ScanUserRow(rows *sql.Rows) (*types.User, error) {
 	var user types.User
+
 	err := rows.Scan(
 		&user.Id,
 		&user.Email,
@@ -208,4 +332,17 @@ func ScanUserRow(rows *sql.Rows) (*types.User, error) {
 	)
 
 	return &user, err
+}
+
+func ScanBookmarkRow(rows *sql.Rows) (*types.Bookmark, error) {
+	var bookmark types.Bookmark
+
+	err := rows.Scan(
+		&bookmark.Id,
+		&bookmark.UserId,
+		&bookmark.Url,
+		&bookmark.Summary,
+	)
+
+	return &bookmark, err
 }

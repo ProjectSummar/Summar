@@ -20,8 +20,9 @@ type Store interface {
 	// DeleteUser(uuid.UUID) error
 
 	// bookmark
-	// CreateBookmark
-	// GetBookmark
-	// UpdateBookmark
-	// DeleteBookmark
+	CreateBookmark(*types.Bookmark) error
+	GetBookmark(uuid.UUID) (*types.Bookmark, error)
+	GetBookmarksByUserId(uuid.UUID) ([]*types.Bookmark, error)
+	UpdateBookmark(*types.Bookmark) error
+	DeleteBookmark(uuid.UUID) error
 }

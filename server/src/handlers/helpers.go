@@ -12,8 +12,8 @@ func ToHttpHandlerFunc(f HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if err := f(w, r); err != nil {
 			WriteJSON(w, http.StatusBadRequest, HandlerResponse{
-				IsOk: false,
-				Msg:  err.Error(),
+				Ok:  false,
+				Msg: err.Error(),
 			})
 		}
 	}
@@ -30,8 +30,8 @@ func ToMiddleware(f MiddlewareFunc) Middleware {
 			ctx, err := f(w, r)
 			if err != nil {
 				WriteJSON(w, http.StatusBadRequest, HandlerResponse{
-					IsOk: false,
-					Msg:  err.Error(),
+					Ok:  false,
+					Msg: err.Error(),
 				})
 			}
 
