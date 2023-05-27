@@ -11,22 +11,6 @@ import (
 	"github.com/google/uuid"
 )
 
-type User struct {
-	Id           uuid.UUID `json:"id"`
-	Email        string    `json:"email"`
-	PasswordHash string    `json:"-"`
-	CreatedAt    time.Time `json:"createdAt"`
-}
-
-func NewUser(email string, passwordHash string) *User {
-	return &User{
-		Id:           uuid.New(),
-		Email:        email,
-		PasswordHash: passwordHash,
-		CreatedAt:    time.Now(),
-	}
-}
-
 type Session struct {
 	Token     string    `json:"token"`
 	UserId    uuid.UUID `json:"userId"`
@@ -45,28 +29,12 @@ func NewSession(userId uuid.UUID) *Session {
 	}
 }
 
-func VerifySessionExpiry(session *Session) error {
+func ValidateSession(session *Session) error {
 	invalid := session.ExpiresAt.Compare(time.Now()) < 0
 
 	if invalid {
 		return fmt.Errorf("Session has expired")
 	} else {
 		return nil
-	}
-}
-
-type Bookmark struct {
-	Id      uuid.UUID `json:"id"`
-	UserId  uuid.UUID `json:"userId"`
-	Url     string    `json:"url"`
-	Summary string    `json:"summary"`
-}
-
-func NewBookmark(userId uuid.UUID, url string) *Bookmark {
-	return &Bookmark{
-		Id:      uuid.New(),
-		UserId:  userId,
-		Url:     url,
-		Summary: "",
 	}
 }

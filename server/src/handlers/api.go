@@ -75,7 +75,10 @@ func (h *Handlers) SignupHandler(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	// create user
-	user := types.NewUser(req.Email, hash)
+	user, err := types.NewUser(req.Email, hash)
+	if err != nil {
+		return err
+	}
 
 	if err := h.Store.CreateUser(user); err != nil {
 		return err
@@ -145,7 +148,10 @@ func (h *Handlers) CreateBookmarkHandler(w http.ResponseWriter, r *http.Request)
 	}
 
 	// create bookmark on userId
-	bookmark := types.NewBookmark(userId, req.Url)
+	bookmark, err := types.NewBookmark(userId, req.Url)
+	if err != nil {
+		return err
+	}
 
 	if err := h.Store.CreateBookmark(bookmark); err != nil {
 		return err
