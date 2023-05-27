@@ -73,7 +73,7 @@ func (s *PostgresStore) CreateSession(session *types.Session) error {
 		return err
 	}
 
-	log.Printf("Session created\n%+v\n", utils.JSONMarshal(session))
+	log.Printf("Session created\n%+v\n", utils.JSONMarshalIndent(session))
 	return nil
 }
 
@@ -110,7 +110,7 @@ func (s *PostgresStore) CreateUser(user *types.User) error {
 		return err
 	}
 
-	log.Printf("User created\n%+v\n", utils.JSONMarshal(user))
+	log.Printf("User created\n%+v\n", utils.JSONMarshalIndent(user))
 	return nil
 }
 
@@ -168,7 +168,7 @@ func (s *PostgresStore) CreateBookmark(bookmark *types.Bookmark) error {
 		return err
 	}
 
-	log.Printf("Bookmark created\n%+v\n", utils.JSONMarshal(bookmark))
+	log.Printf("Bookmark created\n%+v\n", utils.JSONMarshalIndent(bookmark))
 	return nil
 }
 
@@ -222,7 +222,7 @@ func (s *PostgresStore) UpdateBookmark(bookmark *types.Bookmark) error {
 		return err
 	}
 
-	log.Printf("Bookmark updated\n%+v\n", utils.JSONMarshal(bookmark))
+	log.Printf("Bookmark updated\n%+v\n", utils.JSONMarshalIndent(bookmark))
 	return nil
 }
 
