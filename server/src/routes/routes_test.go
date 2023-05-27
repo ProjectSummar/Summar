@@ -131,8 +131,6 @@ func TestHandlers(t *testing.T) {
 
 	t.Run("Test get bookmark handler", func(t *testing.T) {
 		url := fmt.Sprintf("/bookmark/%s", bookmarkId.String())
-		t.Log("bookmarkId:", bookmarkId)
-		t.Log("url:", url)
 
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
