@@ -18,8 +18,9 @@
 
 ## Endpoints
 
-### `/login`
+### Login
 
+- `/login`
 - POST request
 - Validates user credentials and creates a session on the server
 - Sets the session token as a cookie on the client
@@ -33,8 +34,9 @@
 }
 ```
 
-### `/signup`
+### Signup
 
+- `/signup`
 - POST request
 - Uses the given credentials to create a user on the server
 
@@ -47,35 +49,59 @@
 }
 ```
 
-### `/me`
+### Get current logged in user
 
+- `/me`
 - GET request
 - Validate session using cookie and responds with associated user credentials
+
+### Create bookmark
+
+- `/bookmark`
+- POST request
+- Uses the given details to create a bookmark for the current logged in user
+
+#### Body
+
+```json
+{
+  "url": "..."
+}
+```
+
+### Get bookmark
+
+- `/bookmark/{id}`
+- GET request
+- Validate that current logged in user is authorised to view this bookmark
+- Return the bookmark with the given id
+
+### Updated bookmark
+
+- `/bookmark/{id}`
+- PATCH request
+- Validate that current logged in user is authorised to modify this bookmark
+- Update the bookmark with the given details
+
+#### Body
+
+```json
+{
+  "url": "... (optional)",
+  "summary": "... (optional)"
+}
+```
+
+### Delete bookmark
+
+- `/bookmark/{id}`
+- DELETE request
+- Validate that current logged in user is authorised to modify this bookmark
+- Delete the bookmark with the given id
 
 ### Todo
 
 - `/bookmark`
-  - `/create`
-    - Params
-      - url
-    - Cookie
-      - session token
-  - `/get`
-    - Params
-      - bookmark id
-    - Cookie
-      - session token
-  - `/update`
-    - Params
-      - bookmark id
-      - Fields to update
-    - Cookie
-      - session token
-  - `/delete`
-    - Params
-      - bookmark id
-    - Cookie
-      - session token
   - `/summarise`
     - Params
       - bookmark id
