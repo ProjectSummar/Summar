@@ -28,6 +28,6 @@ func main() {
 	server := routes.NewServer()
 	server.MountHandlers(handlers)
 
-	port := os.Getenv("PORT")
-	server.Run(port)
+	address := os.Getenv("ADDRESS")
+	server.Run(address)
 }
