@@ -2,7 +2,7 @@ package main
 
 import (
 	"log"
-	"summar/server/constants"
+	"os"
 	"summar/server/handlers"
 	"summar/server/routes"
 	"summar/server/stores"
@@ -14,7 +14,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if constants.ENV == "DEV" {
+	if os.Getenv("ENV") == "dev" {
 		store.Clear()
 		log.Println("Cleared db")
 	}
@@ -25,6 +25,9 @@ func main() {
 
 	handlers := handlers.NewHandlers(store)
 
-	apiServer := routes.NewRouter("3001", handlers)
-	apiServer.Run()
+	server := routes.NewServer()
+	server.MountHandlers(handlers)
+
+	address := os.Getenv("ADDRESS")
+	server.Run(address)
 }

@@ -9,45 +9,46 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 )
 
-type Router struct {
-	Address  string
-	Handlers *handlers.Handlers
+type Server struct {
+	Router *chi.Mux
 }
 
-func NewRouter(address string, handlers *handlers.Handlers) *Router {
-	return &Router{
-		Address:  address,
-		Handlers: handlers,
+func NewServer() *Server {
+	router := chi.NewRouter()
+
+	return &Server{
+		Router: router,
 	}
 }
 
-func (r *Router) Run() {
-	router := chi.NewRouter()
-
-	router.Use(middleware.Logger)
-	router.Use(middleware.Recoverer)
+func (s *Server) MountHandlers(h *handlers.Handlers) {
+	s.Router.Use(middleware.Logger)
+	s.Router.Use(middleware.Recoverer)
 
 	// public routes
-	router.Post("/login", handlers.ToHttpHandlerFunc(r.Handlers.LoginHandler))
-	router.Post("/signup", handlers.ToHttpHandlerFunc(r.Handlers.SignupHandler))
+	s.Router.Post("/login", handlers.ToHttpHandlerFunc(h.LoginHandler))
+	s.Router.Post("/signup", handlers.ToHttpHandlerFunc(h.SignupHandler))
 
 	// private routes
-	router.Group(func(router chi.Router) {
-		router.Use(handlers.ToMiddleware(r.Handlers.AuthMiddlewareFunc))
-		router.Get("/me", handlers.ToHttpHandlerFunc(r.Handlers.GetUserHandler))
-		router.Route("/bookmark", func(router chi.Router) {
-			router.Post("/", handlers.ToHttpHandlerFunc(r.Handlers.CreateBookmarkHandler))
-			router.Get("/{id}", handlers.ToHttpHandlerFunc(r.Handlers.GetBookmarkHandler))
-			router.Patch("/{id}", handlers.ToHttpHandlerFunc(r.Handlers.UpdateBookmarkHandler))
-			router.Delete("/{id}", handlers.ToHttpHandlerFunc(r.Handlers.DeleteBookmarkHandler))
+	s.Router.Group(func(r chi.Router) {
+		r.Use(handlers.ToMiddleware(h.AuthMiddlewareFunc))
+		r.Get("/me", handlers.ToHttpHandlerFunc(h.GetUserHandler))
+		r.Route("/bookmark", func(r chi.Router) {
+			r.Post("/", handlers.ToHttpHandlerFunc(h.CreateBookmarkHandler))
+			r.Get("/{id}", handlers.ToHttpHandlerFunc(h.GetBookmarkHandler))
+			r.Patch("/{id}", handlers.ToHttpHandlerFunc(h.UpdateBookmarkHandler))
+			r.Delete("/{id}", handlers.ToHttpHandlerFunc(h.DeleteBookmarkHandler))
 			// router.Post("/summarise", ToHttpHandlerFunc(s.SummariseBookmarkHandler))
 		})
 	})
+}
 
-	chi.Walk(router, func(method string, route string, handler http.Handler, middlewares ...func(http.Handler) http.Handler) error {
+func (s *Server) Run(address string) {
+	chi.Walk(s.Router, func(method string, route string, handler http.Handler, middlewares ...func(http.Handler) http.Handler) error {
 		log.Printf("[%s]: '%s' has %d middlewares\n", method, route, len(middlewares))
 		return nil
 	})
-	log.Println("Server running on port", r.Address)
-	log.Fatal(http.ListenAndServe(":"+r.Address, router))
+
+	log.Println("Server running on port", address)
+	log.Fatal(http.ListenAndServe(":"+address, s.Router))
 }
