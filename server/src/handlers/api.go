@@ -7,6 +7,7 @@ import (
 	"summar/server/password"
 	"summar/server/types"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 )
 
@@ -167,29 +168,23 @@ func (h *Handlers) CreateBookmarkHandler(w http.ResponseWriter, r *http.Request)
 	})
 }
 
-type (
-	GetBookmarkRequest struct {
-		Id uuid.UUID `json:"id"`
-	}
-
-	GetBookmarkResponse struct {
-		HandlerResponse
-		Bookmark *types.Bookmark `json:"bookmark"`
-	}
-)
+type GetBookmarkResponse struct {
+	HandlerResponse
+	Bookmark *types.Bookmark `json:"bookmark"`
+}
 
 func (h *Handlers) GetBookmarkHandler(w http.ResponseWriter, r *http.Request) error {
 	// get userId from auth middleware context
 	userId := r.Context().Value("userId").(uuid.UUID)
 
-	// parse input JSON { id }
-	var req GetBookmarkRequest
-	if err := ReadJSON(r, &req); err != nil {
+	// get id from url param and parse to uuid
+	id, err := uuid.Parse(chi.URLParam(r, "id"))
+	if err != nil {
 		return err
 	}
 
 	// get bookmark by bookmarkId
-	bookmark, err := h.Store.GetBookmark(req.Id)
+	bookmark, err := h.Store.GetBookmark(id)
 	if err != nil {
 		return err
 	}
@@ -209,28 +204,107 @@ func (h *Handlers) GetBookmarkHandler(w http.ResponseWriter, r *http.Request) er
 	})
 }
 
+type (
+	UpdateBookmarkRequest struct {
+		Url     *string `json:"url,omitempty"`
+		Summary *string `json:"summary,omitempty"`
+	}
+
+	UpdateBookmarkResponse struct {
+		HandlerResponse
+		Bookmark *types.Bookmark `json:"bookmark"`
+	}
+)
+
 func (h *Handlers) UpdateBookmarkHandler(w http.ResponseWriter, r *http.Request) error {
-	// get session token in cookie
-	// validate session token
-	// get user by userId associated to the session
+	// get userId from auth middleware context
+	userId := r.Context().Value("userId").(uuid.UUID)
+
+	// get id from url param and parse to uuid
+	id, err := uuid.Parse(chi.URLParam(r, "id"))
+	if err != nil {
+		return err
+	}
+
 	// parse input JSON { partialBookmark }
+	var req UpdateBookmarkRequest
+	if err := ReadJSON(r, &req); err != nil {
+		return err
+	}
+
 	// get bookmark by bookmarkId
+	bookmark, err := h.Store.GetBookmark(id)
+	if err != nil {
+		return err
+	}
+
 	// validate bookmark's userId and session userId
+	if userId != bookmark.UserId {
+		return fmt.Errorf("Unauthorised to view this bookmark")
+	}
+
 	// update bookmark with partialBookmark
+	if req.Url != nil {
+		bookmark.Url = *req.Url
+	}
+
+	if req.Summary != nil {
+		bookmark.Summary = *req.Summary
+	}
+
+	if err := h.Store.UpdateBookmark(bookmark); err != nil {
+		return err
+	}
+
 	// return status and updated bookmark
-	return nil
+	return WriteJSON(w, http.StatusOK, &UpdateBookmarkResponse{
+		HandlerResponse: HandlerResponse{
+			Ok:  true,
+			Msg: "Bookmark updated successfully",
+		},
+		Bookmark: bookmark,
+	})
+}
+
+type DeleteBookmarkResponse struct {
+	HandlerResponse
+	Bookmark *types.Bookmark `json:"bookmark"`
 }
 
 func (h *Handlers) DeleteBookmarkHandler(w http.ResponseWriter, r *http.Request) error {
-	// get session token in cookie
-	// validate session token
-	// get user by userId associated to the session
-	// parse input JSON { bookmarkId }
+	// get userId from auth middleware context
+	userId := r.Context().Value("userId").(uuid.UUID)
+
+	// get id from url param and parse to uuid
+	id, err := uuid.Parse(chi.URLParam(r, "id"))
+	if err != nil {
+		return err
+	}
+
 	// get bookmark by bookmarkId
+	bookmark, err := h.Store.GetBookmark(id)
+	if err != nil {
+		return err
+	}
+
 	// validate bookmark's userId and session userId
+	if userId != bookmark.UserId {
+		return fmt.Errorf("Unauthorised to view this bookmark")
+	}
+
 	// delete bookmark by bookmarkId
+	if err := h.Store.DeleteBookmark(id); err != nil {
+		return err
+	}
+
 	// return status and deleted bookmark
-	return nil
+	return WriteJSON(w, http.StatusOK, &DeleteBookmarkResponse{
+		HandlerResponse: HandlerResponse{
+			Ok:  true,
+			Msg: "Bookmark deleted successfully",
+		},
+		Bookmark: bookmark,
+	})
 }
 
 func (h *Handlers) SummariseBookmarkHandler(w http.ResponseWriter, r *http.Request) error {
