@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
-	"summar/server/cookie"
 	"summar/server/handlers"
 	"summar/server/stores"
 	"summar/server/utils"
@@ -21,23 +20,27 @@ func TestRoutes(t *testing.T) {
 	s := NewServer()
 	s.MountHandlers(h)
 
-	var sessionToken string
+	var sessionCookie *http.Cookie
 	var bookmarkId uuid.UUID
 
 	t.Run("Test signup route", func(t *testing.T) {
+		// format request
 		reqBody := utils.JSONMarshal(&handlers.SignupRequest{
 			Email:    "test@test.com",
 			Password: "123",
 		})
 
 		req, err := http.NewRequest("POST", "/signup", strings.NewReader(reqBody))
-		req.Header.Set("Content-Type", "application/json")
 		if err != nil {
 			t.Fatal(err)
 		}
 
+		req.Header.Set("Content-Type", "application/json")
+
+		// execute request
 		res := ExecuteRequest(req, s)
 
+		// check response
 		CheckResponseCode(t, http.StatusOK, res.Code)
 
 		resBody := CheckResponseBody[handlers.SignupResponse](t, res.Body.Bytes())
@@ -45,37 +48,45 @@ func TestRoutes(t *testing.T) {
 	})
 
 	t.Run("Test login route", func(t *testing.T) {
+		// format request
 		reqBody := utils.JSONMarshal(&handlers.LoginRequest{
 			Email:    "test@test.com",
 			Password: "123",
 		})
 
 		req, err := http.NewRequest("POST", "/login", strings.NewReader(reqBody))
-		req.Header.Set("Content-Type", "application/json")
 		if err != nil {
 			t.Fatal(err)
 		}
 
+		req.Header.Set("Content-Type", "application/json")
+
+		// execute request
 		res := ExecuteRequest(req, s)
 
+		// check response
 		CheckResponseCode(t, http.StatusOK, res.Code)
 
 		resBody := CheckResponseBody[handlers.HandlerResponse](t, res.Body.Bytes())
 		t.Logf("login response:\n%+v\n", resBody)
 
-		sessionToken = res.Result().Cookies()[0].Value
-		t.Log("session token:", sessionToken)
+		// set external vars
+		sessionCookie = res.Result().Cookies()[0]
 	})
 
 	t.Run("Test get user route", func(t *testing.T) {
-		req, err := http.NewRequest("POST", "/me", nil)
+		// format request
+		req, err := http.NewRequest("GET", "/me", nil)
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		res := ExecuteRequest(req, s, sessionToken)
-		t.Logf("res: %+v", res)
+		req.AddCookie(sessionCookie)
 
+		// execute request
+		res := ExecuteRequest(req, s)
+
+		// check response
 		CheckResponseCode(t, http.StatusOK, res.Code)
 
 		resBody := CheckResponseBody[handlers.GetUserResponse](t, res.Body.Bytes())
@@ -92,7 +103,9 @@ func TestRoutes(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		res := ExecuteRequest(req, s, sessionToken)
+		req.AddCookie(sessionCookie)
+
+		res := ExecuteRequest(req, s)
 
 		CheckResponseCode(t, http.StatusOK, res.Code)
 
@@ -110,8 +123,9 @@ func TestRoutes(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		res := ExecuteRequest(req, s, sessionToken)
-		t.Log("res", res)
+		req.AddCookie(sessionCookie)
+
+		res := ExecuteRequest(req, s)
 
 		CheckResponseCode(t, http.StatusOK, res.Code)
 
@@ -120,13 +134,8 @@ func TestRoutes(t *testing.T) {
 	})
 }
 
-func ExecuteRequest(req *http.Request, s *Server, sessionToken ...string) *httptest.ResponseRecorder {
+func ExecuteRequest(req *http.Request, s *Server) *httptest.ResponseRecorder {
 	rr := httptest.NewRecorder()
-
-	for _, s := range sessionToken {
-		cookie.SetSessionTokenCookie(rr, s)
-	}
-
 	s.Router.ServeHTTP(rr, req)
 
 	return rr
