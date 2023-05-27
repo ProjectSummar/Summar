@@ -8,8 +8,9 @@ import (
 )
 
 type MockStore struct {
-	Users    []*types.User
-	Sessions []*types.Session
+	Users     []*types.User
+	Sessions  []*types.Session
+	Bookmarks []*types.Bookmark
 }
 
 func NewMockStore() *MockStore {
@@ -21,6 +22,7 @@ func NewMockStore() *MockStore {
 
 func (s *MockStore) CreateSession(session *types.Session) error {
 	s.Sessions = append(s.Sessions, session)
+
 	return nil
 }
 
@@ -36,6 +38,7 @@ func (s *MockStore) GetSession(token string) (*types.Session, error) {
 
 func (s *MockStore) CreateUser(user *types.User) error {
 	s.Users = append(s.Users, user)
+
 	return nil
 }
 
@@ -57,4 +60,59 @@ func (s *MockStore) GetUserByEmail(email string) (*types.User, error) {
 	}
 
 	return nil, fmt.Errorf("User not found")
+}
+
+func (s *MockStore) CreateBookmark(bookmark *types.Bookmark) error {
+	s.Bookmarks = append(s.Bookmarks, bookmark)
+	return nil
+}
+
+func (s *MockStore) GetBookmark(id uuid.UUID) (*types.Bookmark, error) {
+	for _, bookmark := range s.Bookmarks {
+		if bookmark.Id == id {
+			return bookmark, nil
+		}
+	}
+
+	return nil, fmt.Errorf("Bookmark not found")
+}
+
+func (s *MockStore) GetBookmarksByUserId(userId uuid.UUID) ([]*types.Bookmark, error) {
+	bookmarks := []*types.Bookmark{}
+
+	for _, bookmark := range s.Bookmarks {
+		if bookmark.UserId == userId {
+			bookmarks = append(bookmarks, bookmark)
+		}
+	}
+
+	return bookmarks, nil
+}
+
+func (s *MockStore) UpdateBookmark(b *types.Bookmark) error {
+	bookmark, err := s.GetBookmark(b.Id)
+	if err != nil {
+		return err
+	}
+
+	if b.Url != "" {
+		bookmark.Url = b.Url
+	}
+
+	if b.Summary != "" {
+		bookmark.Summary = b.Summary
+	}
+
+	return nil
+}
+
+func (s *MockStore) DeleteBookmark(id uuid.UUID) error {
+	for idx, bookmark := range s.Bookmarks {
+		if bookmark.Id == id {
+			s.Bookmarks[idx] = s.Bookmarks[len(s.Bookmarks)-1]
+			s.Bookmarks = s.Bookmarks[:len(s.Bookmarks)-1]
+		}
+	}
+
+	return nil
 }
