@@ -22,24 +22,22 @@ func NewServer() *Server {
 }
 
 func (s *Server) MountHandlers(h *handlers.Handlers) {
-	router := chi.NewRouter()
-
-	router.Use(middleware.Logger)
-	router.Use(middleware.Recoverer)
+	s.Router.Use(middleware.Logger)
+	s.Router.Use(middleware.Recoverer)
 
 	// public routes
-	router.Post("/login", handlers.ToHttpHandlerFunc(h.LoginHandler))
-	router.Post("/signup", handlers.ToHttpHandlerFunc(h.SignupHandler))
+	s.Router.Post("/login", handlers.ToHttpHandlerFunc(h.LoginHandler))
+	s.Router.Post("/signup", handlers.ToHttpHandlerFunc(h.SignupHandler))
 
 	// private routes
-	router.Group(func(router chi.Router) {
-		router.Use(handlers.ToMiddleware(h.AuthMiddlewareFunc))
-		router.Get("/me", handlers.ToHttpHandlerFunc(h.GetUserHandler))
-		router.Route("/bookmark", func(router chi.Router) {
-			router.Post("/", handlers.ToHttpHandlerFunc(h.CreateBookmarkHandler))
-			router.Get("/{id}", handlers.ToHttpHandlerFunc(h.GetBookmarkHandler))
-			router.Patch("/{id}", handlers.ToHttpHandlerFunc(h.UpdateBookmarkHandler))
-			router.Delete("/{id}", handlers.ToHttpHandlerFunc(h.DeleteBookmarkHandler))
+	s.Router.Group(func(r chi.Router) {
+		r.Use(handlers.ToMiddleware(h.AuthMiddlewareFunc))
+		r.Get("/me", handlers.ToHttpHandlerFunc(h.GetUserHandler))
+		r.Route("/bookmark", func(r chi.Router) {
+			r.Post("/", handlers.ToHttpHandlerFunc(h.CreateBookmarkHandler))
+			r.Get("/{id}", handlers.ToHttpHandlerFunc(h.GetBookmarkHandler))
+			r.Patch("/{id}", handlers.ToHttpHandlerFunc(h.UpdateBookmarkHandler))
+			r.Delete("/{id}", handlers.ToHttpHandlerFunc(h.DeleteBookmarkHandler))
 			// router.Post("/summarise", ToHttpHandlerFunc(s.SummariseBookmarkHandler))
 		})
 	})
