@@ -23,6 +23,6 @@ type Store interface {
 	CreateBookmark(*types.Bookmark) error
 	GetBookmark(uuid.UUID) (*types.Bookmark, error)
 	GetBookmarksByUserId(uuid.UUID) ([]*types.Bookmark, error)
-	// UpdateBookmark
-	// DeleteBookmark
+	UpdateBookmark(*types.Bookmark) error
+	DeleteBookmark(uuid.UUID) error
 }

@@ -204,6 +204,38 @@ func (s *PostgresStore) GetBookmarksByUserId(userId uuid.UUID) ([]*types.Bookmar
 	return bookmarks, nil
 }
 
+func (s *PostgresStore) UpdateBookmark(bookmark *types.Bookmark) error {
+	query := `
+	UPDATE bookmarks SET
+	url = $2,
+	summary = $3
+	WHERE id = $1
+	`
+
+	_, err := s.Db.Exec(
+		query,
+		bookmark.Id,
+		bookmark.Url,
+		bookmark.Summary,
+	)
+	if err != nil {
+		return err
+	}
+
+	log.Printf("Bookmark updated\n%+v\n", utils.JSONMarshal(bookmark))
+	return nil
+}
+
+func (s *PostgresStore) DeleteBookmark(id uuid.UUID) error {
+	_, err := s.Db.Exec("DELETE FROM bookmarks WHERE id = $1", id)
+	if err != nil {
+		return err
+	}
+
+	log.Println("Bookmark deleted", id)
+	return nil
+}
+
 // Initialisation
 
 func (s *PostgresStore) Init() error {
