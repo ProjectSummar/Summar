@@ -35,7 +35,7 @@ func TestRoutes(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("content-type", "application/json")
 
 		// execute request
 		res := ExecuteRequest(req, s)
@@ -59,7 +59,7 @@ func TestRoutes(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("content-type", "application/json")
 
 		// execute request
 		res := ExecuteRequest(req, s)

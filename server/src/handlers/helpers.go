@@ -41,7 +41,7 @@ func ToMiddleware(f MiddlewareFunc) Middleware {
 }
 
 func WriteJSON(w http.ResponseWriter, status int, v any) error {
-	w.Header().Add("Content-Type", "application/json")
+	w.Header().Add("content-type", "application/json")
 	w.WriteHeader(status)
 
 	return json.NewEncoder(w).Encode(v)
