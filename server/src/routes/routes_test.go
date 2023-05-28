@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -195,11 +194,10 @@ func CheckResponseCode(t *testing.T, expected, actual int) {
 }
 
 func CheckResponseBody[T any](t *testing.T, body []byte) *T {
-	var resBody T
-
-	if err := json.Unmarshal(body, &resBody); err != nil {
+	if resBody, err := utils.JSONUnmarshal[T](body); err != nil {
 		t.Fatal(err)
+		return nil
+	} else {
+		return resBody
 	}
-
-	return &resBody
 }
