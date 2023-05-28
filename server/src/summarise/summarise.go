@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"summar/server/types"
 	"summar/server/utils"
@@ -20,15 +21,18 @@ type SmApiResponse struct {
 }
 
 func SummariseBookmark(bookmark *types.Bookmark) (*SmApiResponse, error) {
+	apiBaseURL := os.Getenv("API_BASE_URL")
 	apiKey := os.Getenv("API_KEY")
 
-	apiUrl := fmt.Sprintf(
-		"https://api.smmry.com/&SM_API_KEY=%s&SM_URL=%s",
-		apiKey,
-		bookmark.Url,
-	)
+	apiUrl, _ := url.Parse(apiBaseURL)
 
-	req, err := http.NewRequest("POST", apiUrl, nil)
+	apiQuery := apiUrl.Query()
+	apiQuery.Set("SM_API_KEY", apiKey)
+	apiQuery.Set("SM_URL", bookmark.Url)
+
+	apiUrl.RawQuery = apiQuery.Encode()
+
+	req, err := http.NewRequest("POST", apiUrl.String(), nil)
 	if err != nil {
 		return nil, err
 	}
