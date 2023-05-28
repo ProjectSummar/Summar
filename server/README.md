@@ -99,14 +99,9 @@
 - Validate that current logged in user is authorised to modify this bookmark
 - Delete the bookmark with the given id
 
-### Todo
+### Summarise bookmark
 
-- `/bookmark`
-  - `/summarise`
-    - Params
-      - bookmark id
-    - Description
-      - Retrieves url from DB using id
-      - Scrape the url for the body text
-      - Send an API request to OpenAI API to summarise the body text
-      - Format and store the result of the API request in the DB
+- `/bookmark/{id}/summarise`
+- POST request
+- Sends the url of the bookmark to the [smmry api](https://smmry.com/api) for summarisation
+- Gets the summary and updates the bookmark

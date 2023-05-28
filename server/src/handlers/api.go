@@ -1,13 +1,12 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"summar/server/cookie"
 	"summar/server/password"
+	"summar/server/summarise"
 	"summar/server/types"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 )
 
@@ -174,25 +173,8 @@ type GetBookmarkResponse struct {
 }
 
 func (h *Handlers) GetBookmarkHandler(w http.ResponseWriter, r *http.Request) error {
-	// get userId from auth middleware context
-	userId := r.Context().Value("userId").(uuid.UUID)
-
-	// get id from url param and parse to uuid
-	id, err := uuid.Parse(chi.URLParam(r, "id"))
-	if err != nil {
-		return err
-	}
-
-	// get bookmark by bookmarkId
-	bookmark, err := h.Store.GetBookmark(id)
-	if err != nil {
-		return err
-	}
-
-	// validate bookmark's userId and session userId
-	if userId != bookmark.UserId {
-		return fmt.Errorf("Unauthorised to view this bookmark")
-	}
+	// get bookmark from bookmark middleware context
+	bookmark := r.Context().Value("bookmark").(*types.Bookmark)
 
 	// return status and bookmark
 	return WriteJSON(w, http.StatusOK, &GetBookmarkResponse{
@@ -217,30 +199,13 @@ type (
 )
 
 func (h *Handlers) UpdateBookmarkHandler(w http.ResponseWriter, r *http.Request) error {
-	// get userId from auth middleware context
-	userId := r.Context().Value("userId").(uuid.UUID)
-
-	// get id from url param and parse to uuid
-	id, err := uuid.Parse(chi.URLParam(r, "id"))
-	if err != nil {
-		return err
-	}
+	// get bookmark from bookmark middleware context
+	bookmark := r.Context().Value("bookmark").(*types.Bookmark)
 
 	// parse input JSON { partialBookmark }
 	var req UpdateBookmarkRequest
 	if err := ReadJSON(r, &req); err != nil {
 		return err
-	}
-
-	// get bookmark by bookmarkId
-	bookmark, err := h.Store.GetBookmark(id)
-	if err != nil {
-		return err
-	}
-
-	// validate bookmark's userId and session userId
-	if userId != bookmark.UserId {
-		return fmt.Errorf("Unauthorised to view this bookmark")
 	}
 
 	// update bookmark with partialBookmark
@@ -272,28 +237,11 @@ type DeleteBookmarkResponse struct {
 }
 
 func (h *Handlers) DeleteBookmarkHandler(w http.ResponseWriter, r *http.Request) error {
-	// get userId from auth middleware context
-	userId := r.Context().Value("userId").(uuid.UUID)
-
-	// get id from url param and parse to uuid
-	id, err := uuid.Parse(chi.URLParam(r, "id"))
-	if err != nil {
-		return err
-	}
-
-	// get bookmark by bookmarkId
-	bookmark, err := h.Store.GetBookmark(id)
-	if err != nil {
-		return err
-	}
-
-	// validate bookmark's userId and session userId
-	if userId != bookmark.UserId {
-		return fmt.Errorf("Unauthorised to view this bookmark")
-	}
+	// get bookmark from bookmark middleware context
+	bookmark := r.Context().Value("bookmark").(*types.Bookmark)
 
 	// delete bookmark by bookmarkId
-	if err := h.Store.DeleteBookmark(id); err != nil {
+	if err := h.Store.DeleteBookmark(bookmark.Id); err != nil {
 		return err
 	}
 
@@ -308,11 +256,25 @@ func (h *Handlers) DeleteBookmarkHandler(w http.ResponseWriter, r *http.Request)
 }
 
 func (h *Handlers) SummariseBookmarkHandler(w http.ResponseWriter, r *http.Request) error {
-	// parse input JSON { bookmarkId }
-	// get bookmark by bookmarkId
-	// scrape bookmark for main text
-	// send main text to OpenAI API for summarisation
+	// get bookmark from bookmark middleware context
+	bookmark := r.Context().Value("bookmark").(*types.Bookmark)
+
+	// summarise bookmark
+	summariseResponse, err := summarise.SummariseBookmark(bookmark)
+	if err != nil {
+		return err
+	}
+
 	// update bookmark with summary
+	bookmark.Summary = summariseResponse.Content
+
+	if err := h.Store.UpdateBookmark(bookmark); err != nil {
+		return err
+	}
+
 	// return status and summarised bookmark
-	return nil
+	return WriteJSON(w, http.StatusOK, &HandlerResponse{
+		Ok:  true,
+		Msg: "Bookmark summarised successfully",
+	})
 }
