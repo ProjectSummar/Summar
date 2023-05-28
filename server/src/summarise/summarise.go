@@ -33,7 +33,6 @@ func SummariseBookmark(bookmark *types.Bookmark) (*SmApiResponse, error) {
 		return nil, err
 	}
 
-	// req.Header.Set("content-type", "application/x-www-form-urlencoded")
 	req.Header.Set("expect", "100-continue")
 
 	res, err := http.DefaultClient.Do(req)
