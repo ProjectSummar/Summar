@@ -32,13 +32,20 @@ func (s *Server) MountHandlers(h *handlers.Handlers) {
 	// private routes
 	s.Router.Group(func(r chi.Router) {
 		r.Use(handlers.ToMiddleware(h.AuthMiddlewareFunc))
+
 		r.Get("/me", handlers.ToHttpHandlerFunc(h.GetUserHandler))
+
 		r.Route("/bookmark", func(r chi.Router) {
 			r.Post("/", handlers.ToHttpHandlerFunc(h.CreateBookmarkHandler))
-			r.Get("/{id}", handlers.ToHttpHandlerFunc(h.GetBookmarkHandler))
-			r.Patch("/{id}", handlers.ToHttpHandlerFunc(h.UpdateBookmarkHandler))
-			r.Delete("/{id}", handlers.ToHttpHandlerFunc(h.DeleteBookmarkHandler))
-			// router.Post("/summarise", ToHttpHandlerFunc(s.SummariseBookmarkHandler))
+
+			r.Route("/{id}", func(r chi.Router) {
+				r.Use(handlers.ToMiddleware(h.BookmarkMiddlewareFunc))
+
+				r.Get("/", handlers.ToHttpHandlerFunc(h.GetBookmarkHandler))
+				r.Patch("/", handlers.ToHttpHandlerFunc(h.UpdateBookmarkHandler))
+				r.Delete("/", handlers.ToHttpHandlerFunc(h.DeleteBookmarkHandler))
+				// router.Post("/{id}/summarise", ToHttpHandlerFunc(s.SummariseBookmarkHandler))
+			})
 		})
 	})
 }
