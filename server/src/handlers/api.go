@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"net/http"
-	"strings"
 	"summar/server/cookie"
 	"summar/server/password"
 	"summar/server/summarise"
@@ -261,13 +260,13 @@ func (h *Handlers) SummariseBookmarkHandler(w http.ResponseWriter, r *http.Reque
 	bookmark := r.Context().Value("bookmark").(*types.Bookmark)
 
 	// summarise bookmark
-	summariseResponse, err := summarise.SummariseBookmark(bookmark.Url)
+	summariseResponse, err := summarise.SummariseBookmark(bookmark)
 	if err != nil {
 		return err
 	}
 
 	// update bookmark with summary
-	bookmark.Summary = strings.Join(summariseResponse.Summary, " ")
+	bookmark.Summary = summariseResponse.Content
 
 	if err := h.Store.UpdateBookmark(bookmark); err != nil {
 		return err
