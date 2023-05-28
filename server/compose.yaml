@@ -1,0 +1,24 @@
+services:
+  pg_database:
+    container_name: pg_database
+    environment:
+      - DATABASE_HOST=${DB_HOST}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    image: postgres:alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - ./pg_data:/var/lib/postgresql/data
+
+  server:
+    build: .
+    container_name: server
+    depends_on:
+      - pg_database
+    env_file:
+      - .env
+    ports:
+      - 3001:3001
+    restart: on-failure
