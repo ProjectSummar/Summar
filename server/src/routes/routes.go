@@ -44,7 +44,7 @@ func (s *Server) MountHandlers(h *handlers.Handlers) {
 				r.Get("/", handlers.ToHttpHandlerFunc(h.GetBookmarkHandler))
 				r.Patch("/", handlers.ToHttpHandlerFunc(h.UpdateBookmarkHandler))
 				r.Delete("/", handlers.ToHttpHandlerFunc(h.DeleteBookmarkHandler))
-				// router.Post("/{id}/summarise", ToHttpHandlerFunc(s.SummariseBookmarkHandler))
+				r.Post("/summarise", handlers.ToHttpHandlerFunc(h.SummariseBookmarkHandler))
 			})
 		})
 	})

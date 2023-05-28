@@ -2,8 +2,10 @@ package handlers
 
 import (
 	"net/http"
+	"strings"
 	"summar/server/cookie"
 	"summar/server/password"
+	"summar/server/summarise"
 	"summar/server/types"
 
 	"github.com/google/uuid"
@@ -255,11 +257,25 @@ func (h *Handlers) DeleteBookmarkHandler(w http.ResponseWriter, r *http.Request)
 }
 
 func (h *Handlers) SummariseBookmarkHandler(w http.ResponseWriter, r *http.Request) error {
-	// parse input JSON { bookmarkId }
-	// get bookmark by bookmarkId
-	// scrape bookmark for main text
-	// send main text to OpenAI API for summarisation
+	// get bookmark from bookmark middleware context
+	bookmark := r.Context().Value("bookmark").(*types.Bookmark)
+
+	// summarise bookmark
+	summariseResponse, err := summarise.SummariseBookmark(bookmark.Url)
+	if err != nil {
+		return err
+	}
+
 	// update bookmark with summary
+	bookmark.Summary = strings.Join(summariseResponse.Summary, " ")
+
+	if err := h.Store.UpdateBookmark(bookmark); err != nil {
+		return err
+	}
+
 	// return status and summarised bookmark
-	return nil
+	return WriteJSON(w, http.StatusOK, &HandlerResponse{
+		Ok:  true,
+		Msg: "Bookmark summarised successfully",
+	})
 }
