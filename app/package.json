@@ -41,5 +41,9 @@
         "react-test-renderer": "18.2.0",
         "typescript": "^4.9.4"
     },
-    "private": true
+    "private": true,
+    "overrides": {
+        "metro": "0.76.0",
+        "metro-resolver": "0.76.0"
+    }
 }
