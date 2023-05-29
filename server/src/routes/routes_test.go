@@ -193,11 +193,11 @@ func CheckResponseCode(t *testing.T, expected, actual int) {
 	}
 }
 
-func CheckResponseBody[T any](t *testing.T, body []byte) *T {
-	if resBody, err := utils.JSONUnmarshal[T](body); err != nil {
+func CheckResponseBody[T any](t *testing.T, body []byte) T {
+	resBody, err := utils.JSONUnmarshal[T](body)
+	if err != nil {
 		t.Fatal(err)
-		return nil
-	} else {
-		return resBody
 	}
+
+	return resBody
 }
