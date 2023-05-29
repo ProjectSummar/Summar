@@ -56,7 +56,7 @@ func NewPostgresStore() (*PostgresStore, error) {
 
 // Session operations
 
-func (s *PostgresStore) CreateSession(session *types.Session) error {
+func (s *PostgresStore) CreateSession(session types.Session) error {
 	query := `
 	insert into sessions
 	(token, user_id, expires_at)
@@ -77,22 +77,22 @@ func (s *PostgresStore) CreateSession(session *types.Session) error {
 	return nil
 }
 
-func (s *PostgresStore) GetSession(token string) (*types.Session, error) {
+func (s *PostgresStore) GetSession(token string) (types.Session, error) {
 	rows, err := s.Db.Query("SELECT * FROM sessions WHERE token = $1", token)
 	if err != nil {
-		return nil, err
+		return types.Session{}, err
 	}
 
 	for rows.Next() {
 		return ScanSessionRow(rows)
 	}
 
-	return nil, fmt.Errorf("Session not found")
+	return types.Session{}, fmt.Errorf("Session not found")
 }
 
 // User operations
 
-func (s *PostgresStore) CreateUser(user *types.User) error {
+func (s *PostgresStore) CreateUser(user types.User) error {
 	query := `
 	insert into users
 	(id, email, password_hash, created_at)
@@ -114,33 +114,33 @@ func (s *PostgresStore) CreateUser(user *types.User) error {
 	return nil
 }
 
-func (s *PostgresStore) GetUser(id uuid.UUID) (*types.User, error) {
+func (s *PostgresStore) GetUser(id uuid.UUID) (types.User, error) {
 	rows, err := s.Db.Query("SELECT * FROM users WHERE id = $1", id)
 	if err != nil {
-		return nil, err
+		return types.User{}, err
 	}
 
 	for rows.Next() {
 		return ScanUserRow(rows)
 	}
 
-	return nil, fmt.Errorf("User not found")
+	return types.User{}, fmt.Errorf("User not found")
 }
 
-func (s *PostgresStore) GetUserByEmail(email string) (*types.User, error) {
+func (s *PostgresStore) GetUserByEmail(email string) (types.User, error) {
 	rows, err := s.Db.Query("SELECT * FROM users WHERE email = $1", email)
 	if err != nil {
-		return nil, err
+		return types.User{}, err
 	}
 
 	for rows.Next() {
 		return ScanUserRow(rows)
 	}
 
-	return nil, fmt.Errorf("User not found")
+	return types.User{}, fmt.Errorf("User not found")
 }
 
-func (s *PostgresStore) UpdateUser(user *types.User) error {
+func (s *PostgresStore) UpdateUser(user types.User) error {
 	return nil
 }
 
@@ -150,7 +150,7 @@ func (s *PostgresStore) DeleteUser(userId uuid.UUID) error {
 
 // Bookmark operations
 
-func (s *PostgresStore) CreateBookmark(bookmark *types.Bookmark) error {
+func (s *PostgresStore) CreateBookmark(bookmark types.Bookmark) error {
 	query := `
 	insert into bookmarks
 	(id, user_id, url, summary)
@@ -172,26 +172,26 @@ func (s *PostgresStore) CreateBookmark(bookmark *types.Bookmark) error {
 	return nil
 }
 
-func (s *PostgresStore) GetBookmark(id uuid.UUID) (*types.Bookmark, error) {
+func (s *PostgresStore) GetBookmark(id uuid.UUID) (types.Bookmark, error) {
 	rows, err := s.Db.Query("SELECT * FROM bookmarks WHERE id = $1", id)
 	if err != nil {
-		return nil, err
+		return types.Bookmark{}, err
 	}
 
 	for rows.Next() {
 		return ScanBookmarkRow(rows)
 	}
 
-	return nil, fmt.Errorf("Bookmark not found")
+	return types.Bookmark{}, fmt.Errorf("Bookmark not found")
 }
 
-func (s *PostgresStore) GetBookmarksByUserId(userId uuid.UUID) ([]*types.Bookmark, error) {
+func (s *PostgresStore) GetBookmarksByUserId(userId uuid.UUID) ([]types.Bookmark, error) {
 	rows, err := s.Db.Query("SELECT * FROM bookmarks WHERE user_id = $1", userId)
 	if err != nil {
 		return nil, err
 	}
 
-	bookmarks := []*types.Bookmark{}
+	bookmarks := []types.Bookmark{}
 	for rows.Next() {
 		bookmark, err := ScanBookmarkRow(rows)
 		if err != nil {
@@ -204,7 +204,7 @@ func (s *PostgresStore) GetBookmarksByUserId(userId uuid.UUID) ([]*types.Bookmar
 	return bookmarks, nil
 }
 
-func (s *PostgresStore) UpdateBookmark(bookmark *types.Bookmark) error {
+func (s *PostgresStore) UpdateBookmark(bookmark types.Bookmark) error {
 	query := `
 	UPDATE bookmarks SET
 	url = $2,
@@ -309,7 +309,7 @@ func (s *PostgresStore) Clear() {
 
 // Helpers
 
-func ScanSessionRow(rows *sql.Rows) (*types.Session, error) {
+func ScanSessionRow(rows *sql.Rows) (types.Session, error) {
 	var session types.Session
 
 	err := rows.Scan(
@@ -318,10 +318,10 @@ func ScanSessionRow(rows *sql.Rows) (*types.Session, error) {
 		&session.ExpiresAt,
 	)
 
-	return &session, err
+	return session, err
 }
 
-func ScanUserRow(rows *sql.Rows) (*types.User, error) {
+func ScanUserRow(rows *sql.Rows) (types.User, error) {
 	var user types.User
 
 	err := rows.Scan(
@@ -331,10 +331,10 @@ func ScanUserRow(rows *sql.Rows) (*types.User, error) {
 		&user.CreatedAt,
 	)
 
-	return &user, err
+	return user, err
 }
 
-func ScanBookmarkRow(rows *sql.Rows) (*types.Bookmark, error) {
+func ScanBookmarkRow(rows *sql.Rows) (types.Bookmark, error) {
 	var bookmark types.Bookmark
 
 	err := rows.Scan(
@@ -344,5 +344,5 @@ func ScanBookmarkRow(rows *sql.Rows) (*types.Bookmark, error) {
 		&bookmark.Summary,
 	)
 
-	return &bookmark, err
+	return bookmark, err
 }
