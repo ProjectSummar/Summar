@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
     StyleSheet,
     View,
@@ -20,7 +20,7 @@ import Animated, {
 
 const { width, height } = Dimensions.get("window"); // get dimensions of phone
 
-export default function SignInPage() {
+function LoginScreen() {
     const imagePosition = useSharedValue(1);
     const formButtonScale = useSharedValue(1);
     const [isRegistering, setIsRegistering] = useState(false);
@@ -132,7 +132,7 @@ export default function SignInPage() {
                 </Animated.View>
                 <Animated.View style={buttonsAnimatedStyle}>
                     <Pressable style={styles.button} onPress={registerHandler}>
-                        <Text style={styles.buttonText}>REGISTER</Text>
+                        <Text style={styles.buttonText}>SIGN UP</Text>
                     </Pressable>
                 </Animated.View>
                 <Animated.View
@@ -167,7 +167,7 @@ export default function SignInPage() {
                             }
                         >
                             <Text style={styles.buttonText}>
-                                {isRegistering ? "REGISTER" : "LOG IN"}
+                                {isRegistering ? "SIGN UP" : "LOG IN"}
                             </Text>
                         </Pressable>
                     </Animated.View>
@@ -257,3 +257,5 @@ const styles = StyleSheet.create({
         top: -20,
     },
 });
+
+export default LoginScreen;

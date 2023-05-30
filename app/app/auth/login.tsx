@@ -1,10 +1,12 @@
-import { View, Text } from "react-native";
+import LoginScreen from "@screens/login-screen";
+import { StatusBar } from "expo-status-bar";
 
 const Login = () => {
     return (
-        <View>
-            <Text>This is login</Text>
-        </View>
+        <>
+            <StatusBar style="light" />
+            <LoginScreen />
+        </>
     );
 };
 
