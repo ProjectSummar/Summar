@@ -6,7 +6,8 @@
         "paths": {
             "@screens/*": ["./screens/*"],
             "@assets/*": ["./assets/*"],
-            "@app/*": ["./app/*"]
+            "@app/*": ["./app/*"],
+            "@utils/*": ["./utils/*"]
         }
     },
     "exclude": ["node_modules", "*.config.js"]
