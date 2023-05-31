@@ -1,12 +1,12 @@
 import { Stack } from "expo-router";
 
-function Layout() {
+const Layout = () => {
     return (
         <Stack
             initialRouteName="signup"
             screenOptions={{ headerShown: false }}
         />
     );
-}
+};
 
 export default Layout;

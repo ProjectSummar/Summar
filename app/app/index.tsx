@@ -1,7 +1,7 @@
 import { Redirect } from "expo-router";
 
-function Index() {
+const Index = () => {
     return <Redirect href="/auth" />;
-}
+};
 
 export default Index;
