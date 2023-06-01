@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"summar/server/types"
 	"summar/server/utils"
@@ -19,32 +20,35 @@ type SmApiResponse struct {
 	Error          string `json:"sm_api_error"`
 }
 
-func SummariseBookmark(bookmark *types.Bookmark) (*SmApiResponse, error) {
+func SummariseBookmark(bookmark types.Bookmark) (SmApiResponse, error) {
+	apiBaseURL := os.Getenv("API_BASE_URL")
 	apiKey := os.Getenv("API_KEY")
 
-	apiUrl := fmt.Sprintf(
-		"https://api.smmry.com/&SM_API_KEY=%s&SM_URL=%s",
-		apiKey,
-		bookmark.Url,
-	)
+	apiUrl, _ := url.Parse(apiBaseURL)
 
-	req, err := http.NewRequest("POST", apiUrl, nil)
+	apiQuery := apiUrl.Query()
+	apiQuery.Set("SM_API_KEY", apiKey)
+	apiQuery.Set("SM_URL", bookmark.Url)
+
+	apiUrl.RawQuery = apiQuery.Encode()
+
+	req, err := http.NewRequest("POST", apiUrl.String(), nil)
 	if err != nil {
-		return nil, err
+		return SmApiResponse{}, err
 	}
 
 	req.Header.Set("expect", "100-continue")
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return nil, err
+		return SmApiResponse{}, err
 	}
 
 	defer res.Body.Close()
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		return nil, err
+		return SmApiResponse{}, err
 	}
 
 	log.Println("summarise api response body:\n", string(body))
@@ -52,6 +56,6 @@ func SummariseBookmark(bookmark *types.Bookmark) (*SmApiResponse, error) {
 	if res.StatusCode == 200 {
 		return utils.JSONUnmarshal[SmApiResponse](body)
 	} else {
-		return nil, fmt.Errorf("Error while summarising bookmark: %+v", string(body))
+		return SmApiResponse{}, fmt.Errorf("Error while summarising bookmark: %+v", string(body))
 	}
 }
