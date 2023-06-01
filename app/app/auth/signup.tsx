@@ -9,7 +9,7 @@ const Signup = () => {
             <StatusBar style="dark" />
             <SafeAreaView style={styles.container}>
                 <View style={styles.signupContainer}>
-                    <Text style={styles.signupHeader}>Sign Up</Text>
+                    <Text style={styles.logo}>Summar</Text>
                     <View style={styles.input}>
                         <Text style={styles.inputLabel}>Email</Text>
                         <TextInput
@@ -49,16 +49,16 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "flex-start",
-        marginTop: 200,
+        marginTop: 150,
     },
     signupContainer: {
         width: "80%",
         marginHorizontal: "auto",
     },
-    signupHeader: {
+    logo: {
         fontWeight: "bold",
         textAlign: "center",
-        fontSize: 30,
+        fontSize: 50,
         marginBottom: 20,
     },
     input: {
