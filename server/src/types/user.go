@@ -14,8 +14,8 @@ type User struct {
 	CreatedAt    time.Time `json:"createdAt"`
 }
 
-func NewUser(email string, passwordHash string) (*User, error) {
-	user := &User{
+func NewUser(email string, passwordHash string) (User, error) {
+	user := User{
 		Id:           uuid.New(),
 		Email:        email,
 		PasswordHash: passwordHash,
@@ -23,13 +23,13 @@ func NewUser(email string, passwordHash string) (*User, error) {
 	}
 
 	if err := ValidateUser(user); err != nil {
-		return nil, err
+		return User{}, err
 	}
 
 	return user, nil
 }
 
-func ValidateUser(user *User) error {
+func ValidateUser(user User) error {
 	errMsg := "Invalid user"
 
 	if user.Id.String() == "" {

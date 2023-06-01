@@ -59,7 +59,7 @@ type (
 
 	SignupResponse struct {
 		HandlerResponse
-		User *types.User `json:"user"`
+		User types.User `json:"user"`
 	}
 )
 
@@ -95,8 +95,8 @@ func (h *Handlers) SignupHandler(w http.ResponseWriter, r *http.Request) error {
 
 type GetUserResponse struct {
 	HandlerResponse
-	User      *types.User       `json:"user"`
-	Bookmarks []*types.Bookmark `json:"bookmarks"`
+	User      types.User       `json:"user"`
+	Bookmarks []types.Bookmark `json:"bookmarks"`
 }
 
 func (h *Handlers) GetUserHandler(w http.ResponseWriter, r *http.Request) error {
@@ -133,7 +133,7 @@ type (
 
 	CreateBookmarkResponse struct {
 		HandlerResponse
-		Bookmark *types.Bookmark `json:"bookmark"`
+		Bookmark types.Bookmark `json:"bookmark"`
 	}
 )
 
@@ -169,12 +169,12 @@ func (h *Handlers) CreateBookmarkHandler(w http.ResponseWriter, r *http.Request)
 
 type GetBookmarkResponse struct {
 	HandlerResponse
-	Bookmark *types.Bookmark `json:"bookmark"`
+	Bookmark types.Bookmark `json:"bookmark"`
 }
 
 func (h *Handlers) GetBookmarkHandler(w http.ResponseWriter, r *http.Request) error {
 	// get bookmark from bookmark middleware context
-	bookmark := r.Context().Value("bookmark").(*types.Bookmark)
+	bookmark := r.Context().Value("bookmark").(types.Bookmark)
 
 	// return status and bookmark
 	return WriteJSON(w, http.StatusOK, &GetBookmarkResponse{
@@ -194,13 +194,13 @@ type (
 
 	UpdateBookmarkResponse struct {
 		HandlerResponse
-		Bookmark *types.Bookmark `json:"bookmark"`
+		Bookmark types.Bookmark `json:"bookmark"`
 	}
 )
 
 func (h *Handlers) UpdateBookmarkHandler(w http.ResponseWriter, r *http.Request) error {
 	// get bookmark from bookmark middleware context
-	bookmark := r.Context().Value("bookmark").(*types.Bookmark)
+	bookmark := r.Context().Value("bookmark").(types.Bookmark)
 
 	// parse input JSON { partialBookmark }
 	var req UpdateBookmarkRequest
@@ -233,12 +233,12 @@ func (h *Handlers) UpdateBookmarkHandler(w http.ResponseWriter, r *http.Request)
 
 type DeleteBookmarkResponse struct {
 	HandlerResponse
-	Bookmark *types.Bookmark `json:"bookmark"`
+	Bookmark types.Bookmark `json:"bookmark"`
 }
 
 func (h *Handlers) DeleteBookmarkHandler(w http.ResponseWriter, r *http.Request) error {
 	// get bookmark from bookmark middleware context
-	bookmark := r.Context().Value("bookmark").(*types.Bookmark)
+	bookmark := r.Context().Value("bookmark").(types.Bookmark)
 
 	// delete bookmark by bookmarkId
 	if err := h.Store.DeleteBookmark(bookmark.Id); err != nil {
@@ -257,7 +257,7 @@ func (h *Handlers) DeleteBookmarkHandler(w http.ResponseWriter, r *http.Request)
 
 func (h *Handlers) SummariseBookmarkHandler(w http.ResponseWriter, r *http.Request) error {
 	// get bookmark from bookmark middleware context
-	bookmark := r.Context().Value("bookmark").(*types.Bookmark)
+	bookmark := r.Context().Value("bookmark").(types.Bookmark)
 
 	// summarise bookmark
 	summariseResponse, err := summarise.SummariseBookmark(bookmark)

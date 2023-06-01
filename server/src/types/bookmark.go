@@ -13,8 +13,8 @@ type Bookmark struct {
 	Summary string    `json:"summary"`
 }
 
-func NewBookmark(userId uuid.UUID, url string) (*Bookmark, error) {
-	bookmark := &Bookmark{
+func NewBookmark(userId uuid.UUID, url string) (Bookmark, error) {
+	bookmark := Bookmark{
 		Id:      uuid.New(),
 		UserId:  userId,
 		Url:     url,
@@ -22,13 +22,13 @@ func NewBookmark(userId uuid.UUID, url string) (*Bookmark, error) {
 	}
 
 	if err := ValidateBookmark(bookmark); err != nil {
-		return nil, err
+		return Bookmark{}, err
 	}
 
 	return bookmark, nil
 }
 
-func ValidateBookmark(bookmark *Bookmark) error {
+func ValidateBookmark(bookmark Bookmark) error {
 	err := "Invalid bookmark"
 
 	if bookmark.Id.String() == "" {

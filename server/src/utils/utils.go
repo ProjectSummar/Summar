@@ -14,13 +14,13 @@ func JSONMarshal(v interface{}) string {
 	return string(s)
 }
 
-func JSONUnmarshal[T any](body []byte) (*T, error) {
+func JSONUnmarshal[T any](body []byte) (T, error) {
 	var resBody T
 
 	if err := json.Unmarshal(body, &resBody); err != nil {
-		return nil, err
+		return resBody, err
 	} else {
-		return &resBody, nil
+		return resBody, nil
 	}
 }
 
