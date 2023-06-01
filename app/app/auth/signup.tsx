@@ -8,7 +8,6 @@ import {
     View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { StatusBar } from "expo-status-bar";
 import { Link } from "expo-router";
 import { useForm, Controller } from "react-hook-form";
 import { useSignup } from "@utils/server-methods";
@@ -26,71 +25,65 @@ const Signup = () => {
     const onSubmit = (data: any) => console.log("signup:", data);
 
     return (
-        <>
-            <StatusBar style="dark" />
-            <TouchableWithoutFeedback
-                onPress={Keyboard.dismiss}
-                accessible={false}
-            >
-                <SafeAreaView style={styles.container}>
-                    <View style={styles.signupContainer}>
-                        <Text style={styles.logo}>Summar</Text>
-                        <View style={styles.input}>
-                            <Text style={styles.inputLabel}>Email</Text>
-                            <Controller
-                                control={control}
-                                rules={{ required: true }}
-                                render={({
-                                    field: { onChange, onBlur, value },
-                                }) => (
-                                    <TextInput
-                                        style={styles.inputField}
-                                        placeholder="Enter your email here"
-                                        onBlur={onBlur}
-                                        onChangeText={onChange}
-                                        value={value}
-                                    />
-                                )}
-                                name="email"
-                            />
-                        </View>
-                        <View style={styles.input}>
-                            <Text style={styles.inputLabel}>Password</Text>
-                            <Controller
-                                control={control}
-                                rules={{ required: true }}
-                                render={({
-                                    field: { onChange, onBlur, value },
-                                }) => (
-                                    <TextInput
-                                        style={styles.inputField}
-                                        placeholder="Enter your email here"
-                                        onBlur={onBlur}
-                                        onChangeText={onChange}
-                                        value={value}
-                                    />
-                                )}
-                                name="password"
-                            />
-                        </View>
-                        <Pressable
-                            style={({ pressed }) => [
-                                {
-                                    backgroundColor: pressed ? "gray" : "black",
-                                },
-                                styles.signupButton,
-                            ]}
-                            onPress={handleSubmit(onSubmit)}
-                        >
-                            <Text style={styles.signupButtonText}>Sign Up</Text>
-                        </Pressable>
-                        <Link style={styles.loginLink} href="/auth/login">
-                            Click here to Log In
-                        </Link>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+            <SafeAreaView style={styles.container}>
+                <View style={styles.signupContainer}>
+                    <Text style={styles.logo}>Summar</Text>
+                    <View style={styles.input}>
+                        <Text style={styles.inputLabel}>Email</Text>
+                        <Controller
+                            control={control}
+                            rules={{ required: true }}
+                            render={({
+                                field: { onChange, onBlur, value },
+                            }) => (
+                                <TextInput
+                                    style={styles.inputField}
+                                    placeholder="Enter your email here"
+                                    onBlur={onBlur}
+                                    onChangeText={onChange}
+                                    value={value}
+                                />
+                            )}
+                            name="email"
+                        />
                     </View>
-                </SafeAreaView>
-            </TouchableWithoutFeedback>
-        </>
+                    <View style={styles.input}>
+                        <Text style={styles.inputLabel}>Password</Text>
+                        <Controller
+                            control={control}
+                            rules={{ required: true }}
+                            render={({
+                                field: { onChange, onBlur, value },
+                            }) => (
+                                <TextInput
+                                    style={styles.inputField}
+                                    placeholder="Enter your email here"
+                                    onBlur={onBlur}
+                                    onChangeText={onChange}
+                                    value={value}
+                                />
+                            )}
+                            name="password"
+                        />
+                    </View>
+                    <Pressable
+                        style={({ pressed }) => [
+                            {
+                                backgroundColor: pressed ? "gray" : "black",
+                            },
+                            styles.signupButton,
+                        ]}
+                        onPress={handleSubmit(onSubmit)}
+                    >
+                        <Text style={styles.signupButtonText}>Sign Up</Text>
+                    </Pressable>
+                    <Link style={styles.loginLink} href="/auth/login">
+                        Click here to Log In
+                    </Link>
+                </View>
+            </SafeAreaView>
+        </TouchableWithoutFeedback>
     );
 };
 

@@ -1,11 +1,15 @@
 import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 
 const Layout = () => {
     return (
-        <Stack
-            initialRouteName="login"
-            screenOptions={{ headerShown: false }}
-        />
+        <>
+            <StatusBar style="dark" />
+            <Stack
+                initialRouteName="login"
+                screenOptions={{ headerShown: false }}
+            />
+        </>
     );
 };
 
