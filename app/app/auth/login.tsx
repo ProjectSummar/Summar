@@ -2,8 +2,21 @@ import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { Link } from "expo-router";
+import { useForm, Controller } from "react-hook-form";
+import { useLogin } from "@utils/server-methods";
+
+type LoginFormData = {
+    email: string;
+    password: string;
+};
 
 const Login = () => {
+    const { mutate: login, isError, isLoading } = useLogin();
+
+    const { control, handleSubmit } = useForm<LoginFormData>();
+
+    const onSubmit = (data: any) => console.log("login:", data);
+
     return (
         <>
             <StatusBar style="dark" />
@@ -12,16 +25,40 @@ const Login = () => {
                     <Text style={styles.logo}>Summar</Text>
                     <View style={styles.input}>
                         <Text style={styles.inputLabel}>Email</Text>
-                        <TextInput
-                            style={styles.inputField}
-                            placeholder="Enter your email here"
+                        <Controller
+                            control={control}
+                            rules={{ required: true }}
+                            render={({
+                                field: { onChange, onBlur, value },
+                            }) => (
+                                <TextInput
+                                    style={styles.inputField}
+                                    placeholder="Enter your email here"
+                                    onBlur={onBlur}
+                                    onChangeText={onChange}
+                                    value={value}
+                                />
+                            )}
+                            name="email"
                         />
                     </View>
                     <View style={styles.input}>
                         <Text style={styles.inputLabel}>Password</Text>
-                        <TextInput
-                            style={styles.inputField}
-                            placeholder="Enter your password here"
+                        <Controller
+                            control={control}
+                            rules={{ required: true }}
+                            render={({
+                                field: { onChange, onBlur, value },
+                            }) => (
+                                <TextInput
+                                    style={styles.inputField}
+                                    placeholder="Enter your email here"
+                                    onBlur={onBlur}
+                                    onChangeText={onChange}
+                                    value={value}
+                                />
+                            )}
+                            name="password"
                         />
                     </View>
                     <Pressable
@@ -31,6 +68,7 @@ const Login = () => {
                             },
                             styles.loginButton,
                         ]}
+                        onPress={handleSubmit(onSubmit)}
                     >
                         <Text style={styles.loginButtonText}>Log In</Text>
                     </Pressable>
