@@ -1,6 +1,6 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
-import { userSchema } from "./types";
+import { bookmarkSchema, userSchema } from "./types";
 
 const BASE_URL = process.env.BASE_URL;
 
@@ -65,4 +65,30 @@ const useSignup = () => {
     });
 };
 
-export { useLogin, useSignup };
+const getUserSchema = serverResponseSchema.extend({
+    user: userSchema,
+    bookmarks: z.array(bookmarkSchema),
+});
+
+const getUser = async () => {
+    const raw = await fetch(`${BASE_URL}/me`, {
+        method: "GET",
+    });
+
+    const res = getUserSchema.parse(await raw.json());
+
+    if (!res.ok) {
+        throw new Error(res.msg);
+    } else {
+        return res;
+    }
+};
+
+const useGetUser = () => {
+    return useQuery({
+        queryKey: ["user"],
+        queryFn: getUser,
+    });
+};
+
+export { useLogin, useSignup, useGetUser };
