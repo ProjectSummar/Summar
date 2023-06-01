@@ -15,12 +15,18 @@ type LoginRequest = {
 };
 
 const login = async (req: LoginRequest) => {
-    const res = await fetch(`${BASE_URL}/login`, {
+    const raw = await fetch(`${BASE_URL}/login`, {
         method: "POST",
         body: JSON.stringify(req),
     });
 
-    return serverResponseSchema.parse(await res.json());
+    const res = serverResponseSchema.parse(await raw.json());
+
+    if (!res.ok) {
+        throw new Error(res.msg);
+    } else {
+        return res;
+    }
 };
 
 const useLogin = () => {
@@ -39,12 +45,18 @@ const signupResponseSchema = serverResponseSchema.extend({
 });
 
 const signup = async (req: SignupRequest) => {
-    const res = await fetch(`${BASE_URL}/signup`, {
+    const raw = await fetch(`${BASE_URL}/signup`, {
         method: "POST",
         body: JSON.stringify(req),
     });
 
-    return signupResponseSchema.parse(await res.json());
+    const res = signupResponseSchema.parse(await raw.json());
+
+    if (!res.ok) {
+        throw new Error(res.msg);
+    } else {
+        return res;
+    }
 };
 
 const useSignup = () => {
