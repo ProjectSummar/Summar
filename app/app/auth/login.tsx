@@ -1,14 +1,15 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
+import { Link } from "expo-router";
 
 const Login = () => {
     return (
         <>
             <StatusBar style="dark" />
             <SafeAreaView style={styles.container}>
-                <View style={styles.signupContainer}>
-                    <Text style={styles.signupHeader}>Log In</Text>
+                <View style={styles.loginContainer}>
+                    <Text style={styles.loginHeader}>Log In</Text>
                     <View style={styles.input}>
                         <Text style={styles.inputLabel}>Email</Text>
                         <TextInput
@@ -28,11 +29,14 @@ const Login = () => {
                             {
                                 backgroundColor: pressed ? "gray" : "black",
                             },
-                            styles.signupButton,
+                            styles.loginButton,
                         ]}
                     >
-                        <Text style={styles.signupButtonText}>Log In</Text>
+                        <Text style={styles.loginButtonText}>Log In</Text>
                     </Pressable>
+                    <Link style={styles.signupLink} href="/auth/signup">
+                        Click here to Sign Up
+                    </Link>
                 </View>
             </SafeAreaView>
         </>
@@ -47,11 +51,11 @@ const styles = StyleSheet.create({
         justifyContent: "flex-start",
         marginTop: 200,
     },
-    signupContainer: {
+    loginContainer: {
         width: "80%",
         marginHorizontal: "auto",
     },
-    signupHeader: {
+    loginHeader: {
         fontWeight: "bold",
         textAlign: "center",
         fontSize: 30,
@@ -68,16 +72,20 @@ const styles = StyleSheet.create({
         padding: 15,
         borderRadius: 10,
     },
-    signupButton: {
-        marginTop: 10,
+    loginButton: {
+        marginVertical: 20,
         borderRadius: 10,
     },
-    signupButtonText: {
+    loginButtonText: {
         textAlign: "center",
         color: "white",
         padding: 10,
         fontSize: 20,
         fontWeight: "bold",
+    },
+    signupLink: {
+        textAlign: "center",
+        textDecorationLine: "underline",
     },
 });
 

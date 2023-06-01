@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
+import { Link } from "expo-router";
 
 const Signup = () => {
     return (
@@ -33,6 +34,9 @@ const Signup = () => {
                     >
                         <Text style={styles.signupButtonText}>Sign Up</Text>
                     </Pressable>
+                    <Link style={styles.loginLink} href="/auth/login">
+                        Click here to Log In
+                    </Link>
                 </View>
             </SafeAreaView>
         </>
@@ -69,7 +73,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     signupButton: {
-        marginTop: 10,
+        marginVertical: 20,
         borderRadius: 10,
     },
     signupButtonText: {
@@ -78,6 +82,10 @@ const styles = StyleSheet.create({
         padding: 10,
         fontSize: 20,
         fontWeight: "bold",
+    },
+    loginLink: {
+        textAlign: "center",
+        textDecorationLine: "underline",
     },
 });
 
