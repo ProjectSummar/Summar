@@ -81,7 +81,7 @@ const Signup = () => {
                         <Text style={styles.signupButtonText}>Sign Up</Text>
                     </Pressable>
                     <Link style={styles.loginLink} href="/auth/login">
-                        Click here to Log In
+                        Already have an account? Log in here.
                     </Link>
                 </View>
             </SafeAreaView>
