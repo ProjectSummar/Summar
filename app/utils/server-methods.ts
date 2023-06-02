@@ -1,8 +1,9 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import { bookmarkSchema, userSchema } from "./types";
+import Constants from "expo-constants";
 
-const BASE_URL = process.env.BASE_URL;
+const BASE_URL = Constants.expoConfig?.extra?.baseUrl;
 
 const serverResponseSchema = z.object({
     ok: z.boolean(),

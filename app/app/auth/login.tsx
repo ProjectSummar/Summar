@@ -23,6 +23,7 @@ const Login = () => {
     const { control, handleSubmit } = useForm<LoginFormData>();
 
     const loginOnSubmit = handleSubmit((data) => {
+        console.log("login:", data);
         login(data);
     });
 
@@ -43,6 +44,7 @@ const Login = () => {
                                     style={styles.inputField}
                                     placeholder="Enter your email here"
                                     placeholderTextColor="gray"
+                                    autoCapitalize="none"
                                     onBlur={onBlur}
                                     onChangeText={onChange}
                                     value={value}
@@ -63,6 +65,7 @@ const Login = () => {
                                     style={styles.inputField}
                                     placeholder="Enter your email here"
                                     placeholderTextColor="gray"
+                                    autoCapitalize="none"
                                     onBlur={onBlur}
                                     onChangeText={onChange}
                                     value={value}

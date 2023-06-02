@@ -23,6 +23,7 @@ const Signup = () => {
     const { control, handleSubmit } = useForm<SignupFormData>();
 
     const signupOnSubmit = handleSubmit((data) => {
+        console.log("signup:", data);
         signup(data);
     });
 
@@ -43,6 +44,7 @@ const Signup = () => {
                                     style={styles.inputField}
                                     placeholder="Enter your email here"
                                     placeholderTextColor="gray"
+                                    autoCapitalize="none"
                                     onBlur={onBlur}
                                     onChangeText={onChange}
                                     value={value}
@@ -63,6 +65,7 @@ const Signup = () => {
                                     style={styles.inputField}
                                     placeholder="Enter your email here"
                                     placeholderTextColor="gray"
+                                    autoCapitalize="none"
                                     onBlur={onBlur}
                                     onChangeText={onChange}
                                     value={value}

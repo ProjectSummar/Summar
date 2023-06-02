@@ -25,6 +25,9 @@
         "web": {
             "bundler": "metro",
             "favicon": "./assets/images/favicon.png"
+        },
+        "extra": {
+            "baseUrl": "http://localhost:3001"
         }
     }
 }
