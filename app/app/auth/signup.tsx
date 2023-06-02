@@ -40,6 +40,7 @@ const Signup = () => {
                                 <TextInput
                                     style={styles.inputField}
                                     placeholder="Enter your email here"
+                                    placeholderTextColor="gray"
                                     onBlur={onBlur}
                                     onChangeText={onChange}
                                     value={value}
@@ -59,6 +60,7 @@ const Signup = () => {
                                 <TextInput
                                     style={styles.inputField}
                                     placeholder="Enter your email here"
+                                    placeholderTextColor="gray"
                                     onBlur={onBlur}
                                     onChangeText={onChange}
                                     value={value}
