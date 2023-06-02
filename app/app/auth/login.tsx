@@ -22,7 +22,9 @@ const Login = () => {
 
     const { control, handleSubmit } = useForm<LoginFormData>();
 
-    const onSubmit = (data: any) => console.log("login:", data);
+    const loginOnSubmit = handleSubmit((data) => {
+        login(data);
+    });
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -76,7 +78,7 @@ const Login = () => {
                             },
                             styles.loginButton,
                         ]}
-                        onPress={handleSubmit(onSubmit)}
+                        onPress={loginOnSubmit}
                     >
                         <Text style={styles.loginButtonText}>Log In</Text>
                     </Pressable>

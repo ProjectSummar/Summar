@@ -22,7 +22,9 @@ const Signup = () => {
 
     const { control, handleSubmit } = useForm<SignupFormData>();
 
-    const onSubmit = (data: any) => console.log("signup:", data);
+    const signupOnSubmit = handleSubmit((data) => {
+        signup(data);
+    });
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -76,7 +78,7 @@ const Signup = () => {
                             },
                             styles.signupButton,
                         ]}
-                        onPress={handleSubmit(onSubmit)}
+                        onPress={signupOnSubmit}
                     >
                         <Text style={styles.signupButtonText}>Sign Up</Text>
                     </Pressable>
