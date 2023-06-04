@@ -1,31 +1,40 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import { bookmarkSchema, userSchema } from "./types";
+import Constants from "expo-constants";
 
-const BASE_URL = process.env.BASE_URL;
+const BASE_URL = Constants.expoConfig?.extra?.baseUrl;
 
 const serverResponseSchema = z.object({
     ok: z.boolean(),
     msg: z.string(),
 });
 
-type LoginRequest = {
-    email: string;
-    password: string;
-};
+const loginRequestSchema = z.object({
+    email: z.string().email(),
+    password: z.string(),
+});
+
+type LoginRequest = z.infer<typeof loginRequestSchema>;
 
 const login = async (req: LoginRequest) => {
-    const raw = await fetch(`${BASE_URL}/login`, {
-        method: "POST",
-        body: JSON.stringify(req),
-    });
+    try {
+        const parsedReq = loginRequestSchema.parse(req);
 
-    const res = serverResponseSchema.parse(await raw.json());
+        const res = await fetch(`${BASE_URL}/login`, {
+            method: "POST",
+            body: JSON.stringify(parsedReq),
+        });
 
-    if (!res.ok) {
-        throw new Error(res.msg);
-    } else {
-        return res;
+        const parsedRes = serverResponseSchema.parse(await res.json());
+
+        if (!parsedRes.ok) {
+            throw new Error(parsedRes.msg);
+        } else {
+            return parsedRes;
+        }
+    } catch (err) {
+        throw err as Error;
     }
 };
 
@@ -35,27 +44,35 @@ const useLogin = () => {
     });
 };
 
-type SignupRequest = {
-    email: string;
-    password: string;
-};
+const signupRequestSchema = z.object({
+    email: z.string().email(),
+    password: z.string(),
+});
+
+type SignupRequest = z.infer<typeof signupRequestSchema>;
 
 const signupResponseSchema = serverResponseSchema.extend({
     user: userSchema,
 });
 
 const signup = async (req: SignupRequest) => {
-    const raw = await fetch(`${BASE_URL}/signup`, {
-        method: "POST",
-        body: JSON.stringify(req),
-    });
+    try {
+        const parsedReq = signupRequestSchema.parse(req);
 
-    const res = signupResponseSchema.parse(await raw.json());
+        const res = await fetch(`${BASE_URL}/signup`, {
+            method: "POST",
+            body: JSON.stringify(parsedReq),
+        });
 
-    if (!res.ok) {
-        throw new Error(res.msg);
-    } else {
-        return res;
+        const parsedRes = signupResponseSchema.parse(await res.json());
+
+        if (!parsedRes.ok) {
+            throw new Error(parsedRes.msg);
+        } else {
+            return parsedRes;
+        }
+    } catch (err) {
+        throw err as Error;
     }
 };
 
@@ -71,16 +88,20 @@ const getUserSchema = serverResponseSchema.extend({
 });
 
 const getUser = async () => {
-    const raw = await fetch(`${BASE_URL}/me`, {
-        method: "GET",
-    });
+    try {
+        const res = await fetch(`${BASE_URL}/me`, {
+            method: "GET",
+        });
 
-    const res = getUserSchema.parse(await raw.json());
+        const parsedRes = getUserSchema.parse(await res.json());
 
-    if (!res.ok) {
-        throw new Error(res.msg);
-    } else {
-        return res;
+        if (!parsedRes.ok) {
+            throw new Error(parsedRes.msg);
+        } else {
+            return parsedRes;
+        }
+    } catch (err) {
+        throw err as Error;
     }
 };
 

@@ -1,26 +1,85 @@
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+    Keyboard,
+    Pressable,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableWithoutFeedback,
+    View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { StatusBar } from "expo-status-bar";
+import { Link } from "expo-router";
+import { useForm, Controller } from "react-hook-form";
+import { useSignup } from "@utils/server-methods";
+
+type SignupFormInput = {
+    email: string;
+    password: string;
+};
 
 const Signup = () => {
+    const { mutate: signup, isLoading } = useSignup();
+
+    const {
+        control,
+        handleSubmit,
+        reset: resetForm,
+    } = useForm<SignupFormInput>();
+
+    const signupOnSubmit = handleSubmit((input) => {
+        console.log("signup:", input);
+        signup(input, {
+            onSettled(_data, _error, _variables, _context) {
+                resetForm();
+            },
+        });
+    });
+
     return (
-        <>
-            <StatusBar style="dark" />
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <SafeAreaView style={styles.container}>
                 <View style={styles.signupContainer}>
-                    <Text style={styles.signupHeader}>Sign Up</Text>
+                    <Text style={styles.logo}>Summar</Text>
                     <View style={styles.input}>
                         <Text style={styles.inputLabel}>Email</Text>
-                        <TextInput
-                            style={styles.inputField}
-                            placeholder="Enter your email here"
+                        <Controller
+                            control={control}
+                            rules={{ required: true }}
+                            render={({
+                                field: { onChange, onBlur, value },
+                            }) => (
+                                <TextInput
+                                    style={styles.inputField}
+                                    placeholder="Enter your email here"
+                                    placeholderTextColor="gray"
+                                    autoCapitalize="none"
+                                    onBlur={onBlur}
+                                    onChangeText={onChange}
+                                    value={value}
+                                />
+                            )}
+                            name="email"
                         />
                     </View>
                     <View style={styles.input}>
                         <Text style={styles.inputLabel}>Password</Text>
-                        <TextInput
-                            style={styles.inputField}
-                            placeholder="Enter your password here"
+                        <Controller
+                            control={control}
+                            rules={{ required: true }}
+                            render={({
+                                field: { onChange, onBlur, value },
+                            }) => (
+                                <TextInput
+                                    style={styles.inputField}
+                                    placeholder="Enter your password here"
+                                    placeholderTextColor="gray"
+                                    autoCapitalize="none"
+                                    onBlur={onBlur}
+                                    onChangeText={onChange}
+                                    value={value}
+                                />
+                            )}
+                            name="password"
                         />
                     </View>
                     <Pressable
@@ -30,12 +89,17 @@ const Signup = () => {
                             },
                             styles.signupButton,
                         ]}
+                        onPress={signupOnSubmit}
+                        disabled={isLoading}
                     >
                         <Text style={styles.signupButtonText}>Sign Up</Text>
                     </Pressable>
+                    <Link style={styles.loginLink} href="/auth/login">
+                        Already have an account? Log in here.
+                    </Link>
                 </View>
             </SafeAreaView>
-        </>
+        </TouchableWithoutFeedback>
     );
 };
 
@@ -45,16 +109,16 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "flex-start",
-        marginTop: 200,
+        marginTop: 150,
     },
     signupContainer: {
         width: "80%",
         marginHorizontal: "auto",
     },
-    signupHeader: {
+    logo: {
         fontWeight: "bold",
         textAlign: "center",
-        fontSize: 30,
+        fontSize: 50,
         marginBottom: 20,
     },
     input: {
@@ -69,7 +133,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     signupButton: {
-        marginTop: 10,
+        marginVertical: 20,
         borderRadius: 10,
     },
     signupButtonText: {
@@ -78,6 +142,10 @@ const styles = StyleSheet.create({
         padding: 10,
         fontSize: 20,
         fontWeight: "bold",
+    },
+    loginLink: {
+        textAlign: "center",
+        textDecorationLine: "underline",
     },
 });
 
