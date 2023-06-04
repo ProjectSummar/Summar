@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
-import { bookmarkSchema, userSchema } from "./types";
+import { bookmarkSchema, userSchema } from "@src/types";
 import Constants from "expo-constants";
 
 const BASE_URL = Constants.expoConfig?.extra?.baseUrl;

@@ -9,10 +9,9 @@ module.exports = function (api) {
                 "module-resolver",
                 {
                     alias: {
-                        "@screens": "./screens",
                         "@assets": "./assets",
                         "@app": "./app",
-                        "@utils": "./utils",
+                        "@src": "./src",
                     },
                 },
             ],
