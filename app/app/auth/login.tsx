@@ -63,7 +63,7 @@ const Login = () => {
                             }) => (
                                 <TextInput
                                     style={styles.inputField}
-                                    placeholder="Enter your email here"
+                                    placeholder="Enter your password here"
                                     placeholderTextColor="gray"
                                     autoCapitalize="none"
                                     onBlur={onBlur}
