@@ -12,19 +12,27 @@ import { Link } from "expo-router";
 import { useForm, Controller } from "react-hook-form";
 import { useSignup } from "@utils/server-methods";
 
-type SignupFormData = {
+type SignupFormInput = {
     email: string;
     password: string;
 };
 
 const Signup = () => {
-    const { mutate: signup, isError, isLoading } = useSignup();
+    const { mutate: signup, isLoading } = useSignup();
 
-    const { control, handleSubmit } = useForm<SignupFormData>();
+    const {
+        control,
+        handleSubmit,
+        reset: resetForm,
+    } = useForm<SignupFormInput>();
 
-    const signupOnSubmit = handleSubmit((data) => {
-        console.log("signup:", data);
-        signup(data);
+    const signupOnSubmit = handleSubmit((input) => {
+        console.log("signup:", input);
+        signup(input, {
+            onSettled(_data, _error, _variables, _context) {
+                resetForm();
+            },
+        });
     });
 
     return (
@@ -82,6 +90,7 @@ const Signup = () => {
                             styles.signupButton,
                         ]}
                         onPress={signupOnSubmit}
+                        disabled={isLoading}
                     >
                         <Text style={styles.signupButtonText}>Sign Up</Text>
                     </Pressable>

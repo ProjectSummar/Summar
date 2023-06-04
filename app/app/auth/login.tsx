@@ -8,23 +8,36 @@ import {
     View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useForm, Controller } from "react-hook-form";
 import { useLogin } from "@utils/server-methods";
 
-type LoginFormData = {
+type LoginFormInput = {
     email: string;
     password: string;
 };
 
 const Login = () => {
-    const { mutate: login, isError, isLoading } = useLogin();
+    const { mutate: login, isLoading } = useLogin();
 
-    const { control, handleSubmit } = useForm<LoginFormData>();
+    const {
+        control,
+        handleSubmit,
+        reset: resetForm,
+    } = useForm<LoginFormInput>();
 
-    const loginOnSubmit = handleSubmit((data) => {
-        console.log("login:", data);
-        login(data);
+    const router = useRouter();
+
+    const loginOnSubmit = handleSubmit((input) => {
+        console.log("login:", input);
+        login(input, {
+            onSettled(_data, _error, _variables, _context) {
+                resetForm();
+            },
+            onSuccess: (_data, _vars, _ctx) => {
+                router.push("/bookmarks");
+            },
+        });
     });
 
     return (
@@ -82,6 +95,7 @@ const Login = () => {
                             styles.loginButton,
                         ]}
                         onPress={loginOnSubmit}
+                        disabled={isLoading}
                     >
                         <Text style={styles.loginButtonText}>Log In</Text>
                     </Pressable>
