@@ -46,11 +46,11 @@ const signupRequestSchema = z.object({
     password: z.string(),
 });
 
-type SignupRequest = z.infer<typeof signupRequestSchema>;
-
 const signupResponseSchema = serverResponseSchema.extend({
     user: userSchema.optional(),
 });
+
+type SignupRequest = z.infer<typeof signupRequestSchema>;
 
 const signup = async (req: SignupRequest) => {
     try {
