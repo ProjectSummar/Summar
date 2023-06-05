@@ -1,5 +1,4 @@
-import { StyleSheet, Text, TextInput, View, Image } from "react-native";
-import React from "react";
+import { StyleSheet, Text, View, Image } from "react-native";
 
 const Index = () => {
     const cards = [
