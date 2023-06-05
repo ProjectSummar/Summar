@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { bookmarkSchema, userSchema } from "@src/types";
 import { BASE_URL, serverResponseSchema } from "@src/api/helpers";
@@ -36,8 +36,13 @@ const login = async (req: LoginRequest) => {
 };
 
 const useLogin = () => {
+    const queryClient = useQueryClient();
+
     return useMutation({
         mutationFn: login,
+        onSuccess: (data) => {
+            queryClient.setQueryData(["user"], { user: data.user });
+        },
     });
 };
 
