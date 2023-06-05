@@ -97,4 +97,4 @@ const useDeleteBookmark = () => {
     });
 };
 
-export { useCreateBookmark, useGetBookmark, useDeleteBookmark };
+export { useCreateBookmark, useDeleteBookmark, useGetBookmark };

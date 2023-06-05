@@ -117,4 +117,4 @@ const useGetUser = () => {
     });
 };
 
-export { useLogin, useSignup, useGetUser };
+export { useGetUser, useLogin, useSignup };
