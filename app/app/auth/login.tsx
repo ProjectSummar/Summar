@@ -10,7 +10,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, useRouter } from "expo-router";
 import { useForm, Controller } from "react-hook-form";
-import { useLogin } from "@utils/server-methods";
+import { useLogin } from "@src/api";
 
 type LoginFormInput = {
     email: string;
