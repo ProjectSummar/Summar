@@ -9,8 +9,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, useRouter } from "expo-router";
-import { useForm, Controller } from "react-hook-form";
-import { useLogin } from "@src/api";
+import { Controller, useForm } from "react-hook-form";
+import { useLogin } from "@src/api/auth";
 
 type LoginFormInput = {
     email: string;
@@ -31,11 +31,11 @@ const Login = () => {
     const loginOnSubmit = handleSubmit((input) => {
         console.log("login:", input);
         login(input, {
-            onSettled(_data, _error, _variables, _context) {
-                resetForm();
-            },
-            onSuccess: (_data, _vars, _ctx) => {
+            onSuccess: () => {
                 router.push("/bookmarks");
+            },
+            onSettled: () => {
+                resetForm();
             },
         });
     });
