@@ -29,7 +29,7 @@ const Signup = () => {
     const signupOnSubmit = handleSubmit((input) => {
         console.log("signup:", input);
         signup(input, {
-            onSettled(_data, _error, _variables, _context) {
+            onSettled: () => {
                 resetForm();
             },
         });

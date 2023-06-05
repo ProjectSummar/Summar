@@ -31,11 +31,10 @@ const Login = () => {
     const loginOnSubmit = handleSubmit((input) => {
         console.log("login:", input);
         login(input, {
-            onSuccess: (_data, _vars, _ctx) => {
-                console.log("success login");
+            onSuccess: () => {
                 router.push("/bookmarks");
             },
-            onSettled: (_data, _error, _variables, _context) => {
+            onSettled: () => {
                 resetForm();
             },
         });
