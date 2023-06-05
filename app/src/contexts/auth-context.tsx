@@ -1,4 +1,4 @@
-import { useGetUser } from "@src/api";
+import { useGetUser } from "@src/api/auth";
 import { useRouter, useSegments } from "expo-router";
 import { ReactNode, useEffect } from "react";
 

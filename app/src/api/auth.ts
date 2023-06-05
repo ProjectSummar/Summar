@@ -1,18 +1,15 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import { bookmarkSchema, userSchema } from "@src/types";
-import Constants from "expo-constants";
-
-const BASE_URL = Constants.expoConfig?.extra?.baseUrl;
-
-const serverResponseSchema = z.object({
-    ok: z.boolean(),
-    msg: z.string(),
-});
+import { BASE_URL, serverResponseSchema } from "@src/api/helpers";
 
 const loginRequestSchema = z.object({
     email: z.string().email(),
     password: z.string(),
+});
+
+const loginResponseSchema = serverResponseSchema.extend({
+    user: userSchema.optional(),
 });
 
 type LoginRequest = z.infer<typeof loginRequestSchema>;
@@ -26,7 +23,7 @@ const login = async (req: LoginRequest) => {
             body: JSON.stringify(parsedReq),
         });
 
-        const parsedRes = serverResponseSchema.parse(await res.json());
+        const parsedRes = loginResponseSchema.parse(await res.json());
 
         if (!parsedRes.ok) {
             throw new Error(parsedRes.msg);
@@ -52,7 +49,7 @@ const signupRequestSchema = z.object({
 type SignupRequest = z.infer<typeof signupRequestSchema>;
 
 const signupResponseSchema = serverResponseSchema.extend({
-    user: userSchema,
+    user: userSchema.optional(),
 });
 
 const signup = async (req: SignupRequest) => {
@@ -82,9 +79,9 @@ const useSignup = () => {
     });
 };
 
-const getUserSchema = serverResponseSchema.extend({
-    user: userSchema,
-    bookmarks: z.array(bookmarkSchema),
+const getUserResponseSchema = serverResponseSchema.extend({
+    user: userSchema.optional(),
+    bookmarks: z.array(bookmarkSchema).optional(),
 });
 
 const getUser = async () => {
@@ -93,12 +90,15 @@ const getUser = async () => {
             method: "GET",
         });
 
-        const parsedRes = getUserSchema.parse(await res.json());
+        const parsedRes = getUserResponseSchema.parse(await res.json());
 
         if (!parsedRes.ok) {
             throw new Error(parsedRes.msg);
         } else {
-            return parsedRes;
+            return {
+                user: parsedRes.user,
+                bookmarks: parsedRes.bookmarks,
+            };
         }
     } catch (err) {
         throw err as Error;
