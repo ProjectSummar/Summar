@@ -15,10 +15,17 @@ type HandlerResponse struct {
 	Msg string `json:"msg"`
 }
 
-type LoginRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
+type (
+	LoginRequest struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+
+	LoginResponse struct {
+		HandlerResponse
+		User types.User `json:"user"`
+	}
+)
 
 func (h *Handlers) LoginHandler(w http.ResponseWriter, r *http.Request) error {
 	// parse input JSON { email, password }
@@ -45,9 +52,12 @@ func (h *Handlers) LoginHandler(w http.ResponseWriter, r *http.Request) error {
 	// return session token to be stored as cookie
 	cookie.SetSessionTokenCookie(w, session.Token)
 
-	return WriteJSON(w, http.StatusOK, &HandlerResponse{
-		Ok:  true,
-		Msg: "Logged in successfully",
+	return WriteJSON(w, http.StatusOK, &LoginResponse{
+		HandlerResponse: HandlerResponse{
+			Ok:  true,
+			Msg: "Logged in successfully",
+		},
+		User: user,
 	})
 }
 
