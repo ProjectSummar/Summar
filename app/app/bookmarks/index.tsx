@@ -1,4 +1,5 @@
 import { Image, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Index = () => {
     const cards = [
@@ -17,7 +18,7 @@ const Index = () => {
     ];
 
     return (
-        <View>
+        <SafeAreaView>
             {cards.map((card, index) => (
                 <View style={styles.card} key={index}>
                     <View style={styles.cardContent}>
@@ -34,7 +35,7 @@ const Index = () => {
                     </View>
                 </View>
             ))}
-        </View>
+        </SafeAreaView>
     );
 };
 
