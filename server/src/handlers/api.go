@@ -177,6 +177,31 @@ func (h *Handlers) CreateBookmarkHandler(w http.ResponseWriter, r *http.Request)
 	})
 }
 
+type GetBookmarksResponse struct {
+	HandlerResponse
+	Bookmarks []types.Bookmark `json:"bookmarks"`
+}
+
+func (h *Handlers) GetBookmarksHandler(w http.ResponseWriter, r *http.Request) error {
+	// get userId from auth middleware context
+	userId := r.Context().Value("userId").(uuid.UUID)
+
+	// get bookmarks by userId
+	bookmarks, err := h.Store.GetBookmarksByUserId(userId)
+	if err != nil {
+		return err
+	}
+
+	// return bookmarks
+	return WriteJSON(w, http.StatusOK, &GetBookmarksResponse{
+		HandlerResponse: HandlerResponse{
+			Ok:  true,
+			Msg: "Got user successfully",
+		},
+		Bookmarks: bookmarks,
+	})
+}
+
 type GetBookmarkResponse struct {
 	HandlerResponse
 	Bookmark types.Bookmark `json:"bookmark"`
