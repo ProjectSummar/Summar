@@ -10,15 +10,15 @@ type Bookmark struct {
 	Id      uuid.UUID `json:"id"`
 	UserId  uuid.UUID `json:"userId"`
 	Url     string    `json:"url"`
+	Title   string    `json:"title"`
 	Summary string    `json:"summary"`
 }
 
 func NewBookmark(userId uuid.UUID, url string) (Bookmark, error) {
 	bookmark := Bookmark{
-		Id:      uuid.New(),
-		UserId:  userId,
-		Url:     url,
-		Summary: "",
+		Id:     uuid.New(),
+		UserId: userId,
+		Url:    url,
 	}
 
 	if err := ValidateBookmark(bookmark); err != nil {

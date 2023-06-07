@@ -153,8 +153,8 @@ func (s *PostgresStore) DeleteUser(userId uuid.UUID) error {
 func (s *PostgresStore) CreateBookmark(bookmark types.Bookmark) error {
 	query := `
 	insert into bookmarks
-	(id, user_id, url, summary)
-	values ($1, $2, $3, $4)
+	(id, user_id, url, title, summary)
+	values ($1, $2, $3, $4, $5)
 	`
 
 	_, err := s.Db.Exec(
@@ -162,6 +162,7 @@ func (s *PostgresStore) CreateBookmark(bookmark types.Bookmark) error {
 		bookmark.Id,
 		bookmark.UserId,
 		bookmark.Url,
+		bookmark.Title,
 		bookmark.Summary,
 	)
 	if err != nil {
@@ -208,7 +209,8 @@ func (s *PostgresStore) UpdateBookmark(bookmark types.Bookmark) error {
 	query := `
 	UPDATE bookmarks SET
 	url = $2,
-	summary = $3
+	title = $3,
+	summary = $4
 	WHERE id = $1
 	`
 
@@ -216,6 +218,7 @@ func (s *PostgresStore) UpdateBookmark(bookmark types.Bookmark) error {
 		query,
 		bookmark.Id,
 		bookmark.Url,
+		bookmark.Title,
 		bookmark.Summary,
 	)
 	if err != nil {
@@ -289,6 +292,7 @@ func (s *PostgresStore) CreateBookmarksTable() error {
 	id VARCHAR(36),
 	user_id VARCHAR(36),
 	url TEXT,
+	title TEXT,
 	summary TEXT,
 	PRIMARY KEY(id),
 	CONSTRAINT fk_user
@@ -341,6 +345,7 @@ func ScanBookmarkRow(rows *sql.Rows) (types.Bookmark, error) {
 		&bookmark.Id,
 		&bookmark.UserId,
 		&bookmark.Url,
+		&bookmark.Title,
 		&bookmark.Summary,
 	)
 

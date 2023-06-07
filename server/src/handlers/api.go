@@ -216,6 +216,7 @@ func (h *Handlers) GetBookmarkHandler(w http.ResponseWriter, r *http.Request) er
 type (
 	UpdateBookmarkRequest struct {
 		Url     *string `json:"url,omitempty"`
+		Title   *string `json:"title,omitempty"`
 		Summary *string `json:"summary,omitempty"`
 	}
 
@@ -238,6 +239,10 @@ func (h *Handlers) UpdateBookmarkHandler(w http.ResponseWriter, r *http.Request)
 	// update bookmark with partialBookmark
 	if req.Url != nil {
 		bookmark.Url = *req.Url
+	}
+
+	if req.Title != nil {
+		bookmark.Title = *req.Title
 	}
 
 	if req.Summary != nil {
@@ -293,6 +298,7 @@ func (h *Handlers) SummariseBookmarkHandler(w http.ResponseWriter, r *http.Reque
 	}
 
 	// update bookmark with summary
+	bookmark.Title = summariseResponse.Title
 	bookmark.Summary = summariseResponse.Content
 
 	if err := h.Store.UpdateBookmark(bookmark); err != nil {
