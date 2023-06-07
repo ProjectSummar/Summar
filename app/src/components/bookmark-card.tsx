@@ -1,40 +1,46 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Link } from "expo-router";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 const BookmarkCard = ({ card }: { card: any }) => {
     return (
-        <View style={styles.card}>
-            <View style={styles.cardContent}>
-                <View style={styles.cardText}>
-                    <Text style={styles.title}>{card.title}</Text>
-                    <Text style={styles.description}>
-                        {card.description}
-                    </Text>
+        <Link href={`/bookmarks/${card.id}`} asChild>
+            <Pressable>
+                <View style={styles.card}>
+                    <View style={styles.cardContent}>
+                        <View style={styles.cardText}>
+                            <Text style={styles.title}>{card.title}</Text>
+                            <Text style={styles.description}>
+                                {card.description}
+                            </Text>
+                        </View>
+                        <Image
+                            source={{ uri: card.imageSource }}
+                            style={styles.cardImage}
+                        />
+                    </View>
                 </View>
-                <Image
-                    source={{ uri: card.imageSource }}
-                    style={styles.cardImage}
-                />
-            </View>
-        </View>
+            </Pressable>
+        </Link>
     );
 };
 
 const styles = StyleSheet.create({
     card: {
         backgroundColor: "#FFFFFF",
-        padding: 16,
+        padding: 15,
         marginVertical: 1,
-        shadowColor: "#000000",
+        shadowColor: "black",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
-        shadowRadius: 4,
+        shadowRadius: 5,
     },
     cardContent: {
+        display: "flex",
         flexDirection: "row",
     },
     cardText: {
         flex: 1,
-        marginRight: 16,
+        marginRight: 15,
     },
     cardImage: {
         width: 100,
@@ -42,13 +48,13 @@ const styles = StyleSheet.create({
         borderRadius: 5,
     },
     title: {
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: "bold",
-        marginBottom: 8,
+        marginBottom: 10,
     },
     description: {
-        fontSize: 16,
-        color: "#808080",
+        fontSize: 15,
+        color: "gray",
     },
 });
 
