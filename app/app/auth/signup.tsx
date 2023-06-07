@@ -77,6 +77,7 @@ const Signup = () => {
                                     onBlur={onBlur}
                                     onChangeText={onChange}
                                     value={value}
+                                    secureTextEntry
                                 />
                             )}
                             name="password"

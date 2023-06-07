@@ -82,6 +82,7 @@ const Login = () => {
                                     onBlur={onBlur}
                                     onChangeText={onChange}
                                     value={value}
+                                    secureTextEntry
                                 />
                             )}
                             name="password"
