@@ -105,8 +105,7 @@ func (h *Handlers) SignupHandler(w http.ResponseWriter, r *http.Request) error {
 
 type GetUserResponse struct {
 	HandlerResponse
-	User      types.User       `json:"user"`
-	Bookmarks []types.Bookmark `json:"bookmarks"`
+	User types.User `json:"user"`
 }
 
 func (h *Handlers) GetUserHandler(w http.ResponseWriter, r *http.Request) error {
@@ -119,20 +118,13 @@ func (h *Handlers) GetUserHandler(w http.ResponseWriter, r *http.Request) error 
 		return err
 	}
 
-	// get bookmarks by userId
-	bookmarks, err := h.Store.GetBookmarksByUserId(user.Id)
-	if err != nil {
-		return err
-	}
-
 	// return user and bookmarks
 	return WriteJSON(w, http.StatusOK, &GetUserResponse{
 		HandlerResponse: HandlerResponse{
 			Ok:  true,
 			Msg: "Got user successfully",
 		},
-		User:      user,
-		Bookmarks: bookmarks,
+		User: user,
 	})
 }
 
