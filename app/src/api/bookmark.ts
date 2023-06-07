@@ -40,6 +40,35 @@ const useCreateBookmark = () => {
     });
 };
 
+const getBookmarksResponseSchema = serverResponseSchema.extend({
+    bookmarks: z.array(bookmarkSchema.optional()),
+});
+
+const getBookmarks = async () => {
+    try {
+        const res = await fetch(`${BASE_URL}/bookmark`, {
+            method: "GET",
+        });
+
+        const parsedRes = getBookmarksResponseSchema.parse(await res.json());
+
+        if (!parsedRes.ok) {
+            throw new Error(parsedRes.msg);
+        } else {
+            return parsedRes.bookmarks;
+        }
+    } catch (err) {
+        throw err as Error;
+    }
+};
+
+const useGetBookmarks = () => {
+    return useQuery({
+        queryKey: ["bookmarks"],
+        queryFn: getBookmarks,
+    });
+};
+
 const getBookmarkResponseSchema = serverResponseSchema.extend({
     bookmark: bookmarkSchema.optional(),
 });
@@ -97,4 +126,9 @@ const useDeleteBookmark = () => {
     });
 };
 
-export { useCreateBookmark, useDeleteBookmark, useGetBookmark };
+export {
+    useCreateBookmark,
+    useDeleteBookmark,
+    useGetBookmark,
+    useGetBookmarks,
+};
