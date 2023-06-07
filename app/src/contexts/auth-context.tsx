@@ -3,14 +3,10 @@ import { useRouter, useSegments } from "expo-router";
 import { ReactNode, useEffect } from "react";
 
 const AuthContextProvider = ({ children }: { children: ReactNode }) => {
-    const { data, isLoading } = useGetUser();
-
-    const user = data?.user;
+    const { data: user, isLoading } = useGetUser();
 
     const segments = useSegments();
     const router = useRouter();
-
-    // TODO: if loading, show splash screen? (but need to only show on startup, not between screen transitions)
 
     useEffect(() => {
         const inAuthRoute = segments[0] === "auth";
@@ -26,8 +22,8 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
             // redirect to login page
             router.replace("/auth/login");
         } else if (inAuthRoute && isLoggedIn) {
-            // redirect to bookmarks page
-            router.replace("/bookmarks");
+            // redirect to main page
+            router.replace("/main");
         }
     }, [isLoading, segments, user]);
 

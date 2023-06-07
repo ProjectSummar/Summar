@@ -1,11 +1,8 @@
-import { useGetUser } from "@src/api/auth";
 import BookmarkCard from "@src/components/bookmark-card";
+import { Stack } from "expo-router";
 import { View } from "react-native";
 
 const Index = () => {
-    const { data } = useGetUser();
-    const bookmarks = data?.bookmarks;
-
     const cards = [
         {
             id: 0,
@@ -24,14 +21,17 @@ const Index = () => {
     ];
 
     return (
-        <View>
-            {cards.map((card, index) => (
-                <BookmarkCard
-                    key={index}
-                    card={card}
-                />
-            ))}
-        </View>
+        <>
+            <Stack.Screen options={{ title: "Bookmarks" }} />
+            <View>
+                {cards.map((card, index) => (
+                    <BookmarkCard
+                        key={index}
+                        card={card}
+                    />
+                ))}
+            </View>
+        </>
     );
 };
 

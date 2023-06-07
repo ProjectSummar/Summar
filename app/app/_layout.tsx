@@ -1,9 +1,9 @@
 import { AuthContextProvider } from "@src/contexts/auth-context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Stack } from "expo-router";
+import { Slot } from "expo-router";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-const AUTH_CONTEXT = false;
+const AUTH_CONTEXT = true;
 
 const Layout = () => {
     const queryClient = new QueryClient();
@@ -13,7 +13,7 @@ const Layout = () => {
             <SafeAreaProvider>
                 <QueryClientProvider client={queryClient}>
                     <AuthContextProvider>
-                        <Stack screenOptions={{ headerShown: false }} />
+                        <Slot />
                     </AuthContextProvider>
                 </QueryClientProvider>
             </SafeAreaProvider>
@@ -22,7 +22,7 @@ const Layout = () => {
         return (
             <SafeAreaProvider>
                 <QueryClientProvider client={queryClient}>
-                    <Stack screenOptions={{ headerShown: false }} />
+                    <Slot />
                 </QueryClientProvider>
             </SafeAreaProvider>
         );

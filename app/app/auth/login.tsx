@@ -32,7 +32,7 @@ const Login = () => {
         console.log("login:", input);
         login(input, {
             onSuccess: () => {
-                router.push("/bookmarks");
+                router.push("/main");
             },
             onSettled: () => {
                 resetForm();

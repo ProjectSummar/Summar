@@ -3,7 +3,7 @@ import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 const BookmarkCard = ({ card }: { card: any }) => {
     return (
-        <Link href={`/bookmarks/${card.id}`} asChild>
+        <Link href={`/main/bookmarks/${card.id}`} asChild>
             <Pressable>
                 <View style={styles.card}>
                     <View style={styles.cardContent}>
