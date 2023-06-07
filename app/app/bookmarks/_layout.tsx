@@ -4,7 +4,9 @@ const Layout = () => {
     return (
         <Stack
             initialRouteName="index"
-            screenOptions={{ headerShown: false }}
+            screenOptions={{
+                title: "Bookmarks",
+            }}
         />
     );
 };
