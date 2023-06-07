@@ -188,7 +188,7 @@ func (h *Handlers) GetBookmarksHandler(w http.ResponseWriter, r *http.Request) e
 	return WriteJSON(w, http.StatusOK, &GetBookmarksResponse{
 		HandlerResponse: HandlerResponse{
 			Ok:  true,
-			Msg: "Got user successfully",
+			Msg: "Got bookmarks successfully",
 		},
 		Bookmarks: bookmarks,
 	})
