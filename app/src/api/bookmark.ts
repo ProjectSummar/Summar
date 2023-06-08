@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { bookmarkSchema } from "@src/types";
 import { BASE_URL, serverResponseSchema } from "@src/api/helpers";
@@ -35,8 +35,13 @@ const createBookmark = async (req: CreateBookmarkRequest) => {
 };
 
 const useCreateBookmark = () => {
+    const queryClient = useQueryClient();
+
     return useMutation({
         mutationFn: createBookmark,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["bookmarks"] });
+        },
     });
 };
 
@@ -121,8 +126,14 @@ const deleteBookmark = async (id: string) => {
 };
 
 const useDeleteBookmark = () => {
+    const queryClient = useQueryClient();
+
     return useMutation({
         mutationFn: deleteBookmark,
+        onSuccess: (_, id) => {
+            queryClient.invalidateQueries({ queryKey: ["bookmarks"] });
+            queryClient.invalidateQueries({ queryKey: ["bookmark", id] });
+        },
     });
 };
 
