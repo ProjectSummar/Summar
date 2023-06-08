@@ -1,15 +1,10 @@
 import { useGetBookmarks } from "@src/api/bookmark";
 import BookmarkCard from "@src/components/bookmark-card";
 import { Link, Stack } from "expo-router";
-import { useEffect } from "react";
 import { Button, Text, View } from "react-native";
 
 const Index = () => {
     const { data: bookmarks, isLoading } = useGetBookmarks();
-
-    useEffect(() => {
-        console.log("/main/bookmark/index", bookmarks);
-    }, [bookmarks]);
 
     if (!bookmarks || isLoading) return <Text>Loading...</Text>;
 
