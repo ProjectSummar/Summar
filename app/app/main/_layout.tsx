@@ -2,15 +2,12 @@ import { Drawer } from "expo-router/drawer";
 
 const Layout = () => {
     return (
-        <Drawer initialRouteName="bookmarks">
+        <Drawer initialRouteName="bookmark">
             <Drawer.Screen
-                name="bookmarks"
+                name="bookmark"
                 options={{ title: "Bookmarks", headerShown: false }}
             />
-            <Drawer.Screen
-                name="settings"
-                options={{ title: "Settings" }}
-            />
+            <Drawer.Screen name="settings" options={{ title: "Settings" }} />
         </Drawer>
     );
 };
