@@ -299,7 +299,6 @@ func (h *Handlers) SummariseBookmarkHandler(w http.ResponseWriter, r *http.Reque
 	}
 
 	// update bookmark with summary
-	bookmark.Title = summariseResponse.Title
 	bookmark.Summary = summariseResponse.Content
 
 	if err := h.Store.UpdateBookmark(bookmark); err != nil {
