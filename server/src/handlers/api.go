@@ -130,7 +130,8 @@ func (h *Handlers) GetUserHandler(w http.ResponseWriter, r *http.Request) error 
 
 type (
 	CreateBookmarkRequest struct {
-		Url string `json:"url"`
+		Url   string `json:"url"`
+		Title string `json:"title"`
 	}
 
 	CreateBookmarkResponse struct {
@@ -150,7 +151,7 @@ func (h *Handlers) CreateBookmarkHandler(w http.ResponseWriter, r *http.Request)
 	}
 
 	// create bookmark on userId
-	bookmark, err := types.NewBookmark(userId, req.Url)
+	bookmark, err := types.NewBookmark(userId, req.Url, req.Title)
 	if err != nil {
 		return err
 	}

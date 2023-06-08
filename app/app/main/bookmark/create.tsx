@@ -15,6 +15,7 @@ import {
 
 type CreateBookmarkInput = {
     url: string;
+    title: string;
 };
 
 const Create = () => {
@@ -57,6 +58,26 @@ const Create = () => {
             >
                 <View style={styles.container}>
                     <View style={styles.inputForm}>
+                        <Text>Bookmark Title</Text>
+                        <Controller
+                            control={control}
+                            rules={{ required: true }}
+                            render={({
+                                field: { onChange, onBlur, value },
+                            }) => (
+                                <TextInput
+                                    style={styles.inputField}
+                                    placeholder="Enter bookmark title here"
+                                    placeholderTextColor="gray"
+                                    autoCapitalize="none"
+                                    onBlur={onBlur}
+                                    onChangeText={onChange}
+                                    value={value}
+                                />
+                            )}
+                            name="title"
+                        />
+                        <Text>Bookmark URL</Text>
                         <Controller
                             control={control}
                             rules={{ required: true }}
@@ -75,21 +96,21 @@ const Create = () => {
                             )}
                             name="url"
                         />
+                        <Pressable
+                            style={({ pressed }) => [
+                                {
+                                    backgroundColor: pressed ? "gray" : "black",
+                                },
+                                styles.button,
+                            ]}
+                            onPress={createBookmarkOnSubmit}
+                            disabled={isLoading}
+                        >
+                            <Text style={styles.buttonText}>
+                                Create Bookmark
+                            </Text>
+                        </Pressable>
                     </View>
-                    <Pressable
-                        style={({ pressed }) => [
-                            {
-                                backgroundColor: pressed ? "gray" : "black",
-                            },
-                            styles.button,
-                        ]}
-                        onPress={createBookmarkOnSubmit}
-                        disabled={isLoading}
-                    >
-                        <Text style={styles.buttonText}>
-                            Create Bookmark
-                        </Text>
-                    </Pressable>
                 </View>
             </TouchableWithoutFeedback>
         </>
@@ -107,6 +128,7 @@ const styles = StyleSheet.create({
     },
     inputForm: {
         width: "70%",
+        gap: 10,
     },
     inputField: {
         backgroundColor: "white",
@@ -114,7 +136,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     button: {
-        marginVertical: 20,
+        marginTop: 10,
         borderRadius: 10,
     },
     buttonText: {

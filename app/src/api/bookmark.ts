@@ -5,6 +5,7 @@ import { BASE_URL, serverResponseSchema } from "@src/api/helpers";
 
 const createBookmarkRequestSchema = z.object({
     url: z.string().url(),
+    title: z.string(),
 });
 
 const createBookmarkResponseSchema = serverResponseSchema.extend({

@@ -14,11 +14,12 @@ type Bookmark struct {
 	Summary string    `json:"summary"`
 }
 
-func NewBookmark(userId uuid.UUID, url string) (Bookmark, error) {
+func NewBookmark(userId uuid.UUID, url string, title string) (Bookmark, error) {
 	bookmark := Bookmark{
 		Id:     uuid.New(),
 		UserId: userId,
 		Url:    url,
+		Title:  title,
 	}
 
 	if err := ValidateBookmark(bookmark); err != nil {
