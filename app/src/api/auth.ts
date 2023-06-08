@@ -99,7 +99,7 @@ const getUser = async () => {
         if (!parsedRes.ok) {
             throw new Error(parsedRes.msg);
         } else {
-            return { user: parsedRes.user };
+            return parsedRes.user;
         }
     } catch (err) {
         throw err as Error;
