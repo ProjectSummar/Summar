@@ -46,7 +46,7 @@ const useCreateBookmark = () => {
 };
 
 const getBookmarksResponseSchema = serverResponseSchema.extend({
-    bookmarks: z.array(bookmarkSchema.optional()),
+    bookmarks: z.array(bookmarkSchema).optional(),
 });
 
 const getBookmarks = async () => {
