@@ -4,7 +4,7 @@ import { bookmarkSchema } from "@src/types";
 import { BASE_URL, serverResponseSchema } from "@src/api/helpers";
 
 const createBookmarkRequestSchema = z.object({
-    url: z.string().url(),
+    url: z.string().trim().url(),
     title: z.string(),
 });
 

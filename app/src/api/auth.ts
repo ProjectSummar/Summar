@@ -4,7 +4,7 @@ import { userSchema } from "@src/types";
 import { BASE_URL, serverResponseSchema } from "@src/api/helpers";
 
 const loginRequestSchema = z.object({
-    email: z.string().email(),
+    email: z.string().trim().email(),
     password: z.string(),
 });
 
@@ -47,7 +47,7 @@ const useLogin = () => {
 };
 
 const signupRequestSchema = z.object({
-    email: z.string().email(),
+    email: z.string().trim().email(),
     password: z.string(),
 });
 
