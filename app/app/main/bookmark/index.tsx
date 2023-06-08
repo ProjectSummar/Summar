@@ -15,10 +15,7 @@ const Index = () => {
             />
             <View>
                 {bookmarks?.map((bookmark, index) => (
-                    <BookmarkCard
-                        key={index}
-                        bookmark={bookmark}
-                    />
+                    <BookmarkCard key={index} bookmark={bookmark} />
                 ))}
             </View>
         </>

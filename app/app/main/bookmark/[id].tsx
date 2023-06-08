@@ -16,7 +16,9 @@ const BookmarkPage = () => {
             <Stack.Screen options={{ title: "" }} />
             <Text>{id}</Text>
             {Object.entries(bookmark).map(([key, value]) => (
-                <Text key={key}>{key}: {value}</Text>
+                <Text key={key}>
+                    {key}: {value}
+                </Text>
             ))}
         </>
     );
