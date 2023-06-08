@@ -7,8 +7,8 @@ const BookmarkCard = ({ bookmark }: { bookmark: Bookmark }) => {
         <Link href={`/main/bookmark/${bookmark.id}`} asChild>
             <Pressable>
                 <View style={styles.card}>
-                    <Text>{bookmark.url}</Text>
-                    <Text>{bookmark.title}</Text>
+                    <Text style={styles.title}>{bookmark.title}</Text>
+                    <Text style={styles.url}>{bookmark.url}</Text>
                 </View>
             </Pressable>
         </Link>
@@ -25,6 +25,10 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 5,
     },
+    title: {
+        fontSize: 20,
+    },
+    url: {},
 });
 
 export default BookmarkCard;
