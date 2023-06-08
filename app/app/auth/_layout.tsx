@@ -1,12 +1,7 @@
-import { Stack } from "expo-router";
+import { Slot } from "expo-router";
 
 const Layout = () => {
-    return (
-        <Stack
-            initialRouteName="login"
-            screenOptions={{ headerShown: false }}
-        />
-    );
+    return <Slot initialRouteName="login" />;
 };
 
 export default Layout;

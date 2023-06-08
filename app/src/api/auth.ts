@@ -1,10 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
-import { bookmarkSchema, userSchema } from "@src/types";
+import { userSchema } from "@src/types";
 import { BASE_URL, serverResponseSchema } from "@src/api/helpers";
 
 const loginRequestSchema = z.object({
-    email: z.string().email(),
+    email: z.string().trim().email(),
     password: z.string(),
 });
 
@@ -47,7 +47,7 @@ const useLogin = () => {
 };
 
 const signupRequestSchema = z.object({
-    email: z.string().email(),
+    email: z.string().trim().email(),
     password: z.string(),
 });
 
@@ -86,7 +86,6 @@ const useSignup = () => {
 
 const getUserResponseSchema = serverResponseSchema.extend({
     user: userSchema.optional(),
-    bookmarks: z.array(bookmarkSchema).optional(),
 });
 
 const getUser = async () => {
@@ -100,10 +99,7 @@ const getUser = async () => {
         if (!parsedRes.ok) {
             throw new Error(parsedRes.msg);
         } else {
-            return {
-                user: parsedRes.user,
-                bookmarks: parsedRes.bookmarks,
-            };
+            return parsedRes.user;
         }
     } catch (err) {
         throw err as Error;

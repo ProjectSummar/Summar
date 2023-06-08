@@ -12,9 +12,10 @@ const bookmarkSchema = z.object({
     id: z.string().uuid(),
     userId: z.string().uuid(),
     url: z.string().url(),
+    title: z.string(),
     summary: z.string(),
 });
 
 type Bookmark = z.infer<typeof bookmarkSchema>;
 
-export { userSchema, User, bookmarkSchema, Bookmark };
+export { Bookmark, bookmarkSchema, User, userSchema };

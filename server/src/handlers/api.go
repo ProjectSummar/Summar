@@ -105,8 +105,7 @@ func (h *Handlers) SignupHandler(w http.ResponseWriter, r *http.Request) error {
 
 type GetUserResponse struct {
 	HandlerResponse
-	User      types.User       `json:"user"`
-	Bookmarks []types.Bookmark `json:"bookmarks"`
+	User types.User `json:"user"`
 }
 
 func (h *Handlers) GetUserHandler(w http.ResponseWriter, r *http.Request) error {
@@ -119,26 +118,20 @@ func (h *Handlers) GetUserHandler(w http.ResponseWriter, r *http.Request) error 
 		return err
 	}
 
-	// get bookmarks by userId
-	bookmarks, err := h.Store.GetBookmarksByUserId(user.Id)
-	if err != nil {
-		return err
-	}
-
 	// return user and bookmarks
 	return WriteJSON(w, http.StatusOK, &GetUserResponse{
 		HandlerResponse: HandlerResponse{
 			Ok:  true,
 			Msg: "Got user successfully",
 		},
-		User:      user,
-		Bookmarks: bookmarks,
+		User: user,
 	})
 }
 
 type (
 	CreateBookmarkRequest struct {
-		Url string `json:"url"`
+		Url   string `json:"url"`
+		Title string `json:"title"`
 	}
 
 	CreateBookmarkResponse struct {
@@ -158,7 +151,7 @@ func (h *Handlers) CreateBookmarkHandler(w http.ResponseWriter, r *http.Request)
 	}
 
 	// create bookmark on userId
-	bookmark, err := types.NewBookmark(userId, req.Url)
+	bookmark, err := types.NewBookmark(userId, req.Url, req.Title)
 	if err != nil {
 		return err
 	}
@@ -174,6 +167,31 @@ func (h *Handlers) CreateBookmarkHandler(w http.ResponseWriter, r *http.Request)
 			Msg: "Bookmark created successfully",
 		},
 		Bookmark: bookmark,
+	})
+}
+
+type GetBookmarksResponse struct {
+	HandlerResponse
+	Bookmarks []types.Bookmark `json:"bookmarks"`
+}
+
+func (h *Handlers) GetBookmarksHandler(w http.ResponseWriter, r *http.Request) error {
+	// get userId from auth middleware context
+	userId := r.Context().Value("userId").(uuid.UUID)
+
+	// get bookmarks by userId
+	bookmarks, err := h.Store.GetBookmarksByUserId(userId)
+	if err != nil {
+		return err
+	}
+
+	// return bookmarks
+	return WriteJSON(w, http.StatusOK, &GetBookmarksResponse{
+		HandlerResponse: HandlerResponse{
+			Ok:  true,
+			Msg: "Got bookmarks successfully",
+		},
+		Bookmarks: bookmarks,
 	})
 }
 
@@ -199,6 +217,7 @@ func (h *Handlers) GetBookmarkHandler(w http.ResponseWriter, r *http.Request) er
 type (
 	UpdateBookmarkRequest struct {
 		Url     *string `json:"url,omitempty"`
+		Title   *string `json:"title,omitempty"`
 		Summary *string `json:"summary,omitempty"`
 	}
 
@@ -221,6 +240,10 @@ func (h *Handlers) UpdateBookmarkHandler(w http.ResponseWriter, r *http.Request)
 	// update bookmark with partialBookmark
 	if req.Url != nil {
 		bookmark.Url = *req.Url
+	}
+
+	if req.Title != nil {
+		bookmark.Title = *req.Title
 	}
 
 	if req.Summary != nil {

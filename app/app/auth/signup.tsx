@@ -77,6 +77,7 @@ const Signup = () => {
                                     onBlur={onBlur}
                                     onChangeText={onChange}
                                     value={value}
+                                    secureTextEntry
                                 />
                             )}
                             name="password"
@@ -128,7 +129,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     inputField: {
-        backgroundColor: "white",
+        backgroundColor: "#fafafa",
         padding: 15,
         borderRadius: 10,
     },

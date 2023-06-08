@@ -32,7 +32,7 @@ const Login = () => {
         console.log("login:", input);
         login(input, {
             onSuccess: () => {
-                router.push("/bookmarks");
+                router.push("/main");
             },
             onSettled: () => {
                 resetForm();
@@ -82,6 +82,7 @@ const Login = () => {
                                     onBlur={onBlur}
                                     onChangeText={onChange}
                                     value={value}
+                                    secureTextEntry
                                 />
                             )}
                             name="password"
@@ -133,7 +134,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     inputField: {
-        backgroundColor: "white",
+        backgroundColor: "#fafafa",
         padding: 15,
         borderRadius: 10,
     },

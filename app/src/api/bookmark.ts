@@ -1,10 +1,11 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { bookmarkSchema } from "@src/types";
 import { BASE_URL, serverResponseSchema } from "@src/api/helpers";
 
 const createBookmarkRequestSchema = z.object({
-    url: z.string().url(),
+    url: z.string().trim().url(),
+    title: z.string(),
 });
 
 const createBookmarkResponseSchema = serverResponseSchema.extend({
@@ -35,8 +36,42 @@ const createBookmark = async (req: CreateBookmarkRequest) => {
 };
 
 const useCreateBookmark = () => {
+    const queryClient = useQueryClient();
+
     return useMutation({
         mutationFn: createBookmark,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["bookmarks"] });
+        },
+    });
+};
+
+const getBookmarksResponseSchema = serverResponseSchema.extend({
+    bookmarks: z.array(bookmarkSchema).optional(),
+});
+
+const getBookmarks = async () => {
+    try {
+        const res = await fetch(`${BASE_URL}/bookmark`, {
+            method: "GET",
+        });
+
+        const parsedRes = getBookmarksResponseSchema.parse(await res.json());
+
+        if (!parsedRes.ok) {
+            throw new Error(parsedRes.msg);
+        } else {
+            return parsedRes.bookmarks;
+        }
+    } catch (err) {
+        throw err as Error;
+    }
+};
+
+const useGetBookmarks = () => {
+    return useQuery({
+        queryKey: ["bookmarks"],
+        queryFn: getBookmarks,
     });
 };
 
@@ -92,9 +127,20 @@ const deleteBookmark = async (id: string) => {
 };
 
 const useDeleteBookmark = () => {
+    const queryClient = useQueryClient();
+
     return useMutation({
         mutationFn: deleteBookmark,
+        onSuccess: (_, id) => {
+            queryClient.invalidateQueries({ queryKey: ["bookmarks"] });
+            queryClient.invalidateQueries({ queryKey: ["bookmark", id] });
+        },
     });
 };
 
-export { useCreateBookmark, useDeleteBookmark, useGetBookmark };
+export {
+    useCreateBookmark,
+    useDeleteBookmark,
+    useGetBookmark,
+    useGetBookmarks,
+};

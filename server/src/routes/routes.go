@@ -37,6 +37,7 @@ func (s *Server) MountHandlers(h *handlers.Handlers) {
 
 		r.Route("/bookmark", func(r chi.Router) {
 			r.Post("/", handlers.ToHttpHandlerFunc(h.CreateBookmarkHandler))
+			r.Get("/", handlers.ToHttpHandlerFunc(h.GetBookmarksHandler))
 
 			r.Route("/{id}", func(r chi.Router) {
 				r.Use(handlers.ToMiddleware(h.BookmarkMiddlewareFunc))
