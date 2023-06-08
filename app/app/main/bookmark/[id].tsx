@@ -1,27 +1,23 @@
+import { useGetBookmark } from "@src/api/bookmark";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { Text } from "react-native";
 
 const BookmarkPage = () => {
     const { id } = useLocalSearchParams();
 
+    if (!id || typeof id !== "string") return <Text>Loading...</Text>;
+
+    const { data: bookmark } = useGetBookmark(id);
+
+    if (!bookmark) return <Text>Loading...</Text>;
+
     return (
         <>
             <Stack.Screen options={{ title: "" }} />
             <Text>{id}</Text>
-            <Text>
-                Lorem ipsum dolor sit amet, officia excepteur ex fugiat
-                reprehenderit enim labore culpa sint ad nisi Lorem pariatur
-                mollit ex esse exercitation amet. Nisi anim cupidatat excepteur
-                officia. Reprehenderit nostrud nostrud ipsum Lorem est aliquip
-                amet voluptate voluptate dolor minim nulla est proident. Nostrud
-                officia pariatur ut officia. Sit irure elit esse ea nulla sunt
-                ex occaecat reprehenderit commodo officia dolor Lorem duis
-                laboris cupidatat officia voluptate. Culpa proident adipisicing
-                id nulla nisi laboris ex in Lorem sunt duis officia eiusmod.
-                Aliqua reprehenderit commodo ex non excepteur duis sunt velit
-                enim. Voluptate laboris sint cupidatat ullamco ut ea consectetur
-                et est culpa et culpa duis.
-            </Text>
+            {Object.entries(bookmark).map(([key, value]) => (
+                <Text key={key}>{key}: {value}</Text>
+            ))}
         </>
     );
 };
