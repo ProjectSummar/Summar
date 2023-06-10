@@ -96,6 +96,10 @@ const getUser = async () => {
 
         const parsedRes = getUserResponseSchema.parse(await res.json());
 
+        if (!parsedRes.ok) {
+            console.warn(parsedRes.msg);
+        }
+
         return parsedRes.user;
     } catch (err) {
         throw err as Error;

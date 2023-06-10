@@ -104,6 +104,54 @@ const useGetBookmark = (id: string) => {
     });
 };
 
+const updateBookmarkTitleRequestSchema = z.object({
+    id: z.string().uuid(),
+    title: z.string(),
+});
+
+const updateBookmarkTitleResponseSchema = serverResponseSchema.extend({
+    bookmark: bookmarkSchema.optional(),
+});
+
+type UpdateBookmarkTitleRequest = z.infer<
+    typeof updateBookmarkTitleRequestSchema
+>;
+
+const updateBookmarkTitle = async (req: UpdateBookmarkTitleRequest) => {
+    try {
+        const parsedReq = updateBookmarkTitleRequestSchema.parse(req);
+
+        const res = await fetch(`${BASE_URL}/bookmark/${parsedReq.id}`, {
+            method: "PATCH",
+            body: JSON.stringify({ title: parsedReq.title }),
+        });
+
+        const parsedRes = updateBookmarkTitleResponseSchema.parse(
+            await res.json(),
+        );
+
+        if (!parsedRes.ok) {
+            throw new Error(parsedRes.msg);
+        } else {
+            return parsedRes;
+        }
+    } catch (err) {
+        throw err as Error;
+    }
+};
+
+const useUpdateBookmarkTitle = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: updateBookmarkTitle,
+        onSuccess: (_, vars) => {
+            queryClient.invalidateQueries({ queryKey: ["bookmarks"] });
+            queryClient.invalidateQueries({ queryKey: ["bookmark", vars.id] });
+        },
+    });
+};
+
 const deleteBookmarkResponseSchema = serverResponseSchema.extend({
     bookmark: bookmarkSchema.optional(),
 });
@@ -143,4 +191,5 @@ export {
     useDeleteBookmark,
     useGetBookmark,
     useGetBookmarks,
+    useUpdateBookmarkTitle,
 };
