@@ -14,7 +14,7 @@ const BookmarkCard = ({ bookmark }: { bookmark: Bookmark }) => {
                     </View>
                 </Pressable>
             </Link>
-            <BookmarkContextMenu />
+            <BookmarkContextMenu bookmark={bookmark} />
         </View>
     );
 };

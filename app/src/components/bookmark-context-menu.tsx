@@ -6,8 +6,17 @@ import {
     MenuTrigger,
 } from "react-native-popup-menu";
 import { Text } from "react-native";
+import { Bookmark } from "@src/types";
+import { useDeleteBookmark } from "@src/api/bookmark";
 
-const BookmarkContextMenu = () => {
+const BookmarkContextMenu = ({ bookmark }: { bookmark: Bookmark }) => {
+    const { mutate: deleteBookmark } = useDeleteBookmark();
+
+    const deleteBookmarkOnSelect = () => {
+        console.log("deleting bookmark", bookmark.title);
+        deleteBookmark(bookmark.id);
+    };
+
     return (
         <Menu>
             <MenuTrigger>
@@ -23,7 +32,7 @@ const BookmarkContextMenu = () => {
             >
                 <ContextMenuOption
                     text="Delete Bookmark"
-                    onSelect={() => console.log("bookmark deleted")}
+                    onSelect={deleteBookmarkOnSelect}
                     icon="trash"
                 />
                 <ContextMenuOption

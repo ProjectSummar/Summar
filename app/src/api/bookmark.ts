@@ -159,7 +159,7 @@ const deleteBookmarkResponseSchema = serverResponseSchema.extend({
 const deleteBookmark = async (id: string) => {
     try {
         const res = await fetch(`${BASE_URL}/bookmark/${id}`, {
-            method: "POST",
+            method: "DELETE",
         });
 
         const parsedRes = deleteBookmarkResponseSchema.parse(await res.json());
