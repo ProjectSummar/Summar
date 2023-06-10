@@ -6,6 +6,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { MenuProvider } from "react-native-popup-menu";
 
 const AUTH_CONTEXT = true;
 
@@ -40,7 +41,9 @@ const Layout = () => {
             <SafeAreaProvider>
                 <QueryClientProvider client={queryClient}>
                     <AuthContextProvider>
-                        <Slot />
+                        <MenuProvider>
+                            <Slot />
+                        </MenuProvider>
                     </AuthContextProvider>
                 </QueryClientProvider>
             </SafeAreaProvider>
@@ -49,7 +52,9 @@ const Layout = () => {
         return (
             <SafeAreaProvider>
                 <QueryClientProvider client={queryClient}>
-                    <Slot />
+                    <MenuProvider>
+                        <Slot />
+                    </MenuProvider>
                 </QueryClientProvider>
             </SafeAreaProvider>
         );

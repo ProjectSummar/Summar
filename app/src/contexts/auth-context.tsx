@@ -10,12 +10,13 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         const inAuthRoute = segments[0] === "auth";
-        const isLoggedIn = !isLoading && user;
+        const isLoggedIn = !isLoading && user !== undefined;
 
         console.log("auth context", {
             inAuthRoute,
             segments,
             user,
+            isLoggedIn,
         });
 
         if (!inAuthRoute && !isLoggedIn) {
