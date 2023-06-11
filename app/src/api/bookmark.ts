@@ -5,7 +5,7 @@ import { BASE_URL, serverResponseSchema } from "@src/api/helpers";
 
 const createBookmarkRequestSchema = z.object({
     url: z.string().trim().url(),
-    title: z.string(),
+    title: z.string().trim(),
 });
 
 const createBookmarkResponseSchema = serverResponseSchema.extend({
@@ -106,7 +106,7 @@ const useGetBookmark = (id: string) => {
 
 const updateBookmarkTitleRequestSchema = z.object({
     id: z.string().uuid(),
-    title: z.string(),
+    title: z.string().trim(),
 });
 
 const updateBookmarkTitleResponseSchema = serverResponseSchema.extend({
