@@ -13,7 +13,7 @@ const BookmarkPage = () => {
 
     return (
         <>
-            <Stack.Screen options={{ title: "" }} />
+            <Stack.Screen options={{ title: bookmark.title }} />
             <Text>{id}</Text>
             {Object.entries(bookmark).map(([key, value]) => (
                 <Text key={key}>
