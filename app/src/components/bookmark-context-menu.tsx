@@ -15,7 +15,7 @@ const BookmarkContextMenu = ({ bookmark }: { bookmark: Bookmark }) => {
 
     const deleteBookmarkOnSelect = () => {
         console.log("deleting bookmark", bookmark.title);
-        deleteBookmark(bookmark.id);
+        deleteBookmark({ id: bookmark.id });
     };
 
     const router = useRouter();
