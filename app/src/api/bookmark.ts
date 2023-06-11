@@ -135,7 +135,7 @@ const updateBookmarkTitle = async (req: UpdateBookmarkTitleRequest) => {
         });
 
         const parsedRes = updateBookmarkTitleResponseSchema.parse(
-            await res.json(),
+            await res.json()
         );
 
         if (!parsedRes.ok) {
@@ -214,7 +214,7 @@ const summariseBookmark = async (req: SummariseBookmarkRequest) => {
 
         const res = await fetch(
             `${BASE_URL}/bookmark/${parsedReq.id}/summarise`,
-            { method: "POST" },
+            { method: "POST" }
         );
 
         const parsedRes = serverResponseSchema.parse(await res.json());

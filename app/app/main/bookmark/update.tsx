@@ -44,16 +44,19 @@ const Update = () => {
     const updateBookmarkTitleOnSubmit = handleSubmit((input) => {
         console.log("updateBookmarkTitleOnSubmit", input);
 
-        updateBookmarkTitle({ id: id as string, title: input.title }, {
-            onSuccess: () => {
-                successToast("Bookmark updated successfully");
-                router.push("/main/bookmark");
-            },
-            onError: () => errorToast("Error updating bookmark"),
-            onSettled: () => {
-                resetForm();
-            },
-        });
+        updateBookmarkTitle(
+            { id: id as string, title: input.title },
+            {
+                onSuccess: () => {
+                    successToast("Bookmark updated successfully");
+                    router.push("/main/bookmark");
+                },
+                onError: () => errorToast("Error updating bookmark"),
+                onSettled: () => {
+                    resetForm();
+                },
+            }
+        );
     });
 
     return (

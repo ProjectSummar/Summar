@@ -11,14 +11,17 @@ import { ColorValue, Text } from "react-native";
 import { IconName } from "@src/types";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-type ToastFn = (
-    { text, icon, color, bgColor }: {
-        text: string;
-        icon: IconName;
-        color: ColorValue;
-        bgColor: ColorValue;
-    },
-) => void;
+type ToastFn = ({
+    text,
+    icon,
+    color,
+    bgColor,
+}: {
+    text: string;
+    icon: IconName;
+    color: ColorValue;
+    bgColor: ColorValue;
+}) => void;
 
 type ToastContext = {
     text: string;
@@ -75,14 +78,17 @@ const ToastProvider = ({ children }: { children: ReactNode }) => {
     const [bgColor, setBgColor] = useState<ColorValue>("red");
     const [show, setShow] = useState(false);
 
-    const toast = (
-        { text, icon, color, bgColor }: {
-            text: string;
-            icon: IconName;
-            color: ColorValue;
-            bgColor: ColorValue;
-        },
-    ) => {
+    const toast = ({
+        text,
+        icon,
+        color,
+        bgColor,
+    }: {
+        text: string;
+        icon: IconName;
+        color: ColorValue;
+        bgColor: ColorValue;
+    }) => {
         setText(text);
         setIcon(icon);
         setColor(color);
@@ -103,27 +109,29 @@ const ToastProvider = ({ children }: { children: ReactNode }) => {
             value={{ text, icon, color, bgColor, show, toast }}
         >
             {children}
-            {show &&
-                (
-                    <ToastComponent
-                        text={text}
-                        icon={icon}
-                        color={color}
-                        bgColor={bgColor}
-                    />
-                )}
+            {show && (
+                <ToastComponent
+                    text={text}
+                    icon={icon}
+                    color={color}
+                    bgColor={bgColor}
+                />
+            )}
         </toastContext.Provider>
     );
 };
 
-const ToastComponent = (
-    { icon, text, bgColor, color }: {
-        icon: IconName;
-        text: string;
-        bgColor: ColorValue;
-        color: ColorValue;
-    },
-) => {
+const ToastComponent = ({
+    icon,
+    text,
+    bgColor,
+    color,
+}: {
+    icon: IconName;
+    text: string;
+    bgColor: ColorValue;
+    color: ColorValue;
+}) => {
     const insets = useSafeAreaInsets();
 
     return (

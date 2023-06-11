@@ -34,9 +34,11 @@ const BookmarkPage = () => {
                     headerRight: () => (
                         <View style={{ flexDirection: "row", gap: 10 }}>
                             <Ionicons
-                                name={bookmark.summary.length === 0
-                                    ? "flash-outline"
-                                    : "flash"}
+                                name={
+                                    bookmark.summary.length === 0
+                                        ? "flash-outline"
+                                        : "flash"
+                                }
                                 size={20}
                                 onPress={summariseBookmarkOnPress}
                             />
@@ -44,29 +46,28 @@ const BookmarkPage = () => {
                                 name={displaySummary ? "book" : "book-outline"}
                                 size={20}
                                 onPress={() =>
-                                    setSummaryView((summaryView) =>
-                                        !summaryView
-                                    )}
+                                    setSummaryView(
+                                        (summaryView) => !summaryView
+                                    )
+                                }
                             />
                         </View>
                     ),
                 }}
             />
-            {displaySummary
-                ? (
-                    <ScrollView style={{ padding: 20 }}>
-                        <Text style={{ fontSize: 20 }}>{bookmark.summary}</Text>
-                    </ScrollView>
-                )
-                : (
-                    <WebView
-                        originWhitelist={["*"]}
-                        source={{ uri: bookmark.url }}
-                        style={{ flex: 1 }}
-                        startInLoadingState={true}
-                        renderLoading={() => <Loading />}
-                    />
-                )}
+            {displaySummary ? (
+                <ScrollView style={{ padding: 20 }}>
+                    <Text style={{ fontSize: 20 }}>{bookmark.summary}</Text>
+                </ScrollView>
+            ) : (
+                <WebView
+                    originWhitelist={["*"]}
+                    source={{ uri: bookmark.url }}
+                    style={{ flex: 1 }}
+                    startInLoadingState={true}
+                    renderLoading={() => <Loading />}
+                />
+            )}
         </>
     );
 };

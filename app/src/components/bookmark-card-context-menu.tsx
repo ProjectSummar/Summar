@@ -19,10 +19,13 @@ const BookmarkCardContextMenu = ({ bookmark }: { bookmark: Bookmark }) => {
 
     const deleteBookmarkOnSelect = () => {
         console.log("deleting bookmark", bookmark.title);
-        deleteBookmark({ id: bookmark.id }, {
-            onSuccess: () => successToast("Bookmark deleted successfully"),
-            onError: () => errorToast("Error deleting bookmark"),
-        });
+        deleteBookmark(
+            { id: bookmark.id },
+            {
+                onSuccess: () => successToast("Bookmark deleted successfully"),
+                onError: () => errorToast("Error deleting bookmark"),
+            }
+        );
     };
 
     const router = useRouter();
@@ -51,7 +54,8 @@ const BookmarkCardContextMenu = ({ bookmark }: { bookmark: Bookmark }) => {
                         router.push({
                             pathname: "/main/bookmark/update",
                             params: { id: bookmark.id },
-                        })}
+                        })
+                    }
                     icon="md-pencil-sharp"
                 />
             </MenuOptions>
@@ -59,13 +63,15 @@ const BookmarkCardContextMenu = ({ bookmark }: { bookmark: Bookmark }) => {
     );
 };
 
-const ContextMenuOption = (
-    { text, onSelect, icon }: {
-        text: string;
-        onSelect: () => any;
-        icon: IconName;
-    },
-) => {
+const ContextMenuOption = ({
+    text,
+    onSelect,
+    icon,
+}: {
+    text: string;
+    onSelect: () => any;
+    icon: IconName;
+}) => {
     return (
         <MenuOption
             onSelect={onSelect}
