@@ -16,7 +16,7 @@ const BookmarkPage = () => {
 
     if (!bookmark || isLoading) return <Loading />;
 
-    const displayView = summaryView && bookmark.summary.length !== 0;
+    const displaySummary = summaryView && bookmark.summary.length !== 0;
 
     const summariseBookmarkOnPress = () => {
         if (bookmark.summary.length !== 0) {
@@ -41,7 +41,7 @@ const BookmarkPage = () => {
                                 onPress={summariseBookmarkOnPress}
                             />
                             <Ionicons
-                                name={displayView ? "book" : "book-outline"}
+                                name={displaySummary ? "book" : "book-outline"}
                                 size={20}
                                 onPress={() =>
                                     setSummaryView((summaryView) =>
@@ -52,7 +52,7 @@ const BookmarkPage = () => {
                     ),
                 }}
             />
-            {displayView
+            {displaySummary
                 ? (
                     <ScrollView style={{ padding: 20 }}>
                         <Text style={{ fontSize: 20 }}>{bookmark.summary}</Text>
