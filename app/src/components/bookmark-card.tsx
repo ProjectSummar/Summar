@@ -1,7 +1,7 @@
 import { Bookmark } from "@src/types";
 import { Link } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import BookmarkContextMenu from "./bookmark-context-menu";
+import BookmarkCardContextMenu from "./bookmark-card-context-menu";
 
 const BookmarkCard = ({ bookmark }: { bookmark: Bookmark }) => {
     return (
@@ -10,11 +10,13 @@ const BookmarkCard = ({ bookmark }: { bookmark: Bookmark }) => {
                 <Pressable style={styles.pressable}>
                     <View>
                         <Text style={styles.title}>{bookmark.title}</Text>
-                        <Text style={styles.url}>{bookmark.url}</Text>
+                        <Text style={styles.url} numberOfLines={1}>
+                            {bookmark.url}
+                        </Text>
                     </View>
                 </Pressable>
             </Link>
-            <BookmarkContextMenu bookmark={bookmark} />
+            <BookmarkCardContextMenu bookmark={bookmark} />
         </View>
     );
 };

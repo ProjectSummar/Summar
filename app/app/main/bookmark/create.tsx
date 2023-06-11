@@ -1,4 +1,5 @@
 import { useCreateBookmark } from "@src/api/bookmark";
+import { useToast } from "@src/contexts/toast-context";
 import { Stack, useNavigation, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { Controller, useForm } from "react-hook-form";
@@ -19,6 +20,8 @@ type CreateBookmarkInput = {
 };
 
 const Create = () => {
+    const { errorToast, successToast } = useToast();
+
     const { mutate: createBookmark, isLoading } = useCreateBookmark();
 
     const {
@@ -36,11 +39,11 @@ const Create = () => {
 
         createBookmark(input, {
             onSuccess: () => {
+                successToast("Bookmark created successfully");
                 router.push("/main/bookmark");
             },
-            onSettled: () => {
-                resetForm();
-            },
+            onError: () => errorToast("Error creating bookmark"),
+            onSettled: () => resetForm(),
         });
     });
 

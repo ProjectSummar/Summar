@@ -1,4 +1,5 @@
 import { useUpdateBookmarkTitle } from "@src/api/bookmark";
+import { useToast } from "@src/contexts/toast-context";
 import {
     Stack,
     useLocalSearchParams,
@@ -23,6 +24,8 @@ type UpdateBookmarkTitleInput = {
 };
 
 const Update = () => {
+    const { errorToast, successToast } = useToast();
+
     const { id } = useLocalSearchParams();
 
     const { mutate: updateBookmarkTitle, isLoading } = useUpdateBookmarkTitle();
@@ -40,14 +43,17 @@ const Update = () => {
     const updateBookmarkTitleOnSubmit = handleSubmit((input) => {
         console.log("updateBookmarkTitleOnSubmit", input);
 
-        updateBookmarkTitle({ id: id as string, title: input.title }, {
-            onSuccess: () => {
-                router.push("/main/bookmark");
+        updateBookmarkTitle(
+            { id: id as string, title: input.title },
+            {
+                onSuccess: () => {
+                    successToast("Bookmark updated successfully");
+                    router.push("/main/bookmark");
+                },
+                onError: () => errorToast("Error updating bookmark"),
+                onSettled: () => resetForm(),
             },
-            onSettled: () => {
-                resetForm();
-            },
-        });
+        );
     });
 
     return (
