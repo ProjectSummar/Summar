@@ -217,7 +217,7 @@ const summariseBookmark = async (req: SummariseBookmarkRequest) => {
             { method: "POST" },
         );
 
-        const parsedRes = serverResponseSchema.parse(res);
+        const parsedRes = serverResponseSchema.parse(await res.json());
 
         if (!parsedRes.ok) {
             throw new Error(parsedRes.msg);
