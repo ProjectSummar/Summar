@@ -10,7 +10,9 @@ const BookmarkCard = ({ bookmark }: { bookmark: Bookmark }) => {
                 <Pressable style={styles.pressable}>
                     <View>
                         <Text style={styles.title}>{bookmark.title}</Text>
-                        <Text style={styles.url}>{bookmark.url}</Text>
+                        <Text style={styles.url} numberOfLines={1}>
+                            {bookmark.url}
+                        </Text>
                     </View>
                 </Pressable>
             </Link>
