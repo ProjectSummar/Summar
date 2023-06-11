@@ -1,5 +1,5 @@
 import { useUpdateBookmarkTitle } from "@src/api/bookmark";
-import { useErrorToast, useSuccessToast } from "@src/contexts/toast-context";
+import { useToast } from "@src/contexts/toast-context";
 import {
     Stack,
     useLocalSearchParams,
@@ -24,8 +24,7 @@ type UpdateBookmarkTitleInput = {
 };
 
 const Update = () => {
-    const successToast = useSuccessToast();
-    const errorToast = useErrorToast();
+    const { errorToast, successToast } = useToast();
 
     const { id } = useLocalSearchParams();
 
@@ -55,7 +54,7 @@ const Update = () => {
                 onSettled: () => {
                     resetForm();
                 },
-            }
+            },
         );
     });
 

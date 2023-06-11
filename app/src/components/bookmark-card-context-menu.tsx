@@ -9,11 +9,10 @@ import { Text } from "react-native";
 import { Bookmark, IconName } from "@src/types";
 import { useDeleteBookmark } from "@src/api/bookmark";
 import { useRouter } from "expo-router";
-import { useErrorToast, useSuccessToast } from "@src/contexts/toast-context";
+import { useToast } from "@src/contexts/toast-context";
 
 const BookmarkCardContextMenu = ({ bookmark }: { bookmark: Bookmark }) => {
-    const successToast = useSuccessToast();
-    const errorToast = useErrorToast();
+    const { errorToast, successToast } = useToast();
 
     const { mutate: deleteBookmark } = useDeleteBookmark();
 
@@ -24,7 +23,7 @@ const BookmarkCardContextMenu = ({ bookmark }: { bookmark: Bookmark }) => {
             {
                 onSuccess: () => successToast("Bookmark deleted successfully"),
                 onError: () => errorToast("Error deleting bookmark"),
-            }
+            },
         );
     };
 
@@ -54,8 +53,7 @@ const BookmarkCardContextMenu = ({ bookmark }: { bookmark: Bookmark }) => {
                         router.push({
                             pathname: "/main/bookmark/update",
                             params: { id: bookmark.id },
-                        })
-                    }
+                        })}
                     icon="md-pencil-sharp"
                 />
             </MenuOptions>

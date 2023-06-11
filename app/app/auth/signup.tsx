@@ -11,7 +11,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Link } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { useSignup } from "@src/api/auth";
-import { useErrorToast, useSuccessToast } from "@src/contexts/toast-context";
+import { useToast } from "@src/contexts/toast-context";
 
 type SignupFormInput = {
     email: string;
@@ -19,8 +19,7 @@ type SignupFormInput = {
 };
 
 const Signup = () => {
-    const successToast = useSuccessToast();
-    const errorToast = useErrorToast();
+    const { errorToast, successToast } = useToast();
 
     const { mutate: signup, isLoading } = useSignup();
 

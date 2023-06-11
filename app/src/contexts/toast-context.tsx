@@ -42,13 +42,9 @@ const toastContext = createContext<ToastContext>({
 });
 
 const useToast = () => {
-    return useContext(toastContext).toast;
-};
-
-const useSuccessToast = () => {
     const toast = useContext(toastContext).toast;
 
-    return (text: string) => {
+    const successToast = (text: string) => {
         toast({
             text,
             icon: "checkmark-circle-outline",
@@ -56,12 +52,8 @@ const useSuccessToast = () => {
             color: "white",
         });
     };
-};
 
-const useErrorToast = () => {
-    const toast = useContext(toastContext).toast;
-
-    return (text: string) => {
+    const errorToast = (text: string) => {
         toast({
             text,
             icon: "alert-circle-outline",
@@ -69,6 +61,8 @@ const useErrorToast = () => {
             color: "white",
         });
     };
+
+    return { errorToast, successToast };
 };
 
 const ToastProvider = ({ children }: { children: ReactNode }) => {
@@ -161,4 +155,4 @@ const ToastComponent = ({
     );
 };
 
-export { ToastProvider, useErrorToast, useSuccessToast, useToast };
+export { ToastProvider, useToast };

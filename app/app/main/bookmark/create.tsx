@@ -1,5 +1,5 @@
 import { useCreateBookmark } from "@src/api/bookmark";
-import { useErrorToast, useSuccessToast } from "@src/contexts/toast-context";
+import { useToast } from "@src/contexts/toast-context";
 import { Stack, useNavigation, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { Controller, useForm } from "react-hook-form";
@@ -20,8 +20,7 @@ type CreateBookmarkInput = {
 };
 
 const Create = () => {
-    const successToast = useSuccessToast();
-    const errorToast = useErrorToast();
+    const { errorToast, successToast } = useToast();
 
     const { mutate: createBookmark, isLoading } = useCreateBookmark();
 
