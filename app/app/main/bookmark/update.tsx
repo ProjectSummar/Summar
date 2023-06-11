@@ -52,7 +52,7 @@ const Update = () => {
                 },
                 onError: () => errorToast("Error updating bookmark"),
                 onSettled: () => resetForm(),
-            },
+            }
         );
     });
 
