@@ -6,16 +6,23 @@ import {
     MenuTrigger,
 } from "react-native-popup-menu";
 import { Text } from "react-native";
-import { Bookmark } from "@src/types";
+import { Bookmark, IconName } from "@src/types";
 import { useDeleteBookmark } from "@src/api/bookmark";
 import { useRouter } from "expo-router";
+import { useErrorToast, useSuccessToast } from "@src/contexts/toast-context";
 
 const BookmarkCardContextMenu = ({ bookmark }: { bookmark: Bookmark }) => {
+    const successToast = useSuccessToast();
+    const errorToast = useErrorToast();
+
     const { mutate: deleteBookmark } = useDeleteBookmark();
 
     const deleteBookmarkOnSelect = () => {
         console.log("deleting bookmark", bookmark.title);
-        deleteBookmark({ id: bookmark.id });
+        deleteBookmark({ id: bookmark.id }, {
+            onSuccess: () => successToast("Bookmark deleted successfully"),
+            onError: () => errorToast("Error deleting bookmark"),
+        });
     };
 
     const router = useRouter();
@@ -56,7 +63,7 @@ const ContextMenuOption = (
     { text, onSelect, icon }: {
         text: string;
         onSelect: () => any;
-        icon: keyof typeof Ionicons.glyphMap;
+        icon: IconName;
     },
 ) => {
     return (

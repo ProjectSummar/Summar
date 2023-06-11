@@ -7,6 +7,7 @@ import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { MenuProvider } from "react-native-popup-menu";
+import { ToastProvider } from "@src/contexts/toast-context";
 
 const AUTH_CONTEXT = true;
 
@@ -42,7 +43,9 @@ const Layout = () => {
                 <QueryClientProvider client={queryClient}>
                     <AuthContextProvider>
                         <MenuProvider>
-                            <Slot />
+                            <ToastProvider>
+                                <Slot />
+                            </ToastProvider>
                         </MenuProvider>
                     </AuthContextProvider>
                 </QueryClientProvider>
@@ -53,7 +56,9 @@ const Layout = () => {
             <SafeAreaProvider>
                 <QueryClientProvider client={queryClient}>
                     <MenuProvider>
-                        <Slot />
+                        <ToastProvider>
+                            <Slot />
+                        </ToastProvider>
                     </MenuProvider>
                 </QueryClientProvider>
             </SafeAreaProvider>

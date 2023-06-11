@@ -1,3 +1,4 @@
+import { Ionicons } from "@expo/vector-icons";
 import { z } from "zod";
 
 const userSchema = z.object({
@@ -18,4 +19,6 @@ const bookmarkSchema = z.object({
 
 type Bookmark = z.infer<typeof bookmarkSchema>;
 
-export { Bookmark, bookmarkSchema, User, userSchema };
+type IconName = keyof typeof Ionicons.glyphMap;
+
+export { Bookmark, bookmarkSchema, IconName, User, userSchema };
