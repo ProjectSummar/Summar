@@ -8,6 +8,7 @@ import {
 import { Text } from "react-native";
 import { Bookmark } from "@src/types";
 import { useDeleteBookmark } from "@src/api/bookmark";
+import { useRouter } from "expo-router";
 
 const BookmarkContextMenu = ({ bookmark }: { bookmark: Bookmark }) => {
     const { mutate: deleteBookmark } = useDeleteBookmark();
@@ -16,6 +17,8 @@ const BookmarkContextMenu = ({ bookmark }: { bookmark: Bookmark }) => {
         console.log("deleting bookmark", bookmark.title);
         deleteBookmark(bookmark.id);
     };
+
+    const router = useRouter();
 
     return (
         <Menu>
@@ -37,7 +40,11 @@ const BookmarkContextMenu = ({ bookmark }: { bookmark: Bookmark }) => {
                 />
                 <ContextMenuOption
                     text="Update Bookmark"
-                    onSelect={() => console.log("bookmark updated")}
+                    onSelect={() =>
+                        router.push({
+                            pathname: "/main/bookmark/update",
+                            params: { id: bookmark.id },
+                        })}
                     icon="md-pencil-sharp"
                 />
             </MenuOptions>

@@ -5,7 +5,17 @@ const Layout = () => {
         <Stack initialRouteName="index">
             <Stack.Screen
                 name="create"
-                options={{ title: "Create Bookmark", presentation: "modal" }}
+                options={{
+                    title: "Create Bookmark",
+                    presentation: "modal",
+                }}
+            />
+            <Stack.Screen
+                name="update"
+                options={{
+                    title: "Update Bookmark Title",
+                    presentation: "modal",
+                }}
             />
         </Stack>
     );
