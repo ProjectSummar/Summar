@@ -82,6 +82,7 @@ func (s *PostgresStore) GetSession(token string) (types.Session, error) {
 	if err != nil {
 		return types.Session{}, err
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		return ScanSessionRow(rows)
@@ -119,6 +120,7 @@ func (s *PostgresStore) GetUser(id uuid.UUID) (types.User, error) {
 	if err != nil {
 		return types.User{}, err
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		return ScanUserRow(rows)
@@ -132,6 +134,7 @@ func (s *PostgresStore) GetUserByEmail(email string) (types.User, error) {
 	if err != nil {
 		return types.User{}, err
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		return ScanUserRow(rows)
@@ -178,6 +181,7 @@ func (s *PostgresStore) GetBookmark(id uuid.UUID) (types.Bookmark, error) {
 	if err != nil {
 		return types.Bookmark{}, err
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		return ScanBookmarkRow(rows)
@@ -191,6 +195,7 @@ func (s *PostgresStore) GetBookmarksByUserId(userId uuid.UUID) ([]types.Bookmark
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	bookmarks := []types.Bookmark{}
 	for rows.Next() {

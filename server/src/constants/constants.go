@@ -1,5 +1,5 @@
 package constants
 
 const (
-	SESSION_EXPIRATION_SECONDS int = 3600
+	SESSION_EXPIRATION_SECONDS int = 604800
 )

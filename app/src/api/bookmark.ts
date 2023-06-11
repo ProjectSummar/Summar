@@ -5,7 +5,7 @@ import { BASE_URL, serverResponseSchema } from "@src/api/helpers";
 
 const createBookmarkRequestSchema = z.object({
     url: z.string().trim().url(),
-    title: z.string(),
+    title: z.string().trim(),
 });
 
 const createBookmarkResponseSchema = serverResponseSchema.extend({
@@ -75,13 +75,21 @@ const useGetBookmarks = () => {
     });
 };
 
+const getBookmarkRequestSchema = z.object({
+    id: z.string().uuid(),
+});
+
 const getBookmarkResponseSchema = serverResponseSchema.extend({
     bookmark: bookmarkSchema.optional(),
 });
 
-const getBookmark = async (id: string) => {
+type GetBookmarkRequest = z.infer<typeof getBookmarkRequestSchema>;
+
+const getBookmark = async (req: GetBookmarkRequest) => {
     try {
-        const res = await fetch(`${BASE_URL}/bookmark/${id}`, {
+        const parsedReq = getBookmarkRequestSchema.parse(req);
+
+        const res = await fetch(`${BASE_URL}/bookmark/${parsedReq.id}`, {
             method: "GET",
         });
 
@@ -100,18 +108,74 @@ const getBookmark = async (id: string) => {
 const useGetBookmark = (id: string) => {
     return useQuery({
         queryKey: ["bookmark", id],
-        queryFn: () => getBookmark(id),
+        queryFn: () => getBookmark({ id }),
     });
 };
+
+const updateBookmarkTitleRequestSchema = z.object({
+    id: z.string().uuid(),
+    title: z.string().trim(),
+});
+
+const updateBookmarkTitleResponseSchema = serverResponseSchema.extend({
+    bookmark: bookmarkSchema.optional(),
+});
+
+type UpdateBookmarkTitleRequest = z.infer<
+    typeof updateBookmarkTitleRequestSchema
+>;
+
+const updateBookmarkTitle = async (req: UpdateBookmarkTitleRequest) => {
+    try {
+        const parsedReq = updateBookmarkTitleRequestSchema.parse(req);
+
+        const res = await fetch(`${BASE_URL}/bookmark/${parsedReq.id}`, {
+            method: "PATCH",
+            body: JSON.stringify({ title: parsedReq.title }),
+        });
+
+        const parsedRes = updateBookmarkTitleResponseSchema.parse(
+            await res.json(),
+        );
+
+        if (!parsedRes.ok) {
+            throw new Error(parsedRes.msg);
+        } else {
+            return parsedRes;
+        }
+    } catch (err) {
+        throw err as Error;
+    }
+};
+
+const useUpdateBookmarkTitle = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: updateBookmarkTitle,
+        onSuccess: (_, req) => {
+            queryClient.invalidateQueries({ queryKey: ["bookmarks"] });
+            queryClient.invalidateQueries({ queryKey: ["bookmark", req.id] });
+        },
+    });
+};
+
+const deleteBookmarkRequestSchema = z.object({
+    id: z.string().uuid(),
+});
 
 const deleteBookmarkResponseSchema = serverResponseSchema.extend({
     bookmark: bookmarkSchema.optional(),
 });
 
-const deleteBookmark = async (id: string) => {
+type DeleteBookmarkRequest = z.infer<typeof deleteBookmarkRequestSchema>;
+
+const deleteBookmark = async (req: DeleteBookmarkRequest) => {
     try {
-        const res = await fetch(`${BASE_URL}/bookmark/${id}`, {
-            method: "POST",
+        const parsedReq = deleteBookmarkRequestSchema.parse(req);
+
+        const res = await fetch(`${BASE_URL}/bookmark/${parsedReq.id}`, {
+            method: "DELETE",
         });
 
         const parsedRes = deleteBookmarkResponseSchema.parse(await res.json());
@@ -131,9 +195,50 @@ const useDeleteBookmark = () => {
 
     return useMutation({
         mutationFn: deleteBookmark,
-        onSuccess: (_, id) => {
+        onSuccess: (_, req) => {
             queryClient.invalidateQueries({ queryKey: ["bookmarks"] });
-            queryClient.invalidateQueries({ queryKey: ["bookmark", id] });
+            queryClient.invalidateQueries({ queryKey: ["bookmark", req.id] });
+        },
+    });
+};
+
+const summariseBookmarkRequestSchema = z.object({
+    id: z.string().uuid(),
+});
+
+type SummariseBookmarkRequest = z.infer<typeof summariseBookmarkRequestSchema>;
+
+const summariseBookmark = async (req: SummariseBookmarkRequest) => {
+    try {
+        const parsedReq = summariseBookmarkRequestSchema.parse(req);
+
+        const res = await fetch(
+            `${BASE_URL}/bookmark/${parsedReq.id}/summarise`,
+            { method: "POST" },
+        );
+
+        const parsedRes = serverResponseSchema.parse(await res.json());
+
+        if (!parsedRes.ok) {
+            throw new Error(parsedRes.msg);
+        } else {
+            return parsedRes;
+        }
+    } catch (err) {
+        throw err as Error;
+    }
+};
+
+const useSummariseBookmark = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: summariseBookmark,
+        onSuccess: (_, req) => {
+            queryClient.invalidateQueries({ queryKey: ["bookmarks"] });
+            queryClient.invalidateQueries({
+                queryKey: ["bookmark", req.id],
+            });
         },
     });
 };
@@ -143,4 +248,6 @@ export {
     useDeleteBookmark,
     useGetBookmark,
     useGetBookmarks,
+    useSummariseBookmark,
+    useUpdateBookmarkTitle,
 };
