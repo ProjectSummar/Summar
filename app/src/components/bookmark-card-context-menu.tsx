@@ -10,7 +10,7 @@ import { Bookmark } from "@src/types";
 import { useDeleteBookmark } from "@src/api/bookmark";
 import { useRouter } from "expo-router";
 
-const BookmarkContextMenu = ({ bookmark }: { bookmark: Bookmark }) => {
+const BookmarkCardContextMenu = ({ bookmark }: { bookmark: Bookmark }) => {
     const { mutate: deleteBookmark } = useDeleteBookmark();
 
     const deleteBookmarkOnSelect = () => {
@@ -77,4 +77,4 @@ const ContextMenuOption = (
     );
 };
 
-export default BookmarkContextMenu;
+export default BookmarkCardContextMenu;
