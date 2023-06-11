@@ -51,10 +51,8 @@ const Update = () => {
                     router.push("/main/bookmark");
                 },
                 onError: () => errorToast("Error updating bookmark"),
-                onSettled: () => {
-                    resetForm();
-                },
-            }
+                onSettled: () => resetForm(),
+            },
         );
     });
 
