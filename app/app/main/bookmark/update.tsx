@@ -54,7 +54,7 @@ const Update = () => {
                 onSettled: () => {
                     resetForm();
                 },
-            },
+            }
         );
     });
 
