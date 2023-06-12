@@ -39,12 +39,12 @@ const BookmarkPage = () => {
                                         ? "flash-outline"
                                         : "flash"
                                 }
-                                size={20}
+                                size={30}
                                 onPress={summariseBookmarkOnPress}
                             />
                             <Ionicons
                                 name={displaySummary ? "book" : "book-outline"}
-                                size={20}
+                                size={30}
                                 onPress={() =>
                                     setSummaryView(
                                         (summaryView) => !summaryView
