@@ -52,7 +52,9 @@ const Create = () => {
             <StatusBar style="light" />
             <Stack.Screen
                 options={{
-                    headerLeft: () => <BackButton backFn={nav.goBack} />,
+                    headerLeft: () => (
+                        <Button title="Back" onPress={nav.goBack} />
+                    ),
                 }}
             />
             <TouchableWithoutFeedback
@@ -118,10 +120,6 @@ const Create = () => {
             </TouchableWithoutFeedback>
         </>
     );
-};
-
-const BackButton = ({ backFn }: { backFn: any }) => {
-    return <Button title="Back" onPress={backFn} />;
 };
 
 const styles = StyleSheet.create({

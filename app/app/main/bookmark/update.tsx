@@ -52,7 +52,7 @@ const Update = () => {
                 },
                 onError: () => errorToast("Error updating bookmark"),
                 onSettled: () => resetForm(),
-            }
+            },
         );
     });
 
@@ -61,7 +61,9 @@ const Update = () => {
             <StatusBar style="light" />
             <Stack.Screen
                 options={{
-                    headerLeft: () => <BackButton backFn={nav.goBack} />,
+                    headerLeft: () => (
+                        <Button title="Back" onPress={nav.goBack} />
+                    ),
                 }}
             />
             <TouchableWithoutFeedback
@@ -108,10 +110,6 @@ const Update = () => {
             </TouchableWithoutFeedback>
         </>
     );
-};
-
-const BackButton = ({ backFn }: { backFn: any }) => {
-    return <Button title="Back" onPress={backFn} />;
 };
 
 const styles = StyleSheet.create({
