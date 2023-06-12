@@ -1,11 +1,14 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useGetBookmark, useSummariseBookmark } from "@src/api/bookmark";
+import { useToast } from "@src/contexts/toast-context";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 import WebView from "react-native-webview";
 
 const BookmarkPage = () => {
+    const { errorToast, successToast } = useToast();
+
     const { id } = useLocalSearchParams();
 
     const { data: bookmark, isLoading } = useGetBookmark(id as string);
@@ -23,7 +26,18 @@ const BookmarkPage = () => {
             return;
         }
 
-        summariseBookmark({ id: bookmark.id });
+        summariseBookmark({ id: bookmark.id }, {
+            onSuccess: () => successToast("Summarised bookmark successfully"),
+            onError: () => errorToast("Error summarising bookmark"),
+        });
+    };
+
+    const toggleSummaryView = () => {
+        if (bookmark.summary.length === 0) {
+            errorToast("No summary available");
+            return;
+        }
+        setSummaryView((summaryView) => !summaryView);
     };
 
     return (
@@ -34,40 +48,36 @@ const BookmarkPage = () => {
                     headerRight: () => (
                         <View style={{ flexDirection: "row", gap: 10 }}>
                             <Ionicons
-                                name={
-                                    bookmark.summary.length === 0
-                                        ? "flash-outline"
-                                        : "flash"
-                                }
+                                name={bookmark.summary.length === 0
+                                    ? "flash-outline"
+                                    : "flash"}
                                 size={30}
                                 onPress={summariseBookmarkOnPress}
                             />
                             <Ionicons
                                 name={displaySummary ? "book" : "book-outline"}
                                 size={30}
-                                onPress={() =>
-                                    setSummaryView(
-                                        (summaryView) => !summaryView
-                                    )
-                                }
+                                onPress={toggleSummaryView}
                             />
                         </View>
                     ),
                 }}
             />
-            {displaySummary ? (
-                <ScrollView style={{ padding: 20 }}>
-                    <Text style={{ fontSize: 20 }}>{bookmark.summary}</Text>
-                </ScrollView>
-            ) : (
-                <WebView
-                    originWhitelist={["*"]}
-                    source={{ uri: bookmark.url }}
-                    style={{ flex: 1 }}
-                    startInLoadingState={true}
-                    renderLoading={() => <Loading />}
-                />
-            )}
+            {displaySummary
+                ? (
+                    <ScrollView style={{ padding: 20 }}>
+                        <Text style={{ fontSize: 20 }}>{bookmark.summary}</Text>
+                    </ScrollView>
+                )
+                : (
+                    <WebView
+                        originWhitelist={["*"]}
+                        source={{ uri: bookmark.url }}
+                        style={{ flex: 1 }}
+                        startInLoadingState={true}
+                        renderLoading={() => <Loading />}
+                    />
+                )}
         </>
     );
 };
