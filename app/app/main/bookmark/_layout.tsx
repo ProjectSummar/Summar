@@ -1,22 +1,8 @@
-import { Ionicons } from "@expo/vector-icons";
-import { Stack, useNavigation } from "expo-router";
+import { Stack } from "expo-router";
 
 const Layout = () => {
-    const drawer = useNavigation("/main") as any;
-
     return (
-        <Stack
-            initialRouteName="index"
-            screenOptions={{
-                headerLeft: () => (
-                    <Ionicons
-                        name="menu-sharp"
-                        size={30}
-                        onPress={drawer.toggleDrawer}
-                    />
-                ),
-            }}
-        >
+        <Stack initialRouteName="index">
             <Stack.Screen
                 name="create"
                 options={{
