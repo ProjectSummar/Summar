@@ -23,3 +23,22 @@
    ```bash
    npx expo start --no-dev --minify
    ```
+
+## Sitemap
+
+- `/auth/login`
+  - Login page
+- `/auth/signup`
+  - Signup page
+- `/main/bookmark`
+  - Bookmarks page
+  - Displays all current user bookmarks
+- `/main/bookmark/create`
+  - Modal in the bookmarks page to create a bookmark
+- `/main/bookmark/update?id=...`
+  - Modal in the bookmarks page to update a bookmark's title
+- `/main/bookmark/{id}`
+  - Individual bookmark page
+  - Contains webview and summary of the bookmark
+- `/main/settings`
+  - Settings page
