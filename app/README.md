@@ -2,7 +2,8 @@
 
 ## Usage
 
-1. Ensure current working directory is `./summar/app`
+1. Ensure current working directory is `./summar/app` and the
+   [server is running](/server/README.md)
 
 2. Install dependencies by running
 
