@@ -49,6 +49,10 @@ const Index = () => {
                     paddingHorizontal: 10,
                     backgroundColor: "#fafafa",
                     borderRadius: 10,
+                    shadowColor: "black",
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.1,
+                    shadowRadius: 5,
                 }}
             >
                 <Ionicons name="search" size={25} color="gray" />
