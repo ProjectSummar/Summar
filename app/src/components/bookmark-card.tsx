@@ -1,9 +1,34 @@
 import { Bookmark } from "@src/types";
 import { Link } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import BookmarkCardContextMenu from "./bookmark-card-context-menu";
+import { Share } from "react-native";
+import { useDeleteBookmark } from "@src/api/bookmark";
+import { useRouter } from "expo-router";
+import { useToast } from "@src/contexts/toast-context";
+import { ContextMenu, ContextMenuOption } from "./context-menu";
 
 const BookmarkCard = ({ bookmark }: { bookmark: Bookmark }) => {
+    const { errorToast, successToast } = useToast();
+
+    const router = useRouter();
+
+    const { mutate: deleteBookmark } = useDeleteBookmark();
+
+    const deleteBookmarkOnSelect = () => {
+        console.log("deleting bookmark", bookmark.title);
+        deleteBookmark(
+            { id: bookmark.id },
+            {
+                onSuccess: () => successToast("Bookmark deleted successfully"),
+                onError: () => errorToast("Error deleting bookmark"),
+            },
+        );
+    };
+
+    const shareBookmark = async () => {
+        return await Share.share({ url: bookmark.url });
+    };
+
     return (
         <View style={styles.card}>
             <Link href={`/main/bookmark/${bookmark.id}`} asChild>
@@ -16,7 +41,27 @@ const BookmarkCard = ({ bookmark }: { bookmark: Bookmark }) => {
                     </View>
                 </Pressable>
             </Link>
-            <BookmarkCardContextMenu bookmark={bookmark} />
+            <ContextMenu>
+                <ContextMenuOption
+                    text="Delete Bookmark"
+                    onSelect={deleteBookmarkOnSelect}
+                    icon="trash"
+                />
+                <ContextMenuOption
+                    text="Update Bookmark"
+                    onSelect={() =>
+                        router.push({
+                            pathname: "/main/bookmark/update",
+                            params: { id: bookmark.id },
+                        })}
+                    icon="md-pencil-sharp"
+                />
+                <ContextMenuOption
+                    text="Share Bookmark"
+                    onSelect={shareBookmark}
+                    icon="share-outline"
+                />
+            </ContextMenu>
         </View>
     );
 };
