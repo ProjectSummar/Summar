@@ -7,26 +7,42 @@ import {
 } from "react-native-popup-menu";
 import { Share, Text } from "react-native";
 import { Bookmark, IconName } from "@src/types";
-import { useDeleteBookmark } from "@src/api/bookmark";
-import { useRouter } from "expo-router";
 import { useToast } from "@src/contexts/toast-context";
+import { Dispatch, SetStateAction } from "react";
+import { useSummariseBookmark } from "@src/api/bookmark";
 
-const BookmarkCardContextMenu = ({ bookmark }: { bookmark: Bookmark }) => {
+const BookmarkPageContextMenu = ({
+    bookmark,
+    setSummaryView,
+}: {
+    bookmark: Bookmark;
+    setSummaryView: Dispatch<SetStateAction<boolean>>;
+}) => {
     const { errorToast, successToast } = useToast();
 
-    const router = useRouter();
+    const { mutate: summariseBookmark } = useSummariseBookmark();
 
-    const { mutate: deleteBookmark } = useDeleteBookmark();
+    const summariseBookmarkOnPress = () => {
+        if (bookmark.summary.length !== 0) {
+            return;
+        }
 
-    const deleteBookmarkOnSelect = () => {
-        console.log("deleting bookmark", bookmark.title);
-        deleteBookmark(
+        summariseBookmark(
             { id: bookmark.id },
             {
-                onSuccess: () => successToast("Bookmark deleted successfully"),
-                onError: () => errorToast("Error deleting bookmark"),
+                onSuccess: () =>
+                    successToast("Summarised bookmark successfully"),
+                onError: () => errorToast("Error summarising bookmark"),
             }
         );
+    };
+
+    const toggleSummaryView = () => {
+        if (bookmark.summary.length === 0) {
+            errorToast("No summary available");
+            return;
+        }
+        setSummaryView((summaryView) => !summaryView);
     };
 
     const shareBookmark = async () => {
@@ -47,19 +63,14 @@ const BookmarkCardContextMenu = ({ bookmark }: { bookmark: Bookmark }) => {
                 customStyles={{ optionsContainer: { borderRadius: 10 } }}
             >
                 <ContextMenuOption
-                    text="Delete Bookmark"
-                    onSelect={deleteBookmarkOnSelect}
-                    icon="trash"
+                    text="Summarise Bookmark"
+                    onSelect={summariseBookmarkOnPress}
+                    icon="flash-outline"
                 />
                 <ContextMenuOption
-                    text="Update Bookmark"
-                    onSelect={() =>
-                        router.push({
-                            pathname: "/main/bookmark/update",
-                            params: { id: bookmark.id },
-                        })
-                    }
-                    icon="md-pencil-sharp"
+                    text="Toggle Summary View"
+                    onSelect={toggleSummaryView}
+                    icon="book-outline"
                 />
                 <ContextMenuOption
                     text="Share Bookmark"
@@ -98,4 +109,4 @@ const ContextMenuOption = ({
     );
 };
 
-export default BookmarkCardContextMenu;
+export default BookmarkPageContextMenu;

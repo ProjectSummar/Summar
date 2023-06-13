@@ -1,5 +1,5 @@
-import { Ionicons } from "@expo/vector-icons";
-import { useGetBookmark, useSummariseBookmark } from "@src/api/bookmark";
+import { useGetBookmark } from "@src/api/bookmark";
+import BookmarkPageContextMenu from "@src/components/bookmark-page-context-menu";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
@@ -10,21 +10,11 @@ const BookmarkPage = () => {
 
     const { data: bookmark, isLoading } = useGetBookmark(id as string);
 
-    const { mutate: summariseBookmark } = useSummariseBookmark();
-
     const [summaryView, setSummaryView] = useState(false);
 
     if (!bookmark || isLoading) return <Loading />;
 
     const displaySummary = summaryView && bookmark.summary.length !== 0;
-
-    const summariseBookmarkOnPress = () => {
-        if (bookmark.summary.length !== 0) {
-            return;
-        }
-
-        summariseBookmark({ id: bookmark.id });
-    };
 
     return (
         <>
@@ -32,26 +22,10 @@ const BookmarkPage = () => {
                 options={{
                     title: bookmark.title,
                     headerRight: () => (
-                        <View style={{ flexDirection: "row", gap: 10 }}>
-                            <Ionicons
-                                name={
-                                    bookmark.summary.length === 0
-                                        ? "flash-outline"
-                                        : "flash"
-                                }
-                                size={20}
-                                onPress={summariseBookmarkOnPress}
-                            />
-                            <Ionicons
-                                name={displaySummary ? "book" : "book-outline"}
-                                size={20}
-                                onPress={() =>
-                                    setSummaryView(
-                                        (summaryView) => !summaryView
-                                    )
-                                }
-                            />
-                        </View>
+                        <BookmarkPageContextMenu
+                            bookmark={bookmark}
+                            setSummaryView={setSummaryView}
+                        />
                     ),
                 }}
             />
