@@ -62,6 +62,7 @@ const Index = () => {
                     autoCapitalize="none"
                     value={query}
                     onChangeText={setQuery}
+                    clearButtonMode="always"
                 />
             </View>
             <FlatList
