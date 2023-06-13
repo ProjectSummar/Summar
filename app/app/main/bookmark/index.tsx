@@ -73,7 +73,7 @@ const Index = () => {
                 data={filteredBookmarks}
                 renderItem={({ item }) => <BookmarkCard bookmark={item} />}
                 keyExtractor={(item) => item.id}
-                refreshing={!bookmarks || isLoading}
+                refreshing={isLoading}
             />
         </>
     );
