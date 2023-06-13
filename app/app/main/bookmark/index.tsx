@@ -18,7 +18,7 @@ const Index = () => {
         if (query === "") return bookmarks;
 
         return bookmarks?.filter((bookmark) =>
-            bookmark.title.toLowerCase().match(query)
+            bookmark.title.toLowerCase().match(query.toLowerCase())
         );
     }, [bookmarks, query]);
 
