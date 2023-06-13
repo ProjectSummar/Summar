@@ -1,13 +1,26 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useGetBookmarks } from "@src/api/bookmark";
 import BookmarkCard from "@src/components/bookmark-card";
+import { useSearchStore } from "@src/stores/search-store";
 import { Link, Stack, useNavigation } from "expo-router";
-import { FlatList } from "react-native";
+import { FlatList, TextInput, View } from "react-native";
+import { useMemo } from "react";
 
 const Index = () => {
     const drawer = useNavigation("/main") as any;
 
     const { data: bookmarks, isLoading } = useGetBookmarks();
+
+    const query = useSearchStore((state) => state.query);
+    const setQuery = useSearchStore((state) => state.setQuery);
+
+    const filteredBookmarks = useMemo(() => {
+        if (query === "") return bookmarks;
+
+        return bookmarks?.filter((bookmark) =>
+            bookmark.title.toLowerCase().match(query)
+        );
+    }, [bookmarks, query]);
 
     return (
         <>
@@ -28,8 +41,31 @@ const Index = () => {
                     ),
                 }}
             />
+            <View
+                style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    margin: 10,
+                    paddingHorizontal: 10,
+                    backgroundColor: "#fafafa",
+                    borderRadius: 10,
+                }}
+            >
+                <Ionicons name="search" size={25} color="gray" />
+                <TextInput
+                    style={{
+                        padding: 15,
+                        flex: 1,
+                    }}
+                    placeholder="Search"
+                    placeholderTextColor="gray"
+                    autoCapitalize="none"
+                    value={query}
+                    onChangeText={setQuery}
+                />
+            </View>
             <FlatList
-                data={bookmarks}
+                data={filteredBookmarks}
                 renderItem={({ item }) => <BookmarkCard bookmark={item} />}
                 keyExtractor={(item) => item.id}
                 refreshing={!bookmarks || isLoading}
