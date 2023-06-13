@@ -41,41 +41,58 @@ const Index = () => {
                     ),
                 }}
             />
-            <View
-                style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    margin: 10,
-                    paddingHorizontal: 10,
-                    backgroundColor: "#fafafa",
-                    borderRadius: 10,
-                    shadowColor: "black",
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: 0.1,
-                    shadowRadius: 5,
-                }}
-            >
-                <Ionicons name="search" size={25} color="gray" />
-                <TextInput
-                    style={{
-                        padding: 15,
-                        flex: 1,
-                    }}
-                    placeholder="Search"
-                    placeholderTextColor="gray"
-                    autoCapitalize="none"
-                    value={query}
-                    onChangeText={setQuery}
-                    clearButtonMode="always"
-                />
-            </View>
             <FlatList
                 data={filteredBookmarks}
                 renderItem={({ item }) => <BookmarkCard bookmark={item} />}
                 keyExtractor={(item) => item.id}
                 refreshing={isLoading}
+                ListHeaderComponent={
+                    <SearchBar query={query} setQuery={setQuery} />
+                }
+                stickyHeaderIndices={[0]}
+                stickyHeaderHiddenOnScroll={true}
+                keyboardShouldPersistTaps="always"
+                keyboardDismissMode="interactive"
             />
         </>
+    );
+};
+
+const SearchBar = (
+    { query, setQuery }: {
+        query: string;
+        setQuery: (newQuery: string) => void;
+    },
+) => {
+    return (
+        <View
+            style={{
+                flexDirection: "row",
+                alignItems: "center",
+                margin: 10,
+                paddingHorizontal: 10,
+                backgroundColor: "#fafafa",
+                borderRadius: 10,
+                shadowColor: "black",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.1,
+                shadowRadius: 5,
+            }}
+        >
+            <Ionicons name="search" size={25} color="gray" />
+            <TextInput
+                style={{
+                    padding: 15,
+                    flex: 1,
+                }}
+                placeholder="Search"
+                placeholderTextColor="gray"
+                autoCapitalize="none"
+                value={query}
+                onChangeText={setQuery}
+                clearButtonMode="always"
+            />
+        </View>
     );
 };
 
