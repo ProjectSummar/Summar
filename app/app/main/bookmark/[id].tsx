@@ -29,21 +29,19 @@ const BookmarkPage = () => {
                     ),
                 }}
             />
-            {displaySummary
-                ? (
-                    <ScrollView style={{ padding: 20 }}>
-                        <Text style={{ fontSize: 20 }}>{bookmark.summary}</Text>
-                    </ScrollView>
-                )
-                : (
-                    <WebView
-                        originWhitelist={["*"]}
-                        source={{ uri: bookmark.url }}
-                        style={{ flex: 1 }}
-                        startInLoadingState={true}
-                        renderLoading={() => <Loading />}
-                    />
-                )}
+            {displaySummary ? (
+                <ScrollView style={{ padding: 20 }}>
+                    <Text style={{ fontSize: 20 }}>{bookmark.summary}</Text>
+                </ScrollView>
+            ) : (
+                <WebView
+                    originWhitelist={["*"]}
+                    source={{ uri: bookmark.url }}
+                    style={{ flex: 1 }}
+                    startInLoadingState={true}
+                    renderLoading={() => <Loading />}
+                />
+            )}
         </>
     );
 };

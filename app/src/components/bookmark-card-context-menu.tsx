@@ -25,7 +25,7 @@ const BookmarkCardContextMenu = ({ bookmark }: { bookmark: Bookmark }) => {
             {
                 onSuccess: () => successToast("Bookmark deleted successfully"),
                 onError: () => errorToast("Error deleting bookmark"),
-            },
+            }
         );
     };
 
@@ -57,7 +57,8 @@ const BookmarkCardContextMenu = ({ bookmark }: { bookmark: Bookmark }) => {
                         router.push({
                             pathname: "/main/bookmark/update",
                             params: { id: bookmark.id },
-                        })}
+                        })
+                    }
                     icon="md-pencil-sharp"
                 />
                 <ContextMenuOption

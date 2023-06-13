@@ -11,12 +11,13 @@ import { useToast } from "@src/contexts/toast-context";
 import { Dispatch, SetStateAction } from "react";
 import { useSummariseBookmark } from "@src/api/bookmark";
 
-const BookmarkPageContextMenu = (
-    { bookmark, setSummaryView }: {
-        bookmark: Bookmark;
-        setSummaryView: Dispatch<SetStateAction<boolean>>;
-    },
-) => {
+const BookmarkPageContextMenu = ({
+    bookmark,
+    setSummaryView,
+}: {
+    bookmark: Bookmark;
+    setSummaryView: Dispatch<SetStateAction<boolean>>;
+}) => {
     const { errorToast, successToast } = useToast();
 
     const { mutate: summariseBookmark } = useSummariseBookmark();
@@ -32,7 +33,7 @@ const BookmarkPageContextMenu = (
                 onSuccess: () =>
                     successToast("Summarised bookmark successfully"),
                 onError: () => errorToast("Error summarising bookmark"),
-            },
+            }
         );
     };
 
