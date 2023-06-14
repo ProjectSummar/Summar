@@ -27,19 +27,40 @@
 
 ## Sitemap
 
+### Authentication pages
+
+#### Login page
+
 - `/auth/login`
-  - Login page
+
+#### Signup page
+
 - `/auth/signup`
-  - Signup page
+
+### Main pages
+
+#### Bookmarks page
+
 - `/main/bookmark`
-  - Bookmarks page
-  - Displays all current user bookmarks
+- Displays all current user bookmarks
+- Search bookmarks by title
+- Manage bookmarks through context menus
+
+##### Create bookmark modal
+
 - `/main/bookmark/create`
-  - Modal in the bookmarks page to create a bookmark
+- Modal in the bookmarks page to create a bookmark
+
+##### Update bookmark modal
+
 - `/main/bookmark/update?id=...`
-  - Modal in the bookmarks page to update a bookmark's title
+- Modal in the bookmarks page to update a bookmark's title
+
+#### Individual bookmark page
+
 - `/main/bookmark/{id}`
-  - Individual bookmark page
-  - Contains webview and summary of the bookmark
+- Context menu options to summarise bookmark and toggle webview and summary view
+
+#### Settings page
+
 - `/main/settings`
-  - Settings page
