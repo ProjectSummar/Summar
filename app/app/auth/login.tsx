@@ -6,6 +6,7 @@ import {
     TextInput,
     TouchableWithoutFeedback,
     View,
+    Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, useRouter } from "expo-router";
@@ -47,7 +48,10 @@ const Login = () => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <SafeAreaView style={styles.container}>
                 <View style={styles.loginContainer}>
-                    <Text style={styles.logo}>Summar</Text>
+                    <Image
+                        style={styles.logo}
+                        source={require("@assets/images/SummarLogo.png")}
+                    />
                     <View style={styles.input}>
                         <Text style={styles.inputLabel}>Email</Text>
                         <Controller
@@ -125,9 +129,8 @@ const styles = StyleSheet.create({
         marginHorizontal: "auto",
     },
     logo: {
-        fontWeight: "bold",
-        textAlign: "center",
-        fontSize: 50,
+        width: "100%",
+        height: "30%",
         marginBottom: 20,
     },
     input: {
